@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { ArrowDownRight, ArrowRight, ChevronDown, Menu, Search, X } from "lucide-react";
 import { dictionaries, type Locale } from "@/lib/i18n";
 import { fleetUi } from "@/lib/fleet-ui";
+import { guideSlugs, guides, guideUi } from "@/lib/guides";
 import fleet from "@/lib/fleet.json";
 
 type Theme = "hybrid" | "dark" | "light";
@@ -15,6 +16,7 @@ const illustrationFor = (category: string) => category === "SUV" || category ===
 export default function CarTimeSite({ locale }: { locale: Locale }) {
   const t = dictionaries[locale];
   const f = fleetUi[locale];
+  const g = guideUi[locale];
   const [theme, setTheme] = useState<Theme>("hybrid");
   const [menuOpen, setMenuOpen] = useState(false);
   const [category, setCategory] = useState<string>("all");
@@ -89,6 +91,7 @@ export default function CarTimeSite({ locale }: { locale: Locale }) {
           </a>
           <nav className="desktop-nav" aria-label="Main navigation">
             {t.nav.map((label, index) => <a key={anchors[index]} href={`#${anchors[index]}`}>{label}</a>)}
+            <a href="#guides">{g.nav}</a>
           </nav>
           <div className="header-actions">
             <div className="language-links" aria-label={t.languageLabel}>
@@ -101,7 +104,7 @@ export default function CarTimeSite({ locale }: { locale: Locale }) {
             <button className="menu-button" type="button" aria-label={menuOpen ? t.close : t.mobileMenu} aria-expanded={menuOpen} onClick={() => setMenuOpen(!menuOpen)}>{menuOpen ? <X size={23} /> : <Menu size={23} />}</button>
           </div>
         </div>
-        {menuOpen && <nav className="mobile-nav" aria-label="Mobile navigation">{t.nav.map((label, index) => <a key={anchors[index]} href={`#${anchors[index]}`} onClick={() => setMenuOpen(false)}>{label}<ArrowRight size={16} /></a>)}</nav>}
+        {menuOpen && <nav className="mobile-nav" aria-label="Mobile navigation">{t.nav.map((label, index) => <a key={anchors[index]} href={`#${anchors[index]}`} onClick={() => setMenuOpen(false)}>{label}<ArrowRight size={16} /></a>)}<a href="#guides" onClick={() => setMenuOpen(false)}>{g.nav}<ArrowRight size={16} /></a></nav>}
       </header>
 
       <main id="top">
@@ -149,17 +152,20 @@ export default function CarTimeSite({ locale }: { locale: Locale }) {
             <p className="fleet-count">{filteredCars.length} {f.count}</p>
             {filteredCars.length ? <div className="car-grid">{filteredCars.slice(0, visibleCount).map((car, index) => <article className="car-card" key={car.id}><div className="car-image"><span className="car-tag">{f.categories[car.category]}</span><img src={illustrationFor(car.category)} alt="" aria-hidden="true" loading={index < 3 ? "eager" : "lazy"} decoding="async" /><span className="car-art-note">{f.illustration}</span></div><div className="car-info"><div><h3>{car.name}</h3><p>{car.year} · {f.categories[car.category]}</p></div><div className="car-bottom"><div className="car-price"><strong>${car.ratesUsd[0]}</strong><small>{f.rateContext}</small></div><button type="button" onClick={() => setDetailCar(car.id)} aria-label={`${f.viewRates}: ${car.name} ${car.year}`}><ArrowRight size={20} /></button></div></div></article>)}</div> : <p className="fleet-empty">{f.empty}</p>}
             {filteredCars.length > visibleCount && <button className="load-more" type="button" onClick={() => setVisibleCount((count) => count + 12)}>{f.more}<ArrowDownRight size={17} /></button>}
+            <a className="fleet-all-link" href={`/${locale}/fleet`}>{g.allCars}<ArrowRight size={18} /></a>
           </div>
         </section>
 
         <section className="airport-section" id="airport">
-          <div className="container airport-inner"><div><p className="airport-kicker">{t.airportEyebrow}</p><h2>{t.airportTitle}</h2><p>{t.airportLead}</p><button className="airport-button" onClick={chooseAirport} type="button">{t.airportCta}<ArrowRight size={18} /></button></div></div>
+          <div className="container airport-inner"><div><p className="airport-kicker">{t.airportEyebrow}</p><h2>{t.airportTitle}</h2><p>{t.airportLead}</p><button className="airport-button" onClick={chooseAirport} type="button">{t.airportCta}<ArrowRight size={18} /></button><a className="airport-guide-link" href={`/${locale}/guide/airport`}>{guides[locale].airport.title} ↗</a></div></div>
         </section>
+
+        <section className="section home-guides" id="guides"><div className="container"><div className="section-head"><div><p className="section-kicker">CARTIME / GUIDE</p><h2>{g.homeTitle}</h2></div><p className="section-intro">{g.homeLead}</p></div><div className="guide-card-grid">{guideSlugs.map((slug, index) => <a className="guide-card" key={slug} href={`/${locale}/guide/${slug}`}><span>0{index + 1} / {guides[locale][slug].eyebrow}</span><h3>{guides[locale][slug].title}</h3><p>{guides[locale][slug].teaser}</p><b>{g.read} ↗</b></a>)}</div></div></section>
 
         <section className="section faq-section" id="faq"><div className="container faq-inner"><div><p className="section-kicker">CARTIME / 03</p><h2>{t.faqTitle}</h2><p className="faq-slogan">Drive on Your Time</p></div><div className="faq-list">{t.faq.map(([question, answer]) => <details key={question}><summary>{question}<ChevronDown size={20} /></summary><p>{answer}</p></details>)}</div></div></section>
       </main>
 
-      <footer className="site-footer"><div className="container footer-inner"><div className="footer-brand"><img className="dark-logo" src="/assets/logo-dark.png" alt="CarTime" /><img className="light-logo" src="/assets/logo-light.svg" alt="" aria-hidden="true" /><p>{t.footerText}</p></div><div className="footer-right"><p>{t.footerDemo}</p><a href="#top">{t.backTop} ↑</a></div></div><div className="container footer-bottom"><span>© {new Date().getFullYear()} CarTime</span><span>AZ / EN / RU</span></div></footer>
+      <footer className="site-footer"><div className="container footer-inner"><div className="footer-brand"><img className="dark-logo" src="/assets/logo-dark.png" alt="CarTime" /><img className="light-logo" src="/assets/logo-light.svg" alt="" aria-hidden="true" /><p>{t.footerText}</p></div><div className="footer-right"><p>{t.footerDemo}</p><a href={`/${locale}/fleet`}>{g.allCars} ↗</a><a href="#top">{t.backTop} ↑</a></div></div><nav className="container footer-guides" aria-label={g.nav}>{guideSlugs.map((slug) => <a key={slug} href={`/${locale}/guide/${slug}`}>{guides[locale][slug].title}</a>)}</nav><div className="container footer-bottom"><span>© {new Date().getFullYear()} CarTime</span><span>AZ / EN / RU</span></div></footer>
 
       {selectedCar && <div className="modal-backdrop" onMouseDown={() => setDetailCar(null)}><div className="detail-modal" role="dialog" aria-modal="true" aria-labelledby="car-modal-title" onMouseDown={(e) => e.stopPropagation()}><button type="button" className="modal-close" aria-label={t.close} onClick={() => setDetailCar(null)}><X size={20} /></button><div className="modal-image"><img src={illustrationFor(selectedCar.category)} alt="" aria-hidden="true" /><span>{f.illustration}</span></div><div className="modal-content"><p className="section-kicker">{f.categories[selectedCar.category]} · {selectedCar.year}</p><h2 id="car-modal-title">{selectedCar.name}</h2><h3>{f.tariffTitle}</h3><div className="tariff-list">{selectedCar.ratesUsd.map((rate, index) => <div key={f.durations[index]}><span>{f.durations[index]}</span><strong>${rate} <small>{f.perDay}</small></strong></div>)}</div><p className="tariff-note">{f.tariffNote}</p></div></div></div>}
     </div>
