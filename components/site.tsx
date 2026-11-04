@@ -106,7 +106,7 @@ export default function CarTimeSite({ locale }: { locale: Locale }) {
 
       <main id="top">
         <section className="hero">
-          <div className="hero-photo" role="img" aria-label="Concept illustration of a car in Baku" />
+          <div className="hero-photo" role="img" aria-label="CarTime automotive scene inspired by Baku" />
           <div className="hero-sheen" />
           <div className="container hero-inner">
             <div className="hero-copy">
@@ -153,7 +153,7 @@ export default function CarTimeSite({ locale }: { locale: Locale }) {
         </section>
 
         <section className="airport-section" id="airport">
-          <div className="container airport-inner"><div><p className="airport-kicker">{t.airportEyebrow}</p><h2>{t.airportTitle}</h2><p>{t.airportLead}</p><button className="airport-button" onClick={chooseAirport} type="button">{t.airportCta}<ArrowRight size={18} /></button></div><div className="airport-graphic" aria-hidden="true"><span>GYD</span><div className="airport-orbit one" /><div className="airport-orbit two" /><div className="airport-point" /></div></div>
+          <div className="container airport-inner"><div><p className="airport-kicker">{t.airportEyebrow}</p><h2>{t.airportTitle}</h2><p>{t.airportLead}</p><button className="airport-button" onClick={chooseAirport} type="button">{t.airportCta}<ArrowRight size={18} /></button></div></div>
         </section>
 
         <section className="section faq-section" id="faq"><div className="container faq-inner"><div><p className="section-kicker">CARTIME / 03</p><h2>{t.faqTitle}</h2><p className="faq-slogan">Drive on Your Time</p></div><div className="faq-list">{t.faq.map(([question, answer]) => <details key={question}><summary>{question}<ChevronDown size={20} /></summary><p>{answer}</p></details>)}</div></div></section>
