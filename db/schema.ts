@@ -1,4 +1,32 @@
-// Intentionally empty by default.
-// Add Drizzle tables here when the site actually needs a database.
-// See examples/d1/db/schema.ts for an opt-in example.
-export {};
+import { index, integer, sqliteTable, text } from "drizzle-orm/sqlite-core";
+
+export const bookingRequests = sqliteTable("booking_requests", {
+  id: text("id").primaryKey(),
+  createdAt: text("created_at").notNull(),
+  updatedAt: text("updated_at").notNull(),
+  status: text("status").notNull().default("new"),
+  locale: text("locale").notNull(),
+  carId: text("car_id").notNull(),
+  carName: text("car_name").notNull(),
+  carYear: integer("car_year").notNull(),
+  pickup: text("pickup").notNull(),
+  pickupAddress: text("pickup_address"),
+  dropoff: text("dropoff").notNull(),
+  returnAddress: text("return_address"),
+  fromDate: text("from_date").notNull(),
+  fromTime: text("from_time").notNull(),
+  toDate: text("to_date").notNull(),
+  toTime: text("to_time").notNull(),
+  days: integer("days").notNull(),
+  dailyRateUsd: integer("daily_rate_usd").notNull(),
+  estimateUsd: integer("estimate_usd").notNull(),
+  customerName: text("customer_name").notNull(),
+  phone: text("phone").notNull(),
+  email: text("email").notNull(),
+  age: integer("age").notNull(),
+  experience: integer("experience").notNull(),
+  flight: text("flight"),
+  secondDriver: integer("second_driver", { mode: "boolean" }).notNull(),
+  payment: text("payment").notNull(),
+  notes: text("notes"),
+}, (table) => [index("booking_requests_status_created_idx").on(table.status, table.createdAt)]);
