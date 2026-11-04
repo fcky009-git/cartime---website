@@ -20,7 +20,7 @@ export function pageMetadata(locale: Locale, path: string, title: string, descri
       description,
       url: `${siteOrigin}${localPath}`,
       locale: locale === "az" ? "az_AZ" : locale === "ru" ? "ru_RU" : "en_US",
-      images: ["/assets/hero-baku-editorial.jpg"],
+      images: ["/assets/cartime-baku-sunrise.jpg"],
     },
   };
 }

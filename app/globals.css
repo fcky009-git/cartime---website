@@ -73,7 +73,7 @@ html[data-theme="light"] .dark-logo { display: none; }
 .menu-button { display: none; border: 0; background: none; color: var(--header-ink); }
 .mobile-nav { display: none; }
 .hero { position: relative; min-height: 620px; background: var(--hero); color: var(--hero-ink); isolation: isolate; }
-.hero-photo { position: absolute; inset: 0; background: url('/assets/hero-baku-editorial.jpg') center 55% / cover no-repeat; z-index: -2; }
+.hero-photo { position: absolute; inset: 0; background: url('/assets/cartime-baku-sunrise.jpg') center 55% / cover no-repeat; z-index: -2; }
 .hero-sheen { position: absolute; inset: 0; z-index: -1; background: linear-gradient(90deg, #080f1afc 0%, #080f1aeb 30%, #080f1a85 60%, #080f1a15 100%), linear-gradient(0deg, #080f1a66, transparent 48%); }
 html[data-theme="light"] .hero-photo { opacity: .63; }
 html[data-theme="light"] .hero-sheen { background: linear-gradient(90deg, #ebf3fd 0%, #ebf3fdeb 36%, #ebf3fd5e 68%, #ebf3fd17), linear-gradient(0deg, #ebf3fd99, transparent 55%); }
@@ -152,7 +152,7 @@ html[data-theme="dark"] .car-image { background: linear-gradient(140deg, #1c3048
 .load-more:hover { border-color: #3b82f6; color: #3b82f6; }
 .fleet-all-link { display: flex; align-items: center; justify-content: center; gap: 12px; width: fit-content; margin: 28px auto 0; padding: 13px 19px; border: 1px solid #3b82f6; border-radius: 11px; color: #2369db; font-size: 12px; font-weight: 800; }
 .fleet-all-link:hover { background: #3b82f6; color: #fff; }
-.airport-section { position: relative; overflow: hidden; background: linear-gradient(90deg, #080f1afa 0%, #080f1ae8 39%, #080f1a50 78%, #080f1a18), url('/assets/airport-editorial.jpg') center 55% / cover no-repeat; color: #fff; scroll-margin-top: 20px; }
+.airport-section { position: relative; overflow: hidden; background: linear-gradient(90deg, #080f1ae3 0%, #080f1acb 39%, #080f1a38 78%, #080f1a08), url('/assets/cartime-airport-daylight.jpg') center 55% / cover no-repeat; color: #fff; scroll-margin-top: 20px; }
 .airport-inner { min-height: 410px; display: flex; align-items: center; position: relative; }
 .airport-inner > div:first-child { position: relative; z-index: 2; max-width: 670px; padding: 75px 0; }
 .airport-kicker { color: #80beff; font-size: 11px; font-weight: 800; letter-spacing: .18em; }
@@ -210,10 +210,10 @@ html[data-theme="dark"] .car-image { background: linear-gradient(140deg, #1c3048
 .info-language-links a[aria-current="page"] { color: #72b5ff; }
 html[data-theme="light"] .info-language-links { border-left-color: #0b254244; }
 .info-hero { min-height: 395px; display: flex; align-items: center; background: radial-gradient(circle at 78% 28%, #1f69bd 0%, #113864 29%, #080f1a 70%); color: #fff; }
-.info-hero--baku { background: linear-gradient(90deg, #080f1af7, #080f1add 44%, #080f1a5c 100%), url('/assets/hero-baku-editorial.jpg') center 54% / cover; }
-.info-hero--airport { background: linear-gradient(90deg, #080f1af7, #080f1add 44%, #080f1a5c 100%), url('/assets/airport-editorial.jpg') center 54% / cover; }
+.info-hero--baku { background: linear-gradient(90deg, #080f1ae6, #080f1ac0 44%, #080f1a35 100%), url('/assets/cartime-baku-sunrise.jpg') center 54% / cover; }
+.info-hero--airport { background: linear-gradient(90deg, #080f1ae6, #080f1ac0 44%, #080f1a35 100%), url('/assets/cartime-airport-daylight.jpg') center 54% / cover; }
 .info-hero--fleet { background: radial-gradient(circle at 77% 23%, #245d9e 0%, #102c4c 34%, #080f1a 74%); }
-.info-hero--about { background: linear-gradient(90deg, #080f1afa, #080f1adf 50%, #080f1a6a), url('/assets/hero-baku-editorial.jpg') center 53% / cover; }
+.info-hero--about { background: linear-gradient(90deg, #080f1ae6, #080f1ac0 50%, #080f1a35), url('/assets/cartime-baku-night.jpg') center 53% / cover; }
 .info-hero--faq { background: radial-gradient(circle at 84% 12%, #275d9c 0%, #15365e 34%, #080f1a 77%); }
 .info-hero-inner { padding: 56px 0 66px; }
 .info-back { display: inline-block; margin-bottom: 36px; color: #b8d8f9; font-size: 12px; font-weight: 700; }
@@ -351,8 +351,8 @@ html[data-theme="light"] .info-language-links { border-left-color: #0b254244; }
 .rental-hub-cta a, .rental-action > a { display: inline-flex; align-items: center; min-height: 42px; padding: 11px 16px; border: 1px solid #4487e3; border-radius: 10px; color: #347ad9; font-size: 11px; font-weight: 800; }
 .rental-hub-cta a:first-child, .rental-action > a:nth-child(2) { background: #3b82f6; color: #fff; }
 .info-hero--rental { background: radial-gradient(circle at 82% 15%, #2365a7, #153c66 32%, #080f1a 78%); }
-.info-hero--rental-airport { background: linear-gradient(90deg, #080f1afa, #080f1add 52%, #080f1a74), url('/assets/airport-editorial.jpg') center / cover; }
-.info-hero--rental-economy, .info-hero--rental-suv, .info-hero--contact { background: linear-gradient(90deg, #080f1afa, #080f1add 52%, #080f1a74), url('/assets/hero-baku-editorial.jpg') center / cover; }
+.info-hero--rental-airport { background: linear-gradient(90deg, #080f1ae6, #080f1ac0 52%, #080f1a35), url('/assets/cartime-airport-daylight.jpg') center / cover; }
+.info-hero--rental-economy, .info-hero--rental-suv, .info-hero--contact { background: linear-gradient(90deg, #080f1ae6, #080f1ac0 52%, #080f1a35), url('/assets/cartime-baku-sunrise.jpg') center / cover; }
 .rental-models { scroll-margin-top: 25px; }
 .rental-models > div { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
 .rental-models a { display: flex; justify-content: space-between; align-items: center; gap: 15px; padding: 14px 16px; border: 1px solid var(--border); border-radius: 12px; background: var(--surface); font-size: 12px; }
@@ -480,7 +480,7 @@ html[data-theme="dark"] .modal-image { background: linear-gradient(140deg, #1c30
   .fleet-sort { justify-content: space-between; }
   .airport-inner { min-height: 410px; }
   .airport-inner > div:first-child { padding: 65px 0 145px; }
-  .airport-section { background-image: linear-gradient(180deg, #080f1af7 0%, #080f1ad1 45%, #080f1a5e 100%), url('/assets/airport-editorial.jpg'); background-position: 70% center; }
+  .airport-section { background-image: linear-gradient(180deg, #080f1ae8 0%, #080f1ac7 45%, #080f1a56 100%), url('/assets/cartime-airport-daylight.jpg'); background-position: 70% center; }
   .airport-section h2 { font-size: 32px; }
   .airport-section p:not(.airport-kicker) { font-size: 12px; }
   .guide-card-grid, .info-related .guide-card-grid { grid-template-columns: 1fr; }
@@ -814,3 +814,21 @@ html[data-theme="dark"] .modal-image { background: linear-gradient(140deg, #1c30
 @media (max-width: 1080px) { .hero-route-card { width: 215px; right: 12px; top: 62%; } }
 @media (max-width: 800px) { .hero-route-card { display: none; } .hero::after { width: 100vw; height: 100vw; right: -40%; } }
 @media (prefers-reduced-motion: reduce) { .hero-photo, .hero::after, .hero-copy, .hero-route-card { animation: none; } .hero-photo { transform: none; } .hero-route-card { transform: translateY(-24%); } .motion-ready .home-reveal > .container { opacity: 1; transform: none; transition: none; } .search-field, .car-card-open .car-image img, .car-card-arrow, .benefit-card, .benefit-card::before, .guide-card::before, .rental-topic::before { transition: none; } }
+
+/* CarTime glass controls and varied Azerbaijan campaign imagery. */
+.hero-sheen { background: linear-gradient(90deg,#061423e8 0%,#061423cb 30%,#06142358 60%,#06142304 100%),linear-gradient(0deg,#0614234a,transparent 56%); }
+html[data-theme="light"] .hero-sheen { background: linear-gradient(90deg,#eaf3ffed 0%,#eaf3ffd3 33%,#eaf3ff4a 65%,transparent 100%); }
+.hero-route-card { background: linear-gradient(135deg,#173554a3,#071627b3); }
+.button-primary,.header-cta,.search-button,.faq-all-link,.quick-help-trigger,.booking-action-buttons .booking-next,.booking-review-button { position: relative; isolation: isolate; overflow: hidden; border: 1px solid #c3e4ff7d; color: #fff; background: linear-gradient(135deg,#70bbffb3 0%,#3888e7e0 27%,#1f67d5eb 100%); box-shadow: inset 0 1px #ffffff91,inset 0 -1px #1b5da774,0 10px 27px #1451ad40; backdrop-filter: blur(18px) saturate(1.5); -webkit-backdrop-filter: blur(18px) saturate(1.5); transition: transform .22s ease,box-shadow .22s ease,filter .22s ease; }
+.button-primary::before,.header-cta::before,.search-button::before,.faq-all-link::before,.quick-help-trigger::before,.booking-action-buttons .booking-next::before,.booking-review-button::before { content: ""; position: absolute; inset: 0 0 52%; z-index: -1; pointer-events: none; border-radius: inherit; background: linear-gradient(180deg,#ffffff4f,transparent); }
+.button-primary:hover,.header-cta:hover,.search-button:hover,.faq-all-link:hover,.quick-help-trigger:hover,.booking-action-buttons .booking-next:hover,.booking-review-button:hover { transform: translateY(-2px); filter: brightness(1.08); box-shadow: inset 0 1px #fff,0 15px 34px #1451ad54; }
+.hero-shortcuts a,.hero-demo,.theme-picker,.site-directory summary { border-color: #ffffff73; background: linear-gradient(135deg,#ffffff31,#dceeff12); box-shadow: inset 0 1px #ffffff55,0 8px 22px #06142329; backdrop-filter: blur(18px) saturate(1.45); -webkit-backdrop-filter: blur(18px) saturate(1.45); }
+.hero-shortcuts a:hover,.site-directory summary:hover { background: linear-gradient(135deg,#ffffff46,#dceeff24); border-color: #d1efff; }
+html[data-theme="light"] .hero-shortcuts a,html[data-theme="light"] .hero-demo { color: #17324f; border-color: #ffffffd9; background: linear-gradient(135deg,#ffffffed,#e9f3ffc9); box-shadow: inset 0 1px #fff,0 7px 22px #1b38532e; }
+html[data-theme="light"] .hero-shortcuts a:hover { background: #fff; border-color: #8dbde4; }
+.airport-button { border: 1px solid #ffffffb5; background: linear-gradient(140deg,#fffffff0,#d7eeffcc); box-shadow: inset 0 1px #fff,0 14px 30px #031f3840; backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); transition: transform .2s,box-shadow .2s; }
+.airport-button:hover { transform: translateY(-3px); box-shadow: inset 0 1px #fff,0 19px 38px #031f3850; }
+.search-panel,.home-map-copy,.home-map-frame,.booking-card,.booking-summary { border-color: color-mix(in srgb,#a5d3f7 36%,var(--border)); box-shadow: inset 0 1px #ffffff8c,0 23px 52px #0b2b4a18; }
+.filter-row button,.booking-currency-options button,.booking-action-buttons .booking-back { backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); box-shadow: inset 0 1px #ffffff8c; transition: transform .2s,border-color .2s,background .2s; }
+.filter-row button:hover,.booking-currency-options button:hover,.booking-action-buttons .booking-back:hover { transform: translateY(-2px); border-color: #9ac9ee; }
+@media (prefers-reduced-motion: reduce) { .button-primary,.header-cta,.search-button,.faq-all-link,.quick-help-trigger,.booking-action-buttons .booking-next,.booking-review-button,.airport-button,.filter-row button,.booking-currency-options button,.booking-action-buttons .booking-back { transition: none; } }
