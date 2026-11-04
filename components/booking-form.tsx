@@ -73,6 +73,10 @@ export default function BookingForm({ locale }: { locale: Locale }) {
     const initialStart = start && /^\d{4}-\d{2}-\d{2}$/.test(start) && start >= current ? start : addDaysIso(current, 1);
     setFromDate(initialStart);
     setToDate(end && /^\d{4}-\d{2}-\d{2}$/.test(end) && end > initialStart ? end : addDaysIso(initialStart, 3));
+    const startTime = search.get("fromTime");
+    const endTime = search.get("toTime");
+    if (startTime && /^([01]\d|2[0-3]):[0-5]\d$/.test(startTime)) setFromTime(startTime);
+    if (endTime && /^([01]\d|2[0-3]):[0-5]\d$/.test(endTime)) setToTime(endTime);
     const selected = search.get("car");
     if (fleet.some((car) => car.id === selected)) setCarId(selected || "");
   }, []);

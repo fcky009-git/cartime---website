@@ -10,14 +10,20 @@ import QuickHelp from "@/components/quick-help";
 import ContactLinks from "@/components/contact-links";
 import { rentalPages, rentalSlugs, rentalUi } from "@/lib/rental-pages";
 import fleet from "@/lib/fleet.json";
+import fleetImages from "@/lib/fleet-images.json";
 import { bookingUi } from "@/lib/booking";
+import { carDetailUi } from "@/lib/car-detail-ui";
+import { addDaysIso, rentalDuration } from "@/lib/rental-duration";
 import SiteDirectory from "@/components/site-directory";
 import { contactLocation } from "@/lib/service-info";
 
 type Theme = "hybrid" | "dark" | "light";
 const themeNames: Theme[] = ["hybrid", "dark", "light"];
 const categories = ["all", "Mini", "Economy", "Comfort", "SUV", "Business", "VAN", "Luxury"] as const;
-const illustrationFor = (category: string) => category === "SUV" || category === "VAN" ? "/assets/suv.svg" : category === "Luxury" || category === "Business" ? "/assets/sedan-dark.svg" : "/assets/sedan.svg";
+const bakuToday = () => {
+  const parts = Object.fromEntries(new Intl.DateTimeFormat("en-US", { timeZone: "Asia/Baku", year: "numeric", month: "2-digit", day: "2-digit" }).formatToParts(new Date()).map((part) => [part.type, part.value]));
+  return `${parts.year}-${parts.month}-${parts.day}`;
+};
 const homeFaqIds = ["rates", "cars", "airport", "documents", "deposit", "booking"];
 const heroLinks: Record<Locale, [string, string][]> = {
   ru: [["Условия аренды", "/rental/conditions"], ["Выдача в аэропорту", "/rental/airport"], ["Контакты и карта", "/contact"]],
@@ -36,18 +42,22 @@ export default function CarTimeSite({ locale }: { locale: Locale }) {
   const g = guideUi[locale];
   const s = serviceUi[locale];
   const rental = rentalUi[locale];
+  const carInfo = carDetailUi[locale];
   const [theme, setTheme] = useState<Theme>("hybrid");
   const [menuOpen, setMenuOpen] = useState(false);
   const [category, setCategory] = useState<string>("all");
   const [modelQuery, setModelQuery] = useState("");
   const [sort, setSort] = useState("priceAsc");
   const [visibleCount, setVisibleCount] = useState(12);
-  const [message, setMessage] = useState("");
-  const [messageIsError, setMessageIsError] = useState(false);
   const [detailCar, setDetailCar] = useState<string | null>(null);
   const [pickup, setPickup] = useState("city");
   const [dropoff, setDropoff] = useState("city");
   const [fromDate, setFromDate] = useState("");
+  const [toDate, setToDate] = useState("");
+  const [fromTime, setFromTime] = useState("10:00");
+  const [toTime, setToTime] = useState("10:00");
+  const [today, setToday] = useState("");
+  const searchDays = rentalDuration(fromDate, fromTime, toDate, toTime).days;
   const selectedCar = fleet.find((car) => car.id === detailCar);
   const filteredCars = fleet.filter((car) =>
     (category === "all" || car.category === category) &&
@@ -57,6 +67,11 @@ export default function CarTimeSite({ locale }: { locale: Locale }) {
   useEffect(() => {
     const stored = localStorage.getItem("cartime-theme");
     if (themeNames.includes(stored as Theme)) setTheme(stored as Theme);
+    const current = bakuToday();
+    const start = addDaysIso(current, 1);
+    setToday(current);
+    setFromDate(start);
+    setToDate(addDaysIso(start, 3));
   }, []);
 
   useEffect(() => {
@@ -82,14 +97,10 @@ export default function CarTimeSite({ locale }: { locale: Locale }) {
   function submitSearch(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
     const formData = new FormData(event.currentTarget);
-    const fromDate = String(formData.get("from") || "");
-    const toDate = String(formData.get("to") || "");
-    if (!fromDate || !toDate || toDate <= fromDate) {
-      setMessage(t.searchError);
-      setMessageIsError(true);
-      return;
-    }
-    const params = new URLSearchParams({ pickup, dropoff, from: fromDate, to: toDate });
+    const params = new URLSearchParams({ pickup, dropoff,
+      from: String(formData.get("from") || fromDate), to: String(formData.get("to") || toDate),
+      fromTime: String(formData.get("fromTime") || fromTime), toTime: String(formData.get("toTime") || toTime),
+    });
     window.location.href = `/${locale}/booking?${params.toString()}`;
   }
 
@@ -150,11 +161,13 @@ export default function CarTimeSite({ locale }: { locale: Locale }) {
             <div className="search-fields">
               <label className="search-field"><span>{t.pickup}</span><select value={pickup} onChange={(e) => setPickup(e.target.value)}><option value="city">{t.city}</option><option value="airport">{t.airport}</option></select></label>
               <label className="search-field"><span>{t.dropoff}</span><select value={dropoff} onChange={(e) => setDropoff(e.target.value)}><option value="city">{t.city}</option><option value="airport">{t.airport}</option></select></label>
-              <label className="search-field"><span>{t.start}</span><input name="from" type="date" onInput={(e) => setFromDate(e.currentTarget.value)} /></label>
-              <label className="search-field"><span>{t.end}</span><input name="to" type="date" min={fromDate || undefined} /></label>
-              <button className="search-button" type="submit">{bookingUi[locale].nav}<ArrowRight size={18} /></button>
+              <label className="search-field"><span>{t.start}</span><input name="from" type="date" min={today || undefined} value={fromDate} onChange={(e) => { const value = e.target.value; setFromDate(value); if (value && (!toDate || toDate <= value)) setToDate(addDaysIso(value, 3)); }} /></label>
+              <label className="search-field search-time"><span>{bookingUi[locale].time}</span><input name="fromTime" type="time" value={fromTime} onChange={(e) => setFromTime(e.target.value)} /></label>
+              <label className="search-field"><span>{t.end}</span><input name="to" type="date" min={fromDate || today || undefined} value={toDate} onChange={(e) => setToDate(e.target.value)} /></label>
+              <label className="search-field search-time"><span>{bookingUi[locale].time}</span><input name="toTime" type="time" value={toTime} onChange={(e) => setToTime(e.target.value)} /></label>
+              <button className="search-button" type="submit">{t.search}<ArrowRight size={18} /></button>
             </div>
-            {message && <p className={`search-message ${messageIsError ? "error" : ""}`} role="status">{message}</p>}
+            <p className="search-message" aria-live="polite">{searchDays ? `${bookingUi[locale].days}: ${searchDays} · ` : ""}{bookingUi[locale].durationHint}</p>
           </form>
         </div>
 
@@ -171,7 +184,7 @@ export default function CarTimeSite({ locale }: { locale: Locale }) {
             <div className="fleet-toolbar"><label className="fleet-query"><Search size={17} /><span className="sr-only">{f.searchLabel}</span><input type="search" value={modelQuery} placeholder={f.searchPlaceholder} onChange={(event) => { setModelQuery(event.target.value); setVisibleCount(12); }} /></label><label className="fleet-sort"><span>{f.sortLabel}</span><select value={sort} onChange={(event) => setSort(event.target.value)}><option value="priceAsc">{f.sortOptions[0]}</option><option value="priceDesc">{f.sortOptions[1]}</option><option value="yearDesc">{f.sortOptions[2]}</option></select></label></div>
             <div className="filter-row" role="group" aria-label={f.title}>{categories.map((item) => <button type="button" key={item} className={category === item ? "active" : ""} aria-pressed={category === item} onClick={() => { setCategory(item); setVisibleCount(12); }}>{f.categories[item]}</button>)}</div>
             <p className="fleet-count">{filteredCars.length} {f.count}</p>
-            {filteredCars.length ? <div className="car-grid">{filteredCars.slice(0, visibleCount).map((car, index) => <article className="car-card" key={car.id}><div className="car-image"><span className="car-tag">{f.categories[car.category]}</span><img src={illustrationFor(car.category)} alt="" aria-hidden="true" loading={index < 3 ? "eager" : "lazy"} decoding="async" /><span className="car-art-note">{f.illustration}</span></div><div className="car-info"><div><h3>{car.name}</h3><p>{car.year} · {f.categories[car.category]}</p></div><div className="car-bottom"><div className="car-price"><strong>${car.ratesUsd[0]}</strong><small>{f.rateContext}</small></div><button type="button" onClick={() => setDetailCar(car.id)} aria-label={`${f.viewRates}: ${car.name} ${car.year}`}><ArrowRight size={20} /></button></div></div></article>)}</div> : <p className="fleet-empty">{f.empty}</p>}
+            {filteredCars.length ? <div className="car-grid">{filteredCars.slice(0, visibleCount).map((car, index) => <article className="car-card" key={car.id}><button className="car-card-open" type="button" onClick={() => setDetailCar(car.id)} aria-label={`${carInfo.details}: ${car.name} ${car.year}`}><div className="car-image"><span className="car-tag">{f.categories[car.category]}</span><img src={(fleetImages as Record<string, string>)[car.id]} alt={`${car.name} ${car.year}`} loading={index < 4 ? "eager" : "lazy"} decoding="async" /></div><div className="car-info"><div><h3>{car.name}</h3><p>{car.year} · {f.categories[car.category]}</p></div><div className="car-bottom"><div className="car-price"><strong>${car.ratesUsd[0]}</strong><small>{f.rateContext}</small></div><span className="car-card-arrow"><ArrowRight size={18} /></span></div></div></button></article>)}</div> : <p className="fleet-empty">{f.empty}</p>}
             {filteredCars.length > visibleCount && <button className="load-more" type="button" onClick={() => setVisibleCount((count) => count + 12)}>{f.more}<ArrowDownRight size={17} /></button>}
             <a className="fleet-all-link" href={`/${locale}/fleet`}>{g.allCars}<ArrowRight size={18} /></a>
           </div>
@@ -196,7 +209,13 @@ export default function CarTimeSite({ locale }: { locale: Locale }) {
 
       <QuickHelp locale={locale} />
 
-      {selectedCar && <div className="modal-backdrop" onMouseDown={() => setDetailCar(null)}><div className="detail-modal" role="dialog" aria-modal="true" aria-labelledby="car-modal-title" onMouseDown={(e) => e.stopPropagation()}><button type="button" className="modal-close" aria-label={t.close} onClick={() => setDetailCar(null)}><X size={20} /></button><div className="modal-image"><img src={illustrationFor(selectedCar.category)} alt="" aria-hidden="true" /><span>{f.illustration}</span></div><div className="modal-content"><p className="section-kicker">{f.categories[selectedCar.category]} · {selectedCar.year}</p><h2 id="car-modal-title">{selectedCar.name}</h2><h3>{f.tariffTitle}</h3><div className="tariff-list">{selectedCar.ratesUsd.map((rate, index) => <div key={f.durations[index]}><span>{f.durations[index]}</span><strong>${rate} <small>{f.perDay}</small></strong></div>)}</div><p className="tariff-note">{f.tariffNote}</p><a className="booking-modal-link" href={`/${locale}/booking?car=${selectedCar.id}`}>{bookingUi[locale].nav}<ArrowRight size={18} /></a></div></div></div>}
+      {selectedCar && <div className="modal-backdrop" onMouseDown={() => setDetailCar(null)}><div className="detail-modal" role="dialog" aria-modal="true" aria-labelledby="car-modal-title" onMouseDown={(e) => e.stopPropagation()}>
+        <button type="button" className="modal-close" aria-label={carInfo.close} onClick={() => setDetailCar(null)}><X size={20} /></button>
+        <div className="modal-image"><img src={(fleetImages as Record<string, string>)[selectedCar.id]} alt={`${selectedCar.name} ${selectedCar.year}`} /><span>{selectedCar.year} · {f.categories[selectedCar.category]}</span></div>
+        <div className="modal-content"><p className="section-kicker">CARTIME / {f.categories[selectedCar.category]}</p><h2 id="car-modal-title">{selectedCar.name}</h2><p className="modal-fit">{carInfo.fit[selectedCar.category]}</p>
+          <div className="modal-fact-groups"><section><h3>{carInfo.highlights}</h3><ul>{carInfo.included.map((line) => <li key={line}>✓ {line}</li>)}</ul></section><section><h3>{carInfo.before}</h3><ul>{carInfo.terms.map((line) => <li key={line}>✓ {line}</li>)}</ul></section></div>
+          <h3>{carInfo.rates}</h3><div className="tariff-list">{selectedCar.ratesUsd.map((rate, index) => <div key={f.durations[index]}><span>{f.durations[index]}</span><strong>${rate} <small>{f.perDay}</small></strong></div>)}</div><p className="tariff-note">{carInfo.rateNote}</p><div className="modal-actions"><a className="booking-modal-link" href={`/${locale}/booking?car=${selectedCar.id}`}>{bookingUi[locale].nav}<ArrowRight size={18} /></a><a href={`/${locale}/fleet`}>{carInfo.compare} ↗</a></div>
+        </div></div></div>}
     </div>
   );
 }
