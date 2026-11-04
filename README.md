@@ -17,10 +17,10 @@ This is the first frontend implementation of the supplied CarTime brand kit. The
 
 ## Demo limits
 
-Vehicle names, model years, categories, and six daily rates were captured from the owner's 9fleet.com catalog on 4 November 2026 after the owner chose that source over the conflicting 56-car list. The source snapshot and reconciliation are in `data/`. Rates are shown in USD per day; they may change and are not an availability or total-price quote. The images in the CarTime catalog are explicitly labelled category illustrations: the photos on 9fleet.com visibly carry that brand on number plates, so clean CarTime photos are still needed. The hero art is a concept image from the handoff package. This version sends no booking request and accepts no payment. Real booking needs a separate backend and server-side availability and price checks.
+Vehicle names, model years, categories, and six daily rates were captured from the owner's 9fleet.com catalog on 4 November 2026 after the owner chose that source over the conflicting 56-car list. The source snapshot and reconciliation are in `data/`. Rates are shown in USD per day; they may change and are not an availability or total-price quote. The images in the CarTime catalog are explicitly labelled category illustrations: the photos on 9fleet.com visibly carry that brand on number plates, so clean CarTime photos are still needed. The hero and airport backgrounds are AI-generated editorial scenes, not documentary photos of actual fleet cars or locations. This version sends no booking request and accepts no payment. Real booking needs a separate backend and server-side availability and price checks.
 
 ## Development
 
 Install dependencies and run `npm run dev` in an environment with Node.js 22.13+ and npm. Run `npm run build` for a production build.
 
-The Site deployment has its own source repository. A separate GitHub repository can be connected later if the owner wants independent code history and collaboration.
+The Site deployment has its own source repository. The owner also has a GitHub repository at `fcky009-git/cartime---website` for independent code history and collaboration.
