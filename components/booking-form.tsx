@@ -96,7 +96,10 @@ export default function BookingForm({ locale }: { locale: Locale }) {
   const amount = rate === null ? null : rate * days;
   const visibleCars = fleet.filter((car) => (category === "all" || car.category === category) && `${car.name} ${car.year}`.toLocaleLowerCase().includes(query.trim().toLocaleLowerCase()));
   const convert = (usd: number) => currency === "USD" || !rates ? usd : usd * rates.aznPerUnit.USD / rates.aznPerUnit[currency];
-  const formatPrice = (usd: number) => `${new Intl.NumberFormat(locale === "az" ? "az-AZ" : locale === "ru" ? "ru-RU" : "en-US", { maximumFractionDigits: currency === "RUB" || currency === "KZT" ? 0 : 2, minimumFractionDigits: currency === "USD" ? 0 : 2 }).format(convert(usd))} ${currency}`;
+  const formatPrice = (usd: number) => {
+    const wholeCurrency = currency === "RUB" || currency === "KZT";
+    return `${new Intl.NumberFormat(locale === "az" ? "az-AZ" : locale === "ru" ? "ru-RU" : "en-US", { maximumFractionDigits: wholeCurrency ? 0 : 2, minimumFractionDigits: currency === "USD" || wholeCurrency ? 0 : 2 }).format(convert(usd))} ${currency}`;
+  };
 
   const locationText = (place: Place, address: string) => place === "delivery" ? `${ui.delivery}: ${address}` : ui[place];
   const message = [
