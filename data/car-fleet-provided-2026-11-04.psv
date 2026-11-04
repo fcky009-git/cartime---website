@@ -1,0 +1,57 @@
+number|model|year|discount_label_in_user_list
+1|Chevrolet Spark|2023|false
+2|Chevrolet Cobalt|2023|false
+3|Hyundai i20|2023|false
+4|Volkswagen Polo|2023|false
+5|Hyundai Accent|2023|false
+6|Nissan Sunny|2023|false
+7|BYD Destroyer 05|2025|false
+8|Changan A05|2023|false
+9|Chevrolet Monza|2024|false
+10|Changan UNI-V|2025|false
+11|Hyundai Elantra|2023|false
+12|Kia Stonic|2023|false
+13|Hyundai Venue|2023|false
+14|Hyundai Creta|2023|false
+15|Skoda Kamiq|2023|false
+16|Skoda Karoq|2023|false
+17|Toyota Corolla|2025|false
+18|Toyota Corolla Cross|2023|false
+19|Chevrolet Malibu|2023|false
+20|Hyundai Sonata|2022|false
+21|Toyota Camry|2022|false
+22|Toyota RAV4|2024|false
+23|Hyundai Tucson|2023|false
+24|Kia Sportage|2023|false
+25|Kia Sorento|2023|false
+26|Hyundai Santa Fe|2022|false
+27|Hyundai Custin|2025|false
+28|BMW 7-Series|2023|true
+29|Mercedes S-Class W223|2023|true
+30|Hyundai Santa Fe|2024|false
+31|Toyota Prado|2022|false
+32|Hyundai Staria|2023|false
+33|BMW 5-Series G30|2021|false
+34|Hyundai Grandeur|2022|false
+35|Toyota Camry|2024|false
+36|Lexus ES200|2023|false
+37|Mercedes E-Class|2023|false
+38|BMW 5-Series G60|2025|false
+39|BMW X5|2021|false
+40|Toyota Prado|2024|false
+41|Mercedes V-Class|2023|false
+42|Land Rover Range Rover|2016|false
+43|Mercedes S-Class W222|2020|false
+44|Rolls Royce Wraith|2025|true
+45|BMW X6|2021|false
+46|BMW X7|2021|false
+47|Chevrolet Tahoe|2024|false
+48|Mercedes GLS|2020|false
+49|Toyota Land Cruiser 300|2023|false
+50|Rolls Royce Cullinan|2025|true
+51|BMW X4 M|2021|false
+52|Land Rover Defender|2021|false
+53|Lexus LX500|2022|false
+54|Land Rover Range Rover|2024|false
+55|BMW XM|2024|false
+56|Mercedes G63 AMG|2024|false
