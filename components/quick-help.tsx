@@ -6,7 +6,7 @@ import type { Locale } from "@/lib/i18n";
 import { faqItems, serviceUi } from "@/lib/service-info";
 import ContactLinks from "@/components/contact-links";
 
-const quickIds = ["rates", "total", "availability", "airport", "deposit"];
+const quickIds = ["rates", "total", "payment", "mileage", "availability", "airport", "deposit"];
 
 export default function QuickHelp({ locale }: { locale: Locale }) {
   const [open, setOpen] = useState(false);
