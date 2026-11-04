@@ -6,6 +6,7 @@ import { dictionaries, type Locale } from "@/lib/i18n";
 import { fleetUi } from "@/lib/fleet-ui";
 import { guideSlugs, guides, guideUi } from "@/lib/guides";
 import { pageMetadata } from "@/lib/seo";
+import { bookingUi } from "@/lib/booking";
 
 export function generateStaticParams() {
   return [{ locale: "ru" }, { locale: "az" }, { locale: "en" }];
@@ -46,7 +47,7 @@ export default async function FleetPage({ params }: { params: Promise<{ locale: 
           return <section className="fleet-page-group" id={`category-${key}`} key={key}>
             <div className="fleet-page-group-head"><h2>{name}</h2><span>{cars.length}</span></div>
             <div className="fleet-table-scroll"><table className="fleet-table">
-              <thead><tr><th scope="col">{language === "ru" ? "Модель / год" : language === "az" ? "Model / il" : "Model / year"}</th>{ui.fleetDuration.map((duration) => <th scope="col" key={duration}>{duration}<small>{ui.perDay}</small></th>)}</tr></thead>
+              <thead><tr><th scope="col">{language === "ru" ? "Модель / год" : language === "az" ? "Model / il" : "Model / year"}</th>{ui.fleetDuration.map((duration) => <th scope="col" key={duration}>{duration}<small>{ui.perDay}</small></th>)}<th scope="col">{bookingUi[language].nav}</th></tr></thead>
               <tbody>{cars.map((car) => <tr key={car.id}><th scope="row">{car.name}<small>{car.year}</small></th>{car.ratesUsd.map((rate, index) => <td key={index}>$${rate}</td>)}</tr>)}</tbody>
             </table></div>
           </section>;

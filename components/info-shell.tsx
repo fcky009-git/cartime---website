@@ -5,6 +5,7 @@ import { serviceUi } from "@/lib/service-info";
 import QuickHelp from "@/components/quick-help";
 import ContactLinks from "@/components/contact-links";
 import { rentalPages, rentalSlugs, rentalUi } from "@/lib/rental-pages";
+import { bookingUi } from "@/lib/booking";
 
 export default function InfoShell({ locale, current, children }: { locale: Locale; current?: string; children: ReactNode }) {
   const ui = guideUi[locale];
@@ -20,6 +21,7 @@ export default function InfoShell({ locale, current, children }: { locale: Local
         <nav className="info-header-nav" aria-label={ui.nav}>
           <a href={`/${locale}`}>{ui.back}</a>
           <a href={`/${locale}/fleet`}>{ui.carCta}</a>
+          <a href={`/${locale}/booking`}>{bookingUi[locale].nav}</a>
           <a href={`/${locale}/guide/baku`}>{ui.nav}</a>
           <a href={`/${locale}/rental`}>{rentalUi[locale].nav}</a>
           <a href={`/${locale}/about`}>{service.aboutNav}</a>
@@ -39,6 +41,7 @@ export default function InfoShell({ locale, current, children }: { locale: Local
         <nav aria-label={ui.next}>
           <a href={`/${locale}`}>{ui.back}</a>
           <a href={`/${locale}/fleet`}>{ui.allCars}</a>
+          <a href={`/${locale}/booking`}>{bookingUi[locale].nav}</a>
           <a href={`/${locale}/about`}>{service.aboutNav}</a>
           <a href={`/${locale}/faq`}>{service.faqNav}</a>
           <a href={`/${locale}/rental`}>{rentalUi[locale].nav}</a>

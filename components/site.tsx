@@ -10,6 +10,7 @@ import QuickHelp from "@/components/quick-help";
 import ContactLinks from "@/components/contact-links";
 import { rentalPages, rentalSlugs, rentalUi } from "@/lib/rental-pages";
 import fleet from "@/lib/fleet.json";
+import { bookingUi } from "@/lib/booking";
 
 type Theme = "hybrid" | "dark" | "light";
 const themeNames: Theme[] = ["hybrid", "dark", "light"];
@@ -82,9 +83,8 @@ export default function CarTimeSite({ locale }: { locale: Locale }) {
       setMessageIsError(true);
       return;
     }
-    setMessage(t.searchResult);
-    setMessageIsError(false);
-    document.getElementById("fleet")?.scrollIntoView({ behavior: "smooth" });
+    const params = new URLSearchParams({ pickup, dropoff, from: fromDate, to: toDate });
+    window.location.href = `/${locale}/booking?${params.toString()}`;
   }
 
   function chooseAirport() {
@@ -106,6 +106,7 @@ export default function CarTimeSite({ locale }: { locale: Locale }) {
             <a href="#guides">{g.nav}</a>
             <a href="#rental">{rental.nav}</a>
             <a href="#about">{s.aboutNav}</a>
+            <a href={`/${locale}/booking`}>{bookingUi[locale].nav}</a>
           </nav>
           <div className="header-actions">
             <div className="language-links" aria-label={t.languageLabel}>
@@ -114,11 +115,11 @@ export default function CarTimeSite({ locale }: { locale: Locale }) {
             <div className="theme-picker" role="group" aria-label={t.themeLabel}>
               {themeNames.map((name, index) => <button key={name} type="button" aria-pressed={theme === name} onClick={() => changeTheme(name)}>{t.themes[index]}</button>)}
             </div>
-            <a className="header-cta" href="#search">{t.findCar} <ArrowRight size={16} /></a>
+            <a className="header-cta" href={`/${locale}/booking`}>{bookingUi[locale].nav} <ArrowRight size={16} /></a>
             <button className="menu-button" type="button" aria-label={menuOpen ? t.close : t.mobileMenu} aria-expanded={menuOpen} onClick={() => setMenuOpen(!menuOpen)}>{menuOpen ? <X size={23} /> : <Menu size={23} />}</button>
           </div>
         </div>
-        {menuOpen && <nav className="mobile-nav" aria-label="Mobile navigation">{t.nav.map((label, index) => <a key={anchors[index]} href={`#${anchors[index]}`} onClick={() => setMenuOpen(false)}>{label}<ArrowRight size={16} /></a>)}<a href="#guides" onClick={() => setMenuOpen(false)}>{g.nav}<ArrowRight size={16} /></a><a href="#rental" onClick={() => setMenuOpen(false)}>{rental.nav}<ArrowRight size={16} /></a><a href="#about" onClick={() => setMenuOpen(false)}>{s.aboutNav}<ArrowRight size={16} /></a><a href={`/${locale}/contact`} onClick={() => setMenuOpen(false)}>{rental.contact}<ArrowRight size={16} /></a><a href={`/${locale}/faq`} onClick={() => setMenuOpen(false)}>{s.faqNav}<ArrowRight size={16} /></a></nav>}
+        {menuOpen && <nav className="mobile-nav" aria-label="Mobile navigation">{t.nav.map((label, index) => <a key={anchors[index]} href={`#${anchors[index]}`} onClick={() => setMenuOpen(false)}>{label}<ArrowRight size={16} /></a>)}<a href={`/${locale}/booking`} onClick={() => setMenuOpen(false)}>{bookingUi[locale].nav}<ArrowRight size={16} /></a><a href="#guides" onClick={() => setMenuOpen(false)}>{g.nav}<ArrowRight size={16} /></a><a href="#rental" onClick={() => setMenuOpen(false)}>{rental.nav}<ArrowRight size={16} /></a><a href="#about" onClick={() => setMenuOpen(false)}>{s.aboutNav}<ArrowRight size={16} /></a><a href={`/${locale}/contact`} onClick={() => setMenuOpen(false)}>{rental.contact}<ArrowRight size={16} /></a><a href={`/${locale}/faq`} onClick={() => setMenuOpen(false)}>{s.faqNav}<ArrowRight size={16} /></a></nav>}
       </header>
 
       <main id="top">
@@ -130,7 +131,7 @@ export default function CarTimeSite({ locale }: { locale: Locale }) {
               <div className="eyebrow"><span className="eyebrow-line" />{t.eyebrow}</div>
               <h1>{t.heroTitle}</h1>
               <p className="hero-lead">{t.heroLead}</p>
-              <div className="hero-actions"><a className="button-primary" href="#fleet">{t.explore}<ArrowRight size={18} /></a><span className="hero-slogan">Drive on Your Time</span></div>
+              <div className="hero-actions"><a className="button-primary" href={`/${locale}/booking`}>{bookingUi[locale].nav}<ArrowRight size={18} /></a><span className="hero-slogan">Drive on Your Time</span></div>
               <nav className="hero-shortcuts" aria-label={rental.nav}>{heroLinks[locale].map(([label, path]) => <a key={path} href={`/${locale}${path}`}>{label}<ArrowRight size={14} aria-hidden="true" /></a>)}</nav>
             </div>
             <span className="hero-demo">{t.demoBadge}</span>
@@ -146,7 +147,7 @@ export default function CarTimeSite({ locale }: { locale: Locale }) {
               <label className="search-field"><span>{t.dropoff}</span><select value={dropoff} onChange={(e) => setDropoff(e.target.value)}><option value="city">{t.city}</option><option value="airport">{t.airport}</option></select></label>
               <label className="search-field"><span>{t.start}</span><input name="from" type="date" onInput={(e) => setFromDate(e.currentTarget.value)} /></label>
               <label className="search-field"><span>{t.end}</span><input name="to" type="date" min={fromDate || undefined} /></label>
-              <button className="search-button" type="submit">{t.search}<ArrowRight size={18} /></button>
+              <button className="search-button" type="submit">{bookingUi[locale].nav}<ArrowRight size={18} /></button>
             </div>
             {message && <p className={`search-message ${messageIsError ? "error" : ""}`} role="status">{message}</p>}
           </form>
@@ -177,18 +178,18 @@ export default function CarTimeSite({ locale }: { locale: Locale }) {
 
         <section className="section home-guides" id="guides"><div className="container"><div className="section-head"><div><p className="section-kicker">CARTIME / GUIDE</p><h2>{g.homeTitle}</h2></div><p className="section-intro">{g.homeLead}</p></div><div className="guide-card-grid">{guideSlugs.map((slug, index) => <a className="guide-card" key={slug} href={`/${locale}/guide/${slug}`}><span>0{index + 1} / {guides[locale][slug].eyebrow}</span><h3>{guides[locale][slug].title}</h3><p>{guides[locale][slug].teaser}</p><b>{g.read} ↗</b></a>)}</div></div></section>
 
-        <section className="section home-rental" id="rental"><div className="container"><div className="section-head"><div><p className="section-kicker">CARTIME / RENTAL</p><h2>{rental.hubTitle}</h2></div><p className="section-intro">{rental.hubLead}</p></div><div className="rental-hub-grid">{rentalSlugs.map((slug, index) => <a className="rental-topic" key={slug} href={`/${locale}/rental/${slug}`}><span>0{index + 1} / {rental.nav}</span><h3>{rentalPages[locale][slug].title}</h3><p>{rentalPages[locale][slug].teaser}</p><b>{rental.read} →</b></a>)}</div><div className="rental-hub-cta"><a href={`/${locale}/rental`}>{rental.nav} →</a><a href={`/${locale}/contact`}>{rental.contact} →</a></div></div></section>
+        <section className="section home-rental" id="rental"><div className="container"><div className="section-head"><div><p className="section-kicker">CARTIME / RENTAL</p><h2>{rental.hubTitle}</h2></div><p className="section-intro">{rental.hubLead}</p></div><div className="rental-hub-grid">{rentalSlugs.map((slug, index) => <a className="rental-topic" key={slug} href={`/${locale}/rental/${slug}`}><span>0{index + 1} / {rental.nav}</span><h3>{rentalPages[locale][slug].title}</h3><p>{rentalPages[locale][slug].teaser}</p><b>{rental.read} →</b></a>)}</div><div className="rental-hub-cta"><a href={`/${locale}/rental`}>{rental.nav} →</a><a href={`/${locale}/booking`}>{bookingUi[locale].nav} →</a><a href={`/${locale}/contact`}>{rental.contact} →</a></div></div></section>
 
         <section className="section home-about" id="about"><div className="container home-about-inner"><div><p className="section-kicker">{s.aboutEyebrow}</p><h2>{s.aboutTitle}</h2><p>{s.aboutMission}</p><div className="home-about-actions"><a href={`/${locale}/about`}>{s.aboutNav}<ArrowRight size={17} /></a><a href={`/${locale}/fleet`}>{s.aboutCta}<ArrowRight size={17} /></a></div></div><div className="home-about-facts">{s.aboutFacts.map(([number, label]) => <div key={label}><strong>{number}</strong><span>{label}</span></div>)}</div></div></section>
 
         <section className="section faq-section" id="faq"><div className="container faq-inner"><div><p className="section-kicker">CARTIME / FAQ</p><h2>{s.faqTitle}</h2><p className="faq-slogan">{s.quickLead}</p><a className="faq-all-link" href={`/${locale}/faq`}>{s.quickButton}<ArrowRight size={17} /></a></div><div className="faq-list">{homeFaqIds.map((id) => faqItems[locale].find((item) => item.id === id)).filter((item) => !!item).map((item) => <details key={item.id}><summary>{item.question}<ChevronDown size={20} /></summary><p>{item.answer}</p></details>)}</div></div></section>
       </main>
 
-      <footer className="site-footer"><div className="container footer-inner"><div className="footer-brand"><img className="dark-logo" src="/assets/logo-dark.png" alt="CarTime" /><img className="light-logo" src="/assets/logo-light.svg" alt="" aria-hidden="true" /><p>{t.footerText}</p><ContactLinks locale={locale} /></div><div className="footer-right"><p>{t.footerDemo}</p><a href={`/${locale}/fleet`}>{g.allCars} ↗</a><a href="#top">{t.backTop} ↑</a></div></div><nav className="container footer-guides" aria-label={g.nav}><a href={`/${locale}/about`}>{s.aboutNav}</a><a href={`/${locale}/faq`}>{s.faqNav}</a><a href={`/${locale}/rental`}>{rental.nav}</a><a href={`/${locale}/contact`}>{rental.contact}</a>{rentalSlugs.map((slug) => <a key={slug} href={`/${locale}/rental/${slug}`}>{rentalPages[locale][slug].title}</a>)}{guideSlugs.map((slug) => <a key={slug} href={`/${locale}/guide/${slug}`}>{guides[locale][slug].title}</a>)}</nav><div className="container footer-bottom"><span>© {new Date().getFullYear()} CarTime</span><span>AZ / EN / RU</span></div></footer>
+      <footer className="site-footer"><div className="container footer-inner"><div className="footer-brand"><img className="dark-logo" src="/assets/logo-dark.png" alt="CarTime" /><img className="light-logo" src="/assets/logo-light.svg" alt="" aria-hidden="true" /><p>{t.footerText}</p><ContactLinks locale={locale} /></div><div className="footer-right"><p>{t.footerDemo}</p><a href={`/${locale}/fleet`}>{g.allCars} ↗</a><a href={`/${locale}/booking`}>{bookingUi[locale].nav} ↗</a><a href="#top">{t.backTop} ↑</a></div></div><nav className="container footer-guides" aria-label={g.nav}><a href={`/${locale}/booking`}>{bookingUi[locale].nav}</a><a href={`/${locale}/about`}>{s.aboutNav}</a><a href={`/${locale}/faq`}>{s.faqNav}</a><a href={`/${locale}/rental`}>{rental.nav}</a><a href={`/${locale}/contact`}>{rental.contact}</a>{rentalSlugs.map((slug) => <a key={slug} href={`/${locale}/rental/${slug}`}>{rentalPages[locale][slug].title}</a>)}{guideSlugs.map((slug) => <a key={slug} href={`/${locale}/guide/${slug}`}>{guides[locale][slug].title}</a>)}</nav><div className="container footer-bottom"><span>© {new Date().getFullYear()} CarTime</span><span>AZ / EN / RU</span></div></footer>
 
       <QuickHelp locale={locale} />
 
-      {selectedCar && <div className="modal-backdrop" onMouseDown={() => setDetailCar(null)}><div className="detail-modal" role="dialog" aria-modal="true" aria-labelledby="car-modal-title" onMouseDown={(e) => e.stopPropagation()}><button type="button" className="modal-close" aria-label={t.close} onClick={() => setDetailCar(null)}><X size={20} /></button><div className="modal-image"><img src={illustrationFor(selectedCar.category)} alt="" aria-hidden="true" /><span>{f.illustration}</span></div><div className="modal-content"><p className="section-kicker">{f.categories[selectedCar.category]} · {selectedCar.year}</p><h2 id="car-modal-title">{selectedCar.name}</h2><h3>{f.tariffTitle}</h3><div className="tariff-list">{selectedCar.ratesUsd.map((rate, index) => <div key={f.durations[index]}><span>{f.durations[index]}</span><strong>${rate} <small>{f.perDay}</small></strong></div>)}</div><p className="tariff-note">{f.tariffNote}</p></div></div></div>}
+      {selectedCar && <div className="modal-backdrop" onMouseDown={() => setDetailCar(null)}><div className="detail-modal" role="dialog" aria-modal="true" aria-labelledby="car-modal-title" onMouseDown={(e) => e.stopPropagation()}><button type="button" className="modal-close" aria-label={t.close} onClick={() => setDetailCar(null)}><X size={20} /></button><div className="modal-image"><img src={illustrationFor(selectedCar.category)} alt="" aria-hidden="true" /><span>{f.illustration}</span></div><div className="modal-content"><p className="section-kicker">{f.categories[selectedCar.category]} · {selectedCar.year}</p><h2 id="car-modal-title">{selectedCar.name}</h2><h3>{f.tariffTitle}</h3><div className="tariff-list">{selectedCar.ratesUsd.map((rate, index) => <div key={f.durations[index]}><span>{f.durations[index]}</span><strong>${rate} <small>{f.perDay}</small></strong></div>)}</div><p className="tariff-note">{f.tariffNote}</p><a className="booking-modal-link" href={`/${locale}/booking?car=${selectedCar.id}`}>{bookingUi[locale].nav}<ArrowRight size={18} /></a></div></div></div>}
     </div>
   );
 }

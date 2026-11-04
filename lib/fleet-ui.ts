@@ -39,7 +39,7 @@ export const fleetUi: Record<Locale, {
     empty: "Автомобилей по этому запросу нет.",
     year: "год",
     tariffTitle: "Тарифы по сроку аренды",
-    tariffNote: "Ставки указаны в USD за день. Наличие автомобиля и итоговая стоимость требуют подтверждения; бронирование на сайте пока не подключено.",
+    tariffNote: "Ставки указаны в USD за день. Наличие автомобиля и итоговая стоимость требуют подтверждения; заявку можно отправить через форму CarTime.",
     durations: ["2–3 дня", "4–7 дней", "8–14 дней", "15–21 день", "22–31 день", "32+ дня"],
   },
   az: {
@@ -60,7 +60,7 @@ export const fleetUi: Record<Locale, {
     empty: "Bu sorğuya uyğun avtomobil yoxdur.",
     year: "il",
     tariffTitle: "İcarə müddətinə görə tariflər",
-    tariffNote: "Qiymətlər gündəlik USD ilə göstərilir. Mövcudluq və yekun məbləğ təsdiqlənməlidir; saytda rezervasiya hələ aktiv deyil.",
+    tariffNote: "Qiymətlər gündəlik USD ilə göstərilir. Mövcudluq və yekun məbləğ təsdiqlənməlidir; CarTime forması ilə sorğu göndərə bilərsiniz.",
     durations: ["2–3 gün", "4–7 gün", "8–14 gün", "15–21 gün", "22–31 gün", "32+ gün"],
   },
   en: {
@@ -81,7 +81,7 @@ export const fleetUi: Record<Locale, {
     empty: "No cars match this search.",
     year: "year",
     tariffTitle: "Daily rates by rental length",
-    tariffNote: "Rates are shown in USD per day. Availability and the final total require confirmation; booking is not connected yet.",
+    tariffNote: "Rates are shown in USD per day. Availability and the final total require confirmation; you can send a request through the CarTime form.",
     durations: ["2–3 days", "4–7 days", "8–14 days", "15–21 days", "22–31 days", "32+ days"],
   },
 };
