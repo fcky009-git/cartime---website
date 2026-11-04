@@ -775,3 +775,42 @@ html[data-theme="dark"] .modal-image { background: linear-gradient(140deg, #1c30
 @media (max-width: 800px) { .car-grid { grid-template-columns: repeat(2,minmax(0,1fr)); } }
 @media (max-width: 640px) { .search-fields { grid-template-columns: repeat(2,minmax(0,1fr)); } .search-time { min-width: 0; } .search-field select, .search-field input { font-size: 12px; } .booking-cars { grid-template-columns: 1fr; } .car-grid { grid-template-columns: 1fr; } .detail-modal { grid-template-columns: 1fr; padding: 16px; } .modal-image { position: static; min-height: 180px; } .modal-image img { height: 180px; } .modal-fact-groups { grid-template-columns: 1fr; } }
 @media (prefers-reduced-motion: reduce) { .car-card { transition: none; } }
+
+/* Drive mode: visual depth and restrained motion for the home journey. */
+.hero { overflow: hidden; }
+.hero-photo { transform: scale(1.035); animation: hero-breathe 22s ease-in-out infinite alternate; }
+.hero::after { content: ""; position: absolute; z-index: -1; right: -12%; top: -42%; width: 60vw; height: 70vw; max-height: 900px; pointer-events: none; border-radius: 50%; background: radial-gradient(circle, #4099f126 0, #328dec0d 36%, transparent 66%); animation: hero-glow 12s ease-in-out infinite alternate; }
+.hero-copy { position: relative; z-index: 2; animation: hero-enter .8s cubic-bezier(.2,.8,.2,1) both; }
+.hero-route-card { position: absolute; z-index: 1; right: 0; top: 50%; width: 260px; padding: 19px 20px 17px; border: 1px solid #ffffff55; border-radius: 20px; background: linear-gradient(135deg,#102d4aaa,#071627d9); color: #fff; box-shadow: inset 0 1px #ffffff50, 0 24px 70px #0006; backdrop-filter: blur(22px) saturate(1.35); -webkit-backdrop-filter: blur(22px) saturate(1.35); transform: translateY(-24%); animation: route-float 7s ease-in-out infinite alternate; }
+.route-card-top { display: flex; align-items: center; gap: 8px; color: #badfff; font-size: 9px; font-weight: 800; letter-spacing: .16em; }
+.route-live-dot { width: 7px; height: 7px; border-radius: 50%; background: #80e6c1; box-shadow: 0 0 0 4px #80e6c12e, 0 0 17px #80e6c1; }
+.route-card-road { display: flex; align-items: center; gap: 7px; margin: 25px 0 11px; }
+.route-road-start, .route-road-end { width: 9px; height: 9px; flex: 0 0 auto; border: 2px solid #9cdbff; border-radius: 50%; box-shadow: 0 0 14px #64c3ff; }
+.route-road-end { background: #9cdbff; }
+.route-road-line { position: relative; height: 1px; flex: 1; border-top: 1px dashed #a1c9e5; }
+.route-road-line svg { position: absolute; top: -10px; left: 50%; padding: 2px; border-radius: 50%; background: #d9f2ff; color: #174067; transform: translateX(-50%); box-shadow: 0 0 20px #7aceffb0; }
+.route-card-cities, .route-card-meta { display: flex; justify-content: space-between; gap: 8px; }
+.route-card-cities { font: 800 11px Sora,Inter,sans-serif; letter-spacing: .06em; }
+.route-card-meta { margin-top: 22px; padding-top: 11px; border-top: 1px solid #ffffff35; color: #b3d3ea; font-size: 9px; font-weight: 750; letter-spacing: .08em; }
+.search-panel { position: relative; overflow: hidden; border-color: color-mix(in srgb,#8fcaff 40%,var(--border)); background: color-mix(in srgb,var(--surface) 94%,transparent); backdrop-filter: blur(22px); box-shadow: 0 28px 70px #06172e29, inset 0 1px #ffffff9c; }
+.search-panel::before { content: ""; position: absolute; top: 0; left: 7%; width: 42%; height: 2px; background: linear-gradient(90deg,transparent,#58acff,transparent); box-shadow: 0 0 22px #58acff; }
+.search-field { transition: border-color .2s, box-shadow .2s, transform .2s; }
+.search-field:focus-within { border-color: #5daef5; box-shadow: 0 0 0 3px #4f9eec21; transform: translateY(-2px); }
+.benefit-card, .guide-card, .rental-topic { position: relative; overflow: hidden; }
+.benefit-card::before, .guide-card::before, .rental-topic::before { content: ""; position: absolute; inset: 0 auto auto 0; width: 100%; height: 3px; background: linear-gradient(90deg,#2374d9,#80d4ff,transparent); transform: scaleX(0); transform-origin: left; transition: transform .35s ease; }
+.benefit-card:hover::before, .guide-card:hover::before, .rental-topic:hover::before { transform: scaleX(1); }
+.benefit-card { transition: transform .25s, box-shadow .25s, border-color .25s; }
+.benefit-card:hover { transform: translateY(-5px); border-color: #8abfe7; box-shadow: 0 22px 44px #0b2b4a17; }
+.car-card-open .car-image img { transition: transform .55s cubic-bezier(.2,.8,.2,1), filter .55s; }
+.car-card-open:hover .car-image img, .car-card-open:focus-visible .car-image img { transform: scale(1.07); filter: saturate(1.08); }
+.car-card-arrow { transition: transform .25s, box-shadow .25s; }
+.car-card-open:hover .car-card-arrow { transform: rotate(-35deg); box-shadow: 0 7px 18px #3b82f66b; }
+.motion-ready .home-reveal > .container { opacity: 0; transform: translateY(25px); transition: opacity .75s ease, transform .75s cubic-bezier(.2,.8,.2,1); }
+.motion-ready .home-reveal.is-visible > .container { opacity: 1; transform: translateY(0); }
+@keyframes hero-breathe { to { transform: scale(1.095) translateX(-1%); } }
+@keyframes hero-glow { to { transform: translate(-7%,9%) scale(1.12); opacity: .6; } }
+@keyframes hero-enter { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes route-float { from { transform: translateY(-24%); } to { transform: translateY(-30%); } }
+@media (max-width: 1080px) { .hero-route-card { width: 215px; right: 12px; top: 62%; } }
+@media (max-width: 800px) { .hero-route-card { display: none; } .hero::after { width: 100vw; height: 100vw; right: -40%; } }
+@media (prefers-reduced-motion: reduce) { .hero-photo, .hero::after, .hero-copy, .hero-route-card { animation: none; } .hero-photo { transform: none; } .hero-route-card { transform: translateY(-24%); } .motion-ready .home-reveal > .container { opacity: 1; transform: none; transition: none; } .search-field, .car-card-open .car-image img, .car-card-arrow, .benefit-card, .benefit-card::before, .guide-card::before, .rental-topic::before { transition: none; } }

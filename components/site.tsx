@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { ArrowDownRight, ArrowRight, ChevronDown, Menu, Search, X } from "lucide-react";
+import { ArrowDownRight, ArrowRight, CarFront, ChevronDown, Menu, Search, X } from "lucide-react";
 import { dictionaries, type Locale } from "@/lib/i18n";
 import { fleetUi } from "@/lib/fleet-ui";
 import { guideSlugs, guides, guideUi } from "@/lib/guides";
@@ -83,6 +83,21 @@ export default function CarTimeSite({ locale }: { locale: Locale }) {
   }, [locale]);
 
   useEffect(() => {
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches || !window.IntersectionObserver) return;
+    const sections = document.querySelectorAll<HTMLElement>(".home-reveal");
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (!entry.isIntersecting) return;
+        entry.target.classList.add("is-visible");
+        observer.unobserve(entry.target);
+      });
+    }, { threshold: 0.08, rootMargin: "0px 0px -24px 0px" });
+    sections.forEach((section) => observer.observe(section));
+    document.documentElement.classList.add("motion-ready");
+    return () => { observer.disconnect(); document.documentElement.classList.remove("motion-ready"); };
+  }, []);
+
+  useEffect(() => {
     if (!detailCar) return;
     const onKeyDown = (event: KeyboardEvent) => { if (event.key === "Escape") setDetailCar(null); };
     document.addEventListener("keydown", onKeyDown);
@@ -150,6 +165,7 @@ export default function CarTimeSite({ locale }: { locale: Locale }) {
               <div className="hero-actions"><a className="button-primary" href={`/${locale}/booking`}>{bookingUi[locale].nav}<ArrowRight size={18} /></a><span className="hero-slogan">Drive on Your Time</span></div>
               <nav className="hero-shortcuts" aria-label={rental.nav}>{heroLinks[locale].map(([label, path]) => <a key={path} href={`/${locale}${path}`}>{label}<ArrowRight size={14} aria-hidden="true" /></a>)}</nav>
             </div>
+            <div className="hero-route-card" aria-hidden="true"><span className="route-card-top"><span className="route-live-dot" />CARTIME / DRIVE MODE</span><div className="route-card-road"><span className="route-road-start" /><span className="route-road-line"><CarFront size={19} /></span><span className="route-road-end" /></div><div className="route-card-cities"><strong>BAKU</strong><strong>YOUR ROUTE</strong></div><div className="route-card-meta"><span>55 CARS</span><span>24/7 SUPPORT</span></div></div>
             <span className="hero-demo">{t.demoBadge}</span>
             <div className="hero-counter"><span>01</span><div /><span>03</span></div>
           </div>
@@ -171,14 +187,14 @@ export default function CarTimeSite({ locale }: { locale: Locale }) {
           </form>
         </div>
 
-        <section className="section benefits-section" id="benefits">
+        <section className="section benefits-section home-reveal" id="benefits">
           <div className="container">
             <div className="section-head"><div><p className="section-kicker">CARTIME / 01</p><h2>{t.benefitTitle}</h2></div><p className="section-intro">{t.benefitLead}</p></div>
             <div className="benefit-grid">{t.benefits.map((benefit) => <article className="benefit-card" key={benefit[0]}><span className="benefit-number">{benefit[0]}</span><div><h3>{benefit[1]}</h3><p>{benefit[2]}</p></div><ArrowDownRight size={20} aria-hidden="true" /></article>)}</div>
           </div>
         </section>
 
-        <section className="section fleet-section" id="fleet">
+        <section className="section fleet-section home-reveal" id="fleet">
           <div className="container">
             <div className="section-head"><div><p className="section-kicker">CARTIME / 02 · {f.kicker}</p><h2>{f.title}</h2></div><p className="section-intro">{f.lead}</p></div>
             <div className="fleet-toolbar"><label className="fleet-query"><Search size={17} /><span className="sr-only">{f.searchLabel}</span><input type="search" value={modelQuery} placeholder={f.searchPlaceholder} onChange={(event) => { setModelQuery(event.target.value); setVisibleCount(12); }} /></label><label className="fleet-sort"><span>{f.sortLabel}</span><select value={sort} onChange={(event) => setSort(event.target.value)}><option value="priceAsc">{f.sortOptions[0]}</option><option value="priceDesc">{f.sortOptions[1]}</option><option value="yearDesc">{f.sortOptions[2]}</option></select></label></div>
@@ -190,15 +206,15 @@ export default function CarTimeSite({ locale }: { locale: Locale }) {
           </div>
         </section>
 
-        <section className="airport-section" id="airport">
+        <section className="airport-section home-reveal" id="airport">
           <div className="container airport-inner"><div><p className="airport-kicker">{t.airportEyebrow}</p><h2>{t.airportTitle}</h2><p>{t.airportLead}</p><button className="airport-button" onClick={chooseAirport} type="button">{t.airportCta}<ArrowRight size={18} /></button><a className="airport-guide-link" href={`/${locale}/guide/airport`}>{guides[locale].airport.title} ↗</a></div></div>
         </section>
 
-        <section className="section home-guides" id="guides"><div className="container"><div className="section-head"><div><p className="section-kicker">CARTIME / GUIDE</p><h2>{g.homeTitle}</h2></div><p className="section-intro">{g.homeLead}</p></div><div className="guide-card-grid">{guideSlugs.map((slug, index) => <a className="guide-card" key={slug} href={`/${locale}/guide/${slug}`}><span>0{index + 1} / {guides[locale][slug].eyebrow}</span><h3>{guides[locale][slug].title}</h3><p>{guides[locale][slug].teaser}</p><b>{g.read} ↗</b></a>)}</div></div></section>
+        <section className="section home-guides home-reveal" id="guides"><div className="container"><div className="section-head"><div><p className="section-kicker">CARTIME / GUIDE</p><h2>{g.homeTitle}</h2></div><p className="section-intro">{g.homeLead}</p></div><div className="guide-card-grid">{guideSlugs.map((slug, index) => <a className="guide-card" key={slug} href={`/${locale}/guide/${slug}`}><span>0{index + 1} / {guides[locale][slug].eyebrow}</span><h3>{guides[locale][slug].title}</h3><p>{guides[locale][slug].teaser}</p><b>{g.read} ↗</b></a>)}</div></div></section>
 
-        <section className="section home-rental" id="rental"><div className="container"><div className="section-head"><div><p className="section-kicker">CARTIME / RENTAL</p><h2>{rental.hubTitle}</h2></div><p className="section-intro">{rental.hubLead}</p></div><div className="rental-hub-grid">{rentalSlugs.map((slug, index) => <a className="rental-topic" key={slug} href={`/${locale}/rental/${slug}`}><span>0{index + 1} / {rental.nav}</span><h3>{rentalPages[locale][slug].title}</h3><p>{rentalPages[locale][slug].teaser}</p><b>{rental.read} →</b></a>)}</div><div className="rental-hub-cta"><a href={`/${locale}/rental`}>{rental.nav} →</a><a href={`/${locale}/booking`}>{bookingUi[locale].nav} →</a><a href={`/${locale}/contact`}>{rental.contact} →</a></div></div></section>
+        <section className="section home-rental home-reveal" id="rental"><div className="container"><div className="section-head"><div><p className="section-kicker">CARTIME / RENTAL</p><h2>{rental.hubTitle}</h2></div><p className="section-intro">{rental.hubLead}</p></div><div className="rental-hub-grid">{rentalSlugs.map((slug, index) => <a className="rental-topic" key={slug} href={`/${locale}/rental/${slug}`}><span>0{index + 1} / {rental.nav}</span><h3>{rentalPages[locale][slug].title}</h3><p>{rentalPages[locale][slug].teaser}</p><b>{rental.read} →</b></a>)}</div><div className="rental-hub-cta"><a href={`/${locale}/rental`}>{rental.nav} →</a><a href={`/${locale}/booking`}>{bookingUi[locale].nav} →</a><a href={`/${locale}/contact`}>{rental.contact} →</a></div></div></section>
 
-        <section className="section home-map" id="map"><div className="container home-map-grid"><div className="home-map-copy"><p className="section-kicker">{mapUi[locale].kicker}</p><h2>{mapUi[locale].title}</h2><p>{mapUi[locale].lead}</p><address>{contactLocation.address}</address><div className="home-map-actions"><a href={contactLocation.mapsUrl} target="_blank" rel="noopener noreferrer">{mapUi[locale].open} ↗</a><a href={`/${locale}/contact`}>{mapUi[locale].contact} →</a></div></div><div className="home-map-frame"><iframe title={mapUi[locale].title} src="https://maps.google.com/maps?q=40.3778175%2C49.8561227&z=17&output=embed" loading="lazy" referrerPolicy="no-referrer-when-downgrade" allowFullScreen /></div></div></section>
+        <section className="section home-map home-reveal" id="map"><div className="container home-map-grid"><div className="home-map-copy"><p className="section-kicker">{mapUi[locale].kicker}</p><h2>{mapUi[locale].title}</h2><p>{mapUi[locale].lead}</p><address>{contactLocation.address}</address><div className="home-map-actions"><a href={contactLocation.mapsUrl} target="_blank" rel="noopener noreferrer">{mapUi[locale].open} ↗</a><a href={`/${locale}/contact`}>{mapUi[locale].contact} →</a></div></div><div className="home-map-frame"><iframe title={mapUi[locale].title} src="https://maps.google.com/maps?q=40.3778175%2C49.8561227&z=17&output=embed" loading="lazy" referrerPolicy="no-referrer-when-downgrade" allowFullScreen /></div></div></section>
 
         <section className="section home-about" id="about"><div className="container home-about-inner"><div><p className="section-kicker">{s.aboutEyebrow}</p><h2>{s.aboutTitle}</h2><p>{s.aboutMission}</p><div className="home-about-actions"><a href={`/${locale}/about`}>{s.aboutNav}<ArrowRight size={17} /></a><a href={`/${locale}/fleet`}>{s.aboutCta}<ArrowRight size={17} /></a></div></div><div className="home-about-facts">{s.aboutFacts.map(([number, label]) => <div key={label}><strong>{number}</strong><span>{label}</span></div>)}</div></div></section>
 
