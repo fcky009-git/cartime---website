@@ -13,8 +13,9 @@ This is the first frontend implementation of the supplied CarTime brand kit. The
 - Responsive homepage, navigation, theme and language controls
 - Date and pickup/return form with client-side validation and clear demo feedback
 - Searchable 55-vehicle catalog with category filters, sorting, and published USD daily rates for six rental lengths
-- Airport shortcut and FAQ
+- Airport shortcut, 30 searchable FAQ answers in each language, category filters and quick help panel
 - Full crawlable fleet table and four practical guides (Baku, road trips, GYD airport, rental planning) in RU/AZ/EN
+- Dedicated About and FAQ pages in RU/AZ/EN, with links from the homepage, navigation and sitemap
 - Per-page titles and descriptions, canonical and hreflang links, a sitemap, robots.txt, and conservative WebSite/Breadcrumb structured data
 
 ## Demo limits
@@ -22,6 +23,8 @@ This is the first frontend implementation of the supplied CarTime brand kit. The
 Vehicle names, model years, categories, and six daily rates were captured from the owner's 9fleet.com catalog on 4 November 2026 after the owner chose that source over the conflicting 56-car list. The source snapshot and reconciliation are in `data/`. Rates are shown in USD per day; they may change and are not an availability or total-price quote. The images in the CarTime catalog are explicitly labelled category illustrations: the photos on 9fleet.com visibly carry that brand on number plates, so clean CarTime photos are still needed. The hero and airport backgrounds are AI-generated editorial scenes, not documentary photos of actual fleet cars or locations. This version sends no booking request and accepts no payment. Real booking needs a separate backend and server-side availability and price checks.
 
 The guide pages contain original planning copy based on official Azerbaijan Tourism Board and Heydar Aliyev International Airport sources linked at the bottom of each relevant guide. They do not promise CarTime services or current attraction opening hours. The Site is currently owner-private, so Google cannot crawl it yet. Before public launch, verify business details and rental terms, set the public domain, set `NEXT_PUBLIC_SITE_URL` to that domain for canonical links and the sitemap, then make the Site public. Search indexing and rankings are never guaranteed.
+
+The expanded FAQ follows the topic coverage of the owner's 9fleet site and uses EasyRent as an information-architecture reference. Its copy is original. CarTime's legal identity, contacts, driver requirements, deposit, insurance, delivery and support promises are deliberately left unconfirmed until the owner supplies the actual terms. Update `lib/service-info.ts` when those details are approved.
 
 ## Development
 

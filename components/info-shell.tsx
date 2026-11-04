@@ -1,9 +1,12 @@
 import type { ReactNode } from "react";
 import type { Locale } from "@/lib/i18n";
 import { guideSlugs, guides, guideUi } from "@/lib/guides";
+import { serviceUi } from "@/lib/service-info";
+import QuickHelp from "@/components/quick-help";
 
 export default function InfoShell({ locale, current, children }: { locale: Locale; current?: string; children: ReactNode }) {
   const ui = guideUi[locale];
+  const service = serviceUi[locale];
   const suffix = current ? `/${current}` : "";
   return <div className="site-shell info-shell">
     <header className="site-header">
@@ -16,6 +19,8 @@ export default function InfoShell({ locale, current, children }: { locale: Local
           <a href={`/${locale}`}>{ui.back}</a>
           <a href={`/${locale}/fleet`}>{ui.carCta}</a>
           <a href={`/${locale}/guide/baku`}>{ui.nav}</a>
+          <a href={`/${locale}/about`}>{service.aboutNav}</a>
+          <a href={`/${locale}/faq`}>{service.faqNav}</a>
         </nav>
         <div className="info-language-links" aria-label="Language">
           {(["az", "en", "ru"] as Locale[]).map((code) =>
@@ -31,9 +36,12 @@ export default function InfoShell({ locale, current, children }: { locale: Local
         <nav aria-label={ui.next}>
           <a href={`/${locale}`}>{ui.back}</a>
           <a href={`/${locale}/fleet`}>{ui.allCars}</a>
+          <a href={`/${locale}/about`}>{service.aboutNav}</a>
+          <a href={`/${locale}/faq`}>{service.faqNav}</a>
           {guideSlugs.map((slug) => <a key={slug} href={`/${locale}/guide/${slug}`}>{guides[locale][slug].title}</a>)}
         </nav>
       </div>
     </footer>
+    {current !== "faq" && <QuickHelp locale={locale} />}
   </div>;
 }
