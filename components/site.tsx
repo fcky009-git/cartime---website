@@ -8,6 +8,7 @@ import { guideSlugs, guides, guideUi } from "@/lib/guides";
 import { faqItems, serviceUi } from "@/lib/service-info";
 import QuickHelp from "@/components/quick-help";
 import ContactLinks from "@/components/contact-links";
+import { rentalPages, rentalSlugs, rentalUi } from "@/lib/rental-pages";
 import fleet from "@/lib/fleet.json";
 
 type Theme = "hybrid" | "dark" | "light";
@@ -22,6 +23,7 @@ export default function CarTimeSite({ locale }: { locale: Locale }) {
   const f = fleetUi[locale];
   const g = guideUi[locale];
   const s = serviceUi[locale];
+  const rental = rentalUi[locale];
   const [theme, setTheme] = useState<Theme>("hybrid");
   const [menuOpen, setMenuOpen] = useState(false);
   const [category, setCategory] = useState<string>("all");
@@ -97,6 +99,7 @@ export default function CarTimeSite({ locale }: { locale: Locale }) {
           <nav className="desktop-nav" aria-label="Main navigation">
             {t.nav.map((label, index) => <a key={anchors[index]} href={`#${anchors[index]}`}>{label}</a>)}
             <a href="#guides">{g.nav}</a>
+            <a href="#rental">{rental.nav}</a>
             <a href="#about">{s.aboutNav}</a>
           </nav>
           <div className="header-actions">
@@ -110,7 +113,7 @@ export default function CarTimeSite({ locale }: { locale: Locale }) {
             <button className="menu-button" type="button" aria-label={menuOpen ? t.close : t.mobileMenu} aria-expanded={menuOpen} onClick={() => setMenuOpen(!menuOpen)}>{menuOpen ? <X size={23} /> : <Menu size={23} />}</button>
           </div>
         </div>
-        {menuOpen && <nav className="mobile-nav" aria-label="Mobile navigation">{t.nav.map((label, index) => <a key={anchors[index]} href={`#${anchors[index]}`} onClick={() => setMenuOpen(false)}>{label}<ArrowRight size={16} /></a>)}<a href="#guides" onClick={() => setMenuOpen(false)}>{g.nav}<ArrowRight size={16} /></a><a href="#about" onClick={() => setMenuOpen(false)}>{s.aboutNav}<ArrowRight size={16} /></a><a href={`/${locale}/faq`} onClick={() => setMenuOpen(false)}>{s.faqNav}<ArrowRight size={16} /></a></nav>}
+        {menuOpen && <nav className="mobile-nav" aria-label="Mobile navigation">{t.nav.map((label, index) => <a key={anchors[index]} href={`#${anchors[index]}`} onClick={() => setMenuOpen(false)}>{label}<ArrowRight size={16} /></a>)}<a href="#guides" onClick={() => setMenuOpen(false)}>{g.nav}<ArrowRight size={16} /></a><a href="#rental" onClick={() => setMenuOpen(false)}>{rental.nav}<ArrowRight size={16} /></a><a href="#about" onClick={() => setMenuOpen(false)}>{s.aboutNav}<ArrowRight size={16} /></a><a href={`/${locale}/contact`} onClick={() => setMenuOpen(false)}>{rental.contact}<ArrowRight size={16} /></a><a href={`/${locale}/faq`} onClick={() => setMenuOpen(false)}>{s.faqNav}<ArrowRight size={16} /></a></nav>}
       </header>
 
       <main id="top">
@@ -168,12 +171,14 @@ export default function CarTimeSite({ locale }: { locale: Locale }) {
 
         <section className="section home-guides" id="guides"><div className="container"><div className="section-head"><div><p className="section-kicker">CARTIME / GUIDE</p><h2>{g.homeTitle}</h2></div><p className="section-intro">{g.homeLead}</p></div><div className="guide-card-grid">{guideSlugs.map((slug, index) => <a className="guide-card" key={slug} href={`/${locale}/guide/${slug}`}><span>0{index + 1} / {guides[locale][slug].eyebrow}</span><h3>{guides[locale][slug].title}</h3><p>{guides[locale][slug].teaser}</p><b>{g.read} ↗</b></a>)}</div></div></section>
 
+        <section className="section home-rental" id="rental"><div className="container"><div className="section-head"><div><p className="section-kicker">CARTIME / RENTAL</p><h2>{rental.hubTitle}</h2></div><p className="section-intro">{rental.hubLead}</p></div><div className="rental-hub-grid">{rentalSlugs.map((slug, index) => <a className="rental-topic" key={slug} href={`/${locale}/rental/${slug}`}><span>0{index + 1} / {rental.nav}</span><h3>{rentalPages[locale][slug].title}</h3><p>{rentalPages[locale][slug].teaser}</p><b>{rental.read} →</b></a>)}</div><div className="rental-hub-cta"><a href={`/${locale}/rental`}>{rental.nav} →</a><a href={`/${locale}/contact`}>{rental.contact} →</a></div></div></section>
+
         <section className="section home-about" id="about"><div className="container home-about-inner"><div><p className="section-kicker">{s.aboutEyebrow}</p><h2>{s.aboutTitle}</h2><p>{s.aboutMission}</p><div className="home-about-actions"><a href={`/${locale}/about`}>{s.aboutNav}<ArrowRight size={17} /></a><a href={`/${locale}/fleet`}>{s.aboutCta}<ArrowRight size={17} /></a></div></div><div className="home-about-facts">{s.aboutFacts.map(([number, label]) => <div key={label}><strong>{number}</strong><span>{label}</span></div>)}</div></div></section>
 
         <section className="section faq-section" id="faq"><div className="container faq-inner"><div><p className="section-kicker">CARTIME / FAQ</p><h2>{s.faqTitle}</h2><p className="faq-slogan">{s.quickLead}</p><a className="faq-all-link" href={`/${locale}/faq`}>{s.quickButton}<ArrowRight size={17} /></a></div><div className="faq-list">{homeFaqIds.map((id) => faqItems[locale].find((item) => item.id === id)).filter((item) => !!item).map((item) => <details key={item.id}><summary>{item.question}<ChevronDown size={20} /></summary><p>{item.answer}</p></details>)}</div></div></section>
       </main>
 
-      <footer className="site-footer"><div className="container footer-inner"><div className="footer-brand"><img className="dark-logo" src="/assets/logo-dark.png" alt="CarTime" /><img className="light-logo" src="/assets/logo-light.svg" alt="" aria-hidden="true" /><p>{t.footerText}</p><ContactLinks locale={locale} /></div><div className="footer-right"><p>{t.footerDemo}</p><a href={`/${locale}/fleet`}>{g.allCars} ↗</a><a href="#top">{t.backTop} ↑</a></div></div><nav className="container footer-guides" aria-label={g.nav}><a href={`/${locale}/about`}>{s.aboutNav}</a><a href={`/${locale}/faq`}>{s.faqNav}</a>{guideSlugs.map((slug) => <a key={slug} href={`/${locale}/guide/${slug}`}>{guides[locale][slug].title}</a>)}</nav><div className="container footer-bottom"><span>© {new Date().getFullYear()} CarTime</span><span>AZ / EN / RU</span></div></footer>
+      <footer className="site-footer"><div className="container footer-inner"><div className="footer-brand"><img className="dark-logo" src="/assets/logo-dark.png" alt="CarTime" /><img className="light-logo" src="/assets/logo-light.svg" alt="" aria-hidden="true" /><p>{t.footerText}</p><ContactLinks locale={locale} /></div><div className="footer-right"><p>{t.footerDemo}</p><a href={`/${locale}/fleet`}>{g.allCars} ↗</a><a href="#top">{t.backTop} ↑</a></div></div><nav className="container footer-guides" aria-label={g.nav}><a href={`/${locale}/about`}>{s.aboutNav}</a><a href={`/${locale}/faq`}>{s.faqNav}</a><a href={`/${locale}/rental`}>{rental.nav}</a><a href={`/${locale}/contact`}>{rental.contact}</a>{rentalSlugs.map((slug) => <a key={slug} href={`/${locale}/rental/${slug}`}>{rentalPages[locale][slug].title}</a>)}{guideSlugs.map((slug) => <a key={slug} href={`/${locale}/guide/${slug}`}>{guides[locale][slug].title}</a>)}</nav><div className="container footer-bottom"><span>© {new Date().getFullYear()} CarTime</span><span>AZ / EN / RU</span></div></footer>
 
       <QuickHelp locale={locale} />
 

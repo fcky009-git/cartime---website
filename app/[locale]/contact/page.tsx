@@ -1,0 +1,27 @@
+import type { Metadata } from "next";
+import { notFound } from "next/navigation";
+import InfoShell from "@/components/info-shell";
+import ContactLinks from "@/components/contact-links";
+import { dictionaries, type Locale } from "@/lib/i18n";
+import { rentalUi } from "@/lib/rental-pages";
+import { guideUi } from "@/lib/guides";
+import { pageMetadata } from "@/lib/seo";
+
+type Props = { params: Promise<{ locale: string }> };
+export function generateStaticParams() { return (["ru", "az", "en"] as Locale[]).map((locale) => ({ locale })); }
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { locale } = await params;
+  if (!(locale in dictionaries)) return {};
+  const ui = rentalUi[locale as Locale];
+  return pageMetadata(locale as Locale, "contact", ui.contactTitle, ui.contactDescription);
+}
+export default async function ContactPage({ params }: Props) {
+  const { locale } = await params;
+  if (!(locale in dictionaries)) notFound();
+  const language = locale as Locale;
+  const ui = rentalUi[language];
+  return <InfoShell locale={language} current="contact"><main>
+    <header className="info-hero info-hero--contact"><div className="container info-hero-inner"><a className="info-back" href={`/${language}`}>← {guideUi[language].back}</a><p className="section-kicker">CARTIME / CONTACT</p><h1>{ui.contactTitle}</h1><p>{ui.contactLead}</p></div></header>
+    <section className="container contact-page"><div className="contact-page-copy"><ContactLinks locale={language} /><div className="rental-hub-cta"><a href={`/${language}/rental/airport`}>{language === "ru" ? "Выдача в аэропорту" : language === "az" ? "Hava limanında təhvil" : "Airport collection"} →</a><a href={`/${language}/rental/delivery`}>{language === "ru" ? "Доставка по адресу" : language === "az" ? "Ünvana çatdırılma" : "Address delivery"} →</a><a href={`/${language}/faq`}>{ui.faq} →</a></div></div><div className="contact-map"><div><h2>{ui.mapTitle}</h2><p>{ui.mapNote}</p></div><iframe title={ui.mapTitle} src="https://maps.google.com/maps?q=Baku%2C%20Azerbaijan&z=11&output=embed" loading="lazy" referrerPolicy="no-referrer-when-downgrade" allowFullScreen /><a href="https://www.google.com/maps/search/?api=1&query=Baku%2C%20Azerbaijan" target="_blank" rel="noopener noreferrer">{ui.mapLink} ↗</a></div></section>
+  </main></InfoShell>;
+}

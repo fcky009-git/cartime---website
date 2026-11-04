@@ -27,12 +27,19 @@ export default function FaqExplorer({ locale }: { locale: Locale }) {
     <p className="faq-result-count" role="status">{matches.length} {locale === "ru" ? russianAnswerCount(matches.length) : locale === "en" && matches.length === 1 ? "answer" : ui.faqCount}</p>
     {matches.length ? <div className="faq-full-list">{matches.map((item) => <details id={`q-${item.id}`} key={item.id}>
       <summary><span><small>{ui.faqGroups[item.group]}</small>{item.question}</span><ChevronDown size={20} aria-hidden="true" /></summary>
-      <div className="faq-answer"><p>{item.answer}</p>{item.href && <a href={`/${locale}${item.href}`}>{ui.faqMoreButton}<ArrowRight size={15} /></a>}</div>
+      <div className="faq-answer"><p>{item.answer}</p>{(topicLinks[item.id] || item.href) && <a href={`/${locale}${topicLinks[item.id] || item.href}`}>{ui.faqDetails}<ArrowRight size={15} /></a>}</div>
     </details>)}</div> : <p className="faq-empty">{ui.faqEmpty}</p>}
   </div>;
 }
 
 const groupsOrder: FaqGroup[] = ["prices", "fleet", "pickup", "terms"];
+const topicLinks: Record<string, string> = {
+  rates: "/rental/long-term", longer: "/rental/long-term", "one-day": "/rental/conditions",
+  classes: "/rental/economy", airport: "/rental/airport", delivery: "/rental/delivery",
+  mileage: "/rental/mileage", regions: "/rental/mileage", documents: "/rental/conditions",
+  deposit: "/rental/insurance", payment: "/rental/conditions", fuel: "/rental/conditions",
+  "extra-driver": "/rental/conditions", support: "/contact",
+};
 
 function russianAnswerCount(count: number) {
   if (count % 100 >= 11 && count % 100 <= 14) return "ответов";
