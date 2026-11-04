@@ -17,6 +17,11 @@ const anchors = ["fleet", "benefits", "airport", "faq"];
 const categories = ["all", "Mini", "Economy", "Comfort", "SUV", "Business", "VAN", "Luxury"] as const;
 const illustrationFor = (category: string) => category === "SUV" || category === "VAN" ? "/assets/suv.svg" : category === "Luxury" || category === "Business" ? "/assets/sedan-dark.svg" : "/assets/sedan.svg";
 const homeFaqIds = ["rates", "cars", "airport", "documents", "deposit", "booking"];
+const heroLinks: Record<Locale, [string, string][]> = {
+  ru: [["Условия аренды", "/rental/conditions"], ["Выдача в аэропорту", "/rental/airport"], ["Контакты и карта", "/contact"]],
+  az: [["İcarə şərtləri", "/rental/conditions"], ["Hava limanında təhvil", "/rental/airport"], ["Əlaqə və xəritə", "/contact"]],
+  en: [["Rental terms", "/rental/conditions"], ["Airport collection", "/rental/airport"], ["Contact and map", "/contact"]],
+};
 
 export default function CarTimeSite({ locale }: { locale: Locale }) {
   const t = dictionaries[locale];
@@ -126,6 +131,7 @@ export default function CarTimeSite({ locale }: { locale: Locale }) {
               <h1>{t.heroTitle}</h1>
               <p className="hero-lead">{t.heroLead}</p>
               <div className="hero-actions"><a className="button-primary" href="#fleet">{t.explore}<ArrowRight size={18} /></a><span className="hero-slogan">Drive on Your Time</span></div>
+              <nav className="hero-shortcuts" aria-label={rental.nav}>{heroLinks[locale].map(([label, path]) => <a key={path} href={`/${locale}${path}`}>{label}<ArrowRight size={14} aria-hidden="true" /></a>)}</nav>
             </div>
             <span className="hero-demo">{t.demoBadge}</span>
             <div className="hero-counter"><span>01</span><div /><span>03</span></div>
