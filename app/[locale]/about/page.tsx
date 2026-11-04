@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import InfoShell from "@/components/info-shell";
 import { dictionaries, type Locale } from "@/lib/i18n";
-import { contact, serviceUi } from "@/lib/service-info";
+import { contact, contactLocation, serviceUi } from "@/lib/service-info";
 import { guideUi } from "@/lib/guides";
 import { jsonLd, pageMetadata, siteOrigin } from "@/lib/seo";
 import ContactLinks from "@/components/contact-links";
@@ -31,6 +31,8 @@ export default async function AboutPage({ params }: { params: Promise<{ locale: 
       url: `${siteOrigin}/${language}`,
       email: contact.email,
       telephone: contact.phone,
+      address: { "@type": "PostalAddress", streetAddress: "221F Nizami Gəncəvi", addressLocality: "Baku", postalCode: "1000", addressCountry: "AZ" },
+      hasMap: contactLocation.mapsUrl,
       contactPoint: { "@type": "ContactPoint", telephone: contact.phone, email: contact.email, contactType: "customer support", availableLanguage: ["Azerbaijani", "English", "Russian"] },
     }) }} />
     <main>

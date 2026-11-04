@@ -89,6 +89,9 @@ h1, h2, h3, p { margin-top: 0; }
 .button-primary { display: inline-flex; align-items: center; justify-content: center; gap: 20px; border-radius: 12px; padding: 17px 22px; color: #fff; background: #3b82f6; font-size: 13px; font-weight: 800; transition: background .2s, transform .2s; }
 .button-primary:hover { transform: translateY(-2px); }
 .hero-slogan { font-family: Sora, Inter, sans-serif; font-size: 12px; font-weight: 700; letter-spacing: .06em; white-space: nowrap; }
+.hero-shortcuts { display: flex; flex-wrap: wrap; gap: 8px; max-width: 720px; margin-top: 22px; }
+.hero-shortcuts a { display: inline-flex; align-items: center; gap: 7px; padding: 9px 11px; border: 1px solid #ffffff6b; border-radius: 100px; background: #071a31b8; color: #fff; font-size: 11px; font-weight: 700; transition: border-color .2s, transform .2s; }
+.hero-shortcuts a:hover { border-color: #8cc7ff; transform: translateY(-2px); }
 .hero-demo { position: absolute; right: 0; bottom: 52px; padding: 8px 14px; border: 1px solid #ffffff73; background: #080f1a83; border-radius: 100px; font-size: 10px; font-weight: 700; color: #fff; backdrop-filter: blur(10px); }
 .hero-counter { position: absolute; left: 0; bottom: 28px; display: flex; align-items: center; gap: 10px; font-size: 10px; font-weight: 700; color: var(--hero-ink); }
 .hero-counter div { width: 58px; height: 1px; background: #3b82f6; }
@@ -439,7 +442,9 @@ html[data-theme="dark"] .modal-image { background: linear-gradient(140deg, #1c30
   .theme-picker { gap: 0; padding: 2px; }
   .theme-picker button { padding: 6px 5px; font-size: 8px; }
   .menu-button { padding: 4px; }
-  .hero, .hero-inner { min-height: 660px; }
+  .hero, .hero-inner { min-height: 740px; }
+  .hero-shortcuts { margin-top: 18px; }
+  .hero-shortcuts a { font-size: 10px; padding: 8px 10px; }
   .hero-photo { inset: 180px 0 0; background-position: 72% 58%; }
   .hero-sheen { background: linear-gradient(180deg, var(--hero) 0%, var(--hero) 27%, color-mix(in srgb, var(--hero) 88%, transparent) 41%, #080f1a30 74%, #080f1a96 100%); }
   html[data-theme="light"] .hero-sheen { background: linear-gradient(180deg, #ebf3fd 0%, #ebf3fdf2 33%, #ebf3fd66 72%, #ebf3fdba); }

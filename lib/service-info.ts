@@ -4,6 +4,12 @@ export type FaqGroup = "prices" | "fleet" | "pickup" | "terms";
 export type FaqItem = { id: string; group: FaqGroup; question: string; answer: string; href?: string };
 
 export const contact = { phone: "+994994400009", phoneDisplay: "+994 99 440 00 09", email: "info@cartime.az" } as const;
+export const contactLocation = {
+  address: "221F Nizami Gəncəvi, Bakı 1000",
+  latitude: 40.3778175,
+  longitude: 49.8561227,
+  mapsUrl: "https://maps.app.goo.gl/uwhRhKwo51UH8fZL7",
+} as const;
 
 export const serviceUi = {
   ru: {
