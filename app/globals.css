@@ -335,6 +335,41 @@ html[data-theme="light"] .info-language-links { border-left-color: #0b254244; }
 .quick-help-panel > a { display: flex; justify-content: space-between; align-items: center; padding: 17px 18px; color: #2874da; font-size: 11px; font-weight: 800; }
 .quick-help-panel .contact-links { padding: 16px 18px; border-bottom: 1px solid var(--border); }
 .quick-help-panel .contact-links a { color: #2874da; }
+.home-rental { padding: 90px 0 100px; background: color-mix(in srgb, var(--surface) 55%, var(--page)); }
+.rental-hub { padding-top: 75px; padding-bottom: 105px; }
+.rental-hub-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px; }
+.rental-topic { display: flex; min-height: 245px; flex-direction: column; padding: 25px; border: 1px solid var(--border); border-radius: 18px; background: var(--surface); color: var(--ink); transition: transform .2s, border-color .2s, box-shadow .2s; }
+.rental-topic:hover { transform: translateY(-4px); border-color: #68a6fa; box-shadow: 0 18px 40px #071c381d; }
+.rental-topic > span { color: #397fdb; font-size: 10px; font-weight: 800; letter-spacing: .04em; text-transform: uppercase; }
+.rental-topic h2, .rental-topic h3 { margin: 24px 0 11px; font: 800 18px/1.32 Sora, Inter, sans-serif; letter-spacing: -.025em; }
+.rental-topic p { margin: 0 0 18px; color: var(--muted); font-size: 12px; line-height: 1.65; }
+.rental-topic b { margin-top: auto; color: #3378d6; font-size: 11px; }
+.rental-hub-cta { display: flex; flex-wrap: wrap; gap: 11px; margin-top: 28px; }
+.rental-hub-cta a, .rental-action > a { display: inline-flex; align-items: center; min-height: 42px; padding: 11px 16px; border: 1px solid #4487e3; border-radius: 10px; color: #347ad9; font-size: 11px; font-weight: 800; }
+.rental-hub-cta a:first-child, .rental-action > a:nth-child(2) { background: #3b82f6; color: #fff; }
+.info-hero--rental { background: radial-gradient(circle at 82% 15%, #2365a7, #153c66 32%, #080f1a 78%); }
+.info-hero--rental-airport { background: linear-gradient(90deg, #080f1afa, #080f1add 52%, #080f1a74), url('/assets/airport-editorial.jpg') center / cover; }
+.info-hero--rental-economy, .info-hero--rental-suv, .info-hero--contact { background: linear-gradient(90deg, #080f1afa, #080f1add 52%, #080f1a74), url('/assets/hero-baku-editorial.jpg') center / cover; }
+.rental-models { scroll-margin-top: 25px; }
+.rental-models > div { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+.rental-models a { display: flex; justify-content: space-between; align-items: center; gap: 15px; padding: 14px 16px; border: 1px solid var(--border); border-radius: 12px; background: var(--surface); font-size: 12px; }
+.rental-models a:hover { border-color: #5c9ced; }
+.rental-models strong { flex: 0 0 auto; color: #337bd8; font-size: 11px; }
+.rental-action { display: flex; flex-wrap: wrap; align-items: end; gap: 12px; padding: 25px; border: 1px solid var(--border); border-radius: 16px; background: var(--surface); }
+.rental-action .contact-links { margin-right: auto; }
+.rental-hub-grid--related { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+.rental-hub-grid--related .rental-topic { min-height: 220px; }
+.rental-hub-grid--related .rental-topic h3 { margin-top: 0; }
+.contact-page { display: grid; grid-template-columns: 300px minmax(0, 1fr); gap: 55px; padding-top: 75px; padding-bottom: 105px; }
+.contact-page-copy { align-self: start; padding: 30px; border: 1px solid var(--border); border-radius: 17px; background: var(--surface); }
+.contact-page-copy .contact-links strong { font-size: 15px; }
+.contact-page-copy .contact-links a { color: #347ad9; font-size: 14px; }
+.contact-page-copy .rental-hub-cta { flex-direction: column; }
+.contact-map { min-width: 0; }
+.contact-map h2 { margin: 0 0 11px; font: 800 29px Sora, Inter, sans-serif; }
+.contact-map p { max-width: 750px; color: var(--muted); font-size: 13px; line-height: 1.7; }
+.contact-map iframe { display: block; width: 100%; height: 430px; margin: 22px 0 16px; border: 1px solid var(--border); border-radius: 17px; background: var(--surface); }
+.contact-map > a { color: #347ad9; font-size: 12px; font-weight: 800; }
 .modal-backdrop { position: fixed; inset: 0; z-index: 100; display: grid; place-items: center; padding: 20px; background: #020710c9; }
 .detail-modal { position: relative; display: grid; grid-template-columns: .9fr 1.1fr; gap: 24px; width: min(100%, 780px); max-height: min(90vh, 790px); overflow: auto; padding: 32px; border: 1px solid var(--border); border-radius: 20px; background: var(--surface); color: var(--ink); box-shadow: 0 30px 100px #0005; }
 .modal-image { position: relative; display: grid; place-items: center; align-self: start; min-height: 270px; border-radius: 14px; background: linear-gradient(140deg, #eaf1fa, #d9e8f9); }
@@ -360,6 +395,7 @@ html[data-theme="dark"] .modal-image { background: linear-gradient(140deg, #1c30
   .search-fields { grid-template-columns: repeat(4, 1fr); }
   .search-button { min-height: 48px; grid-column: 1 / -1; }
   .guide-card-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .rental-hub-grid, .rental-hub-grid--related { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
 @media (max-width: 900px) {
   .container { width: min(100% - 36px, 1376px); }
@@ -387,9 +423,14 @@ html[data-theme="dark"] .modal-image { background: linear-gradient(140deg, #1c30
   .about-feature-grid article { min-height: 170px; }
   .about-feature-grid h3 { margin-top: 25px; }
   .info-header-nav { flex-wrap: wrap; justify-content: flex-start; gap: 10px 22px; }
+  .contact-page { grid-template-columns: 1fr; gap: 28px; }
 }
 @media (max-width: 650px) {
   .container { width: min(100% - 32px, 1376px); }
+  .rental-hub-grid, .rental-hub-grid--related, .rental-models > div { grid-template-columns: 1fr; }
+  .rental-topic { min-height: 190px; }
+  .home-rental, .rental-hub, .contact-page { padding-top: 55px; padding-bottom: 70px; }
+  .contact-map iframe { height: 340px; }
   .header-inner { height: 70px; gap: 6px; }
   .brand { width: 118px; height: 43px; }
   .header-actions { gap: 7px; }

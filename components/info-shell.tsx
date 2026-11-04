@@ -4,6 +4,7 @@ import { guideSlugs, guides, guideUi } from "@/lib/guides";
 import { serviceUi } from "@/lib/service-info";
 import QuickHelp from "@/components/quick-help";
 import ContactLinks from "@/components/contact-links";
+import { rentalPages, rentalSlugs, rentalUi } from "@/lib/rental-pages";
 
 export default function InfoShell({ locale, current, children }: { locale: Locale; current?: string; children: ReactNode }) {
   const ui = guideUi[locale];
@@ -20,6 +21,7 @@ export default function InfoShell({ locale, current, children }: { locale: Local
           <a href={`/${locale}`}>{ui.back}</a>
           <a href={`/${locale}/fleet`}>{ui.carCta}</a>
           <a href={`/${locale}/guide/baku`}>{ui.nav}</a>
+          <a href={`/${locale}/rental`}>{rentalUi[locale].nav}</a>
           <a href={`/${locale}/about`}>{service.aboutNav}</a>
           <a href={`/${locale}/faq`}>{service.faqNav}</a>
         </nav>
@@ -39,6 +41,9 @@ export default function InfoShell({ locale, current, children }: { locale: Local
           <a href={`/${locale}/fleet`}>{ui.allCars}</a>
           <a href={`/${locale}/about`}>{service.aboutNav}</a>
           <a href={`/${locale}/faq`}>{service.faqNav}</a>
+          <a href={`/${locale}/rental`}>{rentalUi[locale].nav}</a>
+          <a href={`/${locale}/contact`}>{rentalUi[locale].contact}</a>
+          {rentalSlugs.map((slug) => <a key={slug} href={`/${locale}/rental/${slug}`}>{rentalPages[locale][slug].title}</a>)}
           {guideSlugs.map((slug) => <a key={slug} href={`/${locale}/guide/${slug}`}>{guides[locale][slug].title}</a>)}
         </nav>
       </div>

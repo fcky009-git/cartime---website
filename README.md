@@ -17,6 +17,8 @@ This is the first frontend implementation of the supplied CarTime brand kit. The
 - Full crawlable fleet table and four practical guides (Baku, road trips, GYD airport, rental planning) in RU/AZ/EN
 - Dedicated About and FAQ pages in RU/AZ/EN, with links from the homepage, navigation and sitemap
 - Clickable CarTime phone and email in About, footer and quick help; FAQPage and Organization structured data
+- Rental topic hub plus eight separate service and vehicle-class pages in RU/AZ/EN: terms, airport collection, address delivery, longer rentals, insurance/deposit, unlimited mileage, Economy cars and SUVs
+- Contact page with a Google map of Baku; it does not claim a CarTime office location until the owner supplies the exact address
 - Per-page titles and descriptions, canonical and hreflang links, a sitemap, robots.txt, and conservative WebSite/Breadcrumb structured data
 
 ## Demo limits
