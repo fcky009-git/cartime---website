@@ -1,24 +1,37 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { ArrowDownRight, ArrowRight, Check, ChevronDown, Menu, X } from "lucide-react";
+import { ArrowDownRight, ArrowRight, ChevronDown, Menu, Search, X } from "lucide-react";
 import { dictionaries, type Locale } from "@/lib/i18n";
+import { fleetUi } from "@/lib/fleet-ui";
+import fleet from "@/lib/fleet.json";
 
 type Theme = "hybrid" | "dark" | "light";
 const themeNames: Theme[] = ["hybrid", "dark", "light"];
 const anchors = ["fleet", "benefits", "airport", "faq"];
+const categories = ["all", "Mini", "Economy", "Comfort", "SUV", "Business", "VAN", "Luxury"] as const;
+const illustrationFor = (category: string) => category === "SUV" || category === "VAN" ? "/assets/suv.svg" : category === "Luxury" || category === "Business" ? "/assets/sedan-dark.svg" : "/assets/sedan.svg";
 
 export default function CarTimeSite({ locale }: { locale: Locale }) {
   const t = dictionaries[locale];
+  const f = fleetUi[locale];
   const [theme, setTheme] = useState<Theme>("hybrid");
   const [menuOpen, setMenuOpen] = useState(false);
-  const [category, setCategory] = useState(0);
+  const [category, setCategory] = useState<string>("all");
+  const [modelQuery, setModelQuery] = useState("");
+  const [sort, setSort] = useState("priceAsc");
+  const [visibleCount, setVisibleCount] = useState(12);
   const [message, setMessage] = useState("");
   const [messageIsError, setMessageIsError] = useState(false);
-  const [detailCar, setDetailCar] = useState<number | null>(null);
+  const [detailCar, setDetailCar] = useState<string | null>(null);
   const [pickup, setPickup] = useState("city");
   const [dropoff, setDropoff] = useState("city");
   const [fromDate, setFromDate] = useState("");
+  const selectedCar = fleet.find((car) => car.id === detailCar);
+  const filteredCars = fleet.filter((car) =>
+    (category === "all" || car.category === category) &&
+    car.name.toLocaleLowerCase().includes(modelQuery.trim().toLocaleLowerCase()),
+  ).sort((a, b) => sort === "priceDesc" ? b.ratesUsd[0] - a.ratesUsd[0] : sort === "yearDesc" ? b.year - a.year || a.ratesUsd[0] - b.ratesUsd[0] : a.ratesUsd[0] - b.ratesUsd[0]);
 
   useEffect(() => {
     const stored = localStorage.getItem("cartime-theme");
@@ -32,6 +45,13 @@ export default function CarTimeSite({ locale }: { locale: Locale }) {
   useEffect(() => {
     document.documentElement.lang = locale;
   }, [locale]);
+
+  useEffect(() => {
+    if (!detailCar) return;
+    const onKeyDown = (event: KeyboardEvent) => { if (event.key === "Escape") setDetailCar(null); };
+    document.addEventListener("keydown", onKeyDown);
+    return () => document.removeEventListener("keydown", onKeyDown);
+  }, [detailCar]);
 
   function changeTheme(next: Theme) {
     setTheme(next);
@@ -123,9 +143,12 @@ export default function CarTimeSite({ locale }: { locale: Locale }) {
 
         <section className="section fleet-section" id="fleet">
           <div className="container">
-            <div className="section-head"><div><p className="section-kicker">CARTIME / 02 · {t.fleetEyebrow}</p><h2>{t.fleetTitle}</h2></div><p className="section-intro">{t.fleetLead}</p></div>
-            <div className="filter-row" role="group" aria-label={t.fleetTitle}>{t.categories.map((item, index) => <button type="button" key={item} className={category === index ? "active" : ""} aria-pressed={category === index} onClick={() => setCategory(index)}>{item}</button>)}</div>
-            <div className="car-grid">{t.cars.map((car, index) => (category === 0 || (category === 1 && index < 2) || (category === 2 && index === 2)) && <article className="car-card" key={car[0]}><div className="car-image"><span className="car-tag">{car[1]}</span><img src={`/assets/${car[3]}`} alt="Concept vehicle illustration" /></div><div className="car-info"><div><h3>{car[0]}</h3><p>{car[2]}</p></div><div className="car-bottom"><span>{t.priceLater}</span><button type="button" onClick={() => setDetailCar(index)} aria-label={`${t.viewDetails}: ${car[0]}`}><ArrowRight size={20} /></button></div></div></article>)}</div>
+            <div className="section-head"><div><p className="section-kicker">CARTIME / 02 · {f.kicker}</p><h2>{f.title}</h2></div><p className="section-intro">{f.lead}</p></div>
+            <div className="fleet-toolbar"><label className="fleet-query"><Search size={17} /><span className="sr-only">{f.searchLabel}</span><input type="search" value={modelQuery} placeholder={f.searchPlaceholder} onChange={(event) => { setModelQuery(event.target.value); setVisibleCount(12); }} /></label><label className="fleet-sort"><span>{f.sortLabel}</span><select value={sort} onChange={(event) => setSort(event.target.value)}><option value="priceAsc">{f.sortOptions[0]}</option><option value="priceDesc">{f.sortOptions[1]}</option><option value="yearDesc">{f.sortOptions[2]}</option></select></label></div>
+            <div className="filter-row" role="group" aria-label={f.title}>{categories.map((item) => <button type="button" key={item} className={category === item ? "active" : ""} aria-pressed={category === item} onClick={() => { setCategory(item); setVisibleCount(12); }}>{f.categories[item]}</button>)}</div>
+            <p className="fleet-count">{filteredCars.length} {f.count}</p>
+            {filteredCars.length ? <div className="car-grid">{filteredCars.slice(0, visibleCount).map((car, index) => <article className="car-card" key={car.id}><div className="car-image"><span className="car-tag">{f.categories[car.category]}</span><img src={illustrationFor(car.category)} alt="" aria-hidden="true" loading={index < 3 ? "eager" : "lazy"} decoding="async" /><span className="car-art-note">{f.illustration}</span></div><div className="car-info"><div><h3>{car.name}</h3><p>{car.year} · {f.categories[car.category]}</p></div><div className="car-bottom"><div className="car-price"><strong>${car.ratesUsd[0]}</strong><small>{f.rateContext}</small></div><button type="button" onClick={() => setDetailCar(car.id)} aria-label={`${f.viewRates}: ${car.name} ${car.year}`}><ArrowRight size={20} /></button></div></div></article>)}</div> : <p className="fleet-empty">{f.empty}</p>}
+            {filteredCars.length > visibleCount && <button className="load-more" type="button" onClick={() => setVisibleCount((count) => count + 12)}>{f.more}<ArrowDownRight size={17} /></button>}
           </div>
         </section>
 
@@ -138,7 +161,7 @@ export default function CarTimeSite({ locale }: { locale: Locale }) {
 
       <footer className="site-footer"><div className="container footer-inner"><div className="footer-brand"><img className="dark-logo" src="/assets/logo-dark.png" alt="CarTime" /><img className="light-logo" src="/assets/logo-light.svg" alt="" aria-hidden="true" /><p>{t.footerText}</p></div><div className="footer-right"><p>{t.footerDemo}</p><a href="#top">{t.backTop} ↑</a></div></div><div className="container footer-bottom"><span>© {new Date().getFullYear()} CarTime</span><span>AZ / EN / RU</span></div></footer>
 
-      {detailCar !== null && <div className="modal-backdrop" onMouseDown={() => setDetailCar(null)}><div className="detail-modal" role="dialog" aria-modal="true" aria-labelledby="car-modal-title" onMouseDown={(e) => e.stopPropagation()}><button type="button" className="modal-close" aria-label={t.close} onClick={() => setDetailCar(null)}><X size={20} /></button><img src={`/assets/${t.cars[detailCar][3]}`} alt="Concept vehicle illustration" /><div><p className="section-kicker">{t.demoBadge}</p><h2 id="car-modal-title">{t.cars[detailCar][0]}</h2><p className="modal-meta"><Check size={17} /> {t.cars[detailCar][2]}</p><p>{t.carNote}</p></div></div></div>}
+      {selectedCar && <div className="modal-backdrop" onMouseDown={() => setDetailCar(null)}><div className="detail-modal" role="dialog" aria-modal="true" aria-labelledby="car-modal-title" onMouseDown={(e) => e.stopPropagation()}><button type="button" className="modal-close" aria-label={t.close} onClick={() => setDetailCar(null)}><X size={20} /></button><div className="modal-image"><img src={illustrationFor(selectedCar.category)} alt="" aria-hidden="true" /><span>{f.illustration}</span></div><div className="modal-content"><p className="section-kicker">{f.categories[selectedCar.category]} · {selectedCar.year}</p><h2 id="car-modal-title">{selectedCar.name}</h2><h3>{f.tariffTitle}</h3><div className="tariff-list">{selectedCar.ratesUsd.map((rate, index) => <div key={f.durations[index]}><span>{f.durations[index]}</span><strong>${rate} <small>{f.perDay}</small></strong></div>)}</div><p className="tariff-note">{f.tariffNote}</p></div></div></div>}
     </div>
   );
 }

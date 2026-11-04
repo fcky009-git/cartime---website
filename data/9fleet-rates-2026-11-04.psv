@@ -1,0 +1,56 @@
+model|site_year|site_category|usd_2_3_days|usd_4_7_days|usd_8_14_days|usd_15_21_days|usd_22_31_days|usd_32_plus_days|source_url
+Chevrolet Spark|2024|Mini|28|26|23|21|18|14|https://9fleet.com/cars/97042bca-d369-4eb9-8f6c-ef3f1316a659
+Chevrolet Cobalt|2024|Economy|30|27|25|22|20|15|https://9fleet.com/cars/472bd9c7-7642-44d4-ae66-664d22946401
+Hyundai i20|2024|Economy|33|30|27|25|22|17|https://9fleet.com/cars/d983f91e-30b2-4d2b-8be2-54fb38b9d4ef
+Hyundai Accent|2023|Economy|35|32|29|26|23|18|https://9fleet.com/cars/a7cf1d4d-4eda-4f48-8318-e90d0c5e54fc
+Nissan Sunny|2023|Economy|35|32|29|26|23|18|https://9fleet.com/cars/97c3387d-0329-41e0-bd2c-766efe5b478a
+Volkswagen Polo|2023|Economy|35|32|29|26|23|18|https://9fleet.com/cars/bb4536f5-ff80-481c-ab0d-084ba5ed5b77
+BYD Destroyer 05|2025|Comfort|38|35|31|28|25|20|https://9fleet.com/cars/0a7cdec3-04f7-4b9c-9a6b-3d488cc905e3
+Chevrolet Monza|2024|Comfort|40|37|33|30|26|21|https://9fleet.com/cars/3a28a8b3-62bd-42b2-a169-f2fca4f5b360
+Changan A05|2023|Comfort|40|37|33|30|26|21|https://9fleet.com/cars/3bcf7f4a-2527-4b91-bb69-10636cb2ab6b
+Changan UNI-V|2025|Comfort|43|39|36|32|28|22|https://9fleet.com/cars/95050bd9-ef22-4fd7-a432-0008f1f8a1ec
+Hyundai Elantra|2023|Comfort|43|39|36|32|28|22|https://9fleet.com/cars/49d317d1-805b-44ff-9d09-89c535b416e2
+Kia Stonic|2023|SUV|45|41|37|33|30|23|https://9fleet.com/cars/affe9c25-e93a-4d71-a2e0-f82d3532add0
+Hyundai Venue|2024|SUV|46|42|38|34|30|24|https://9fleet.com/cars/0152ec69-d210-4960-874d-f35c1a7169b9
+Hyundai Creta|2024|SUV|47|43|39|35|31|24|https://9fleet.com/cars/fb2891dd-7136-48fa-a4d1-17082fb742be
+Skoda Karoq|2024|SUV|50|46|41|37|33|26|https://9fleet.com/cars/dbb44777-6aa4-4a9a-a9b4-f2078ec9695b
+Skoda Kamiq|2024|SUV|50|46|41|37|33|26|https://9fleet.com/cars/529d34f5-6821-4f10-805f-606388fd2ae9
+Toyota Corolla Cross|2023|SUV|55|50|46|41|36|28|https://9fleet.com/cars/e618c975-71ab-4fe6-8899-86736dfb1303
+Toyota Corolla|2026|Comfort|55|50|46|41|36|28|https://9fleet.com/cars/13d09dc1-d4ce-4865-9539-61a7d332b182
+Chevrolet Malibu|2024|Business|65|59|54|48|43|33|https://9fleet.com/cars/a672bcde-b1a5-47a6-9360-b2597f0ceda7
+Toyota Camry|2022|Business|70|64|58|52|46|36|https://9fleet.com/cars/5d52152c-954d-4ca4-8a78-0ad4485a450c
+Toyota RAV4|2023|SUV|75|69|62|56|49|39|https://9fleet.com/cars/5684b69d-593f-4862-828d-ce4590d2592c
+Hyundai Tucson|2023|SUV|75|69|62|56|49|39|https://9fleet.com/cars/49632953-31bc-4fb9-b015-9acd4725b01c
+Kia Sportage|2023|SUV|75|69|62|56|49|39|https://9fleet.com/cars/8a3f7fd0-d268-4ee9-84c7-0036e7fc585a
+Kia Sorento|2023|SUV|89|81|74|66|58|46|https://9fleet.com/cars/d6d1ab3e-93e0-4d13-8066-ef462e1ad994
+Hyundai Santa Fe|2022|SUV|89|81|74|66|58|46|https://9fleet.com/cars/e79f8882-2ac9-46cb-bbd6-9eacc7176306
+Hyundai Custin|2025|VAN|95|87|79|71|62|49|https://9fleet.com/cars/b76c57c2-3dfa-47cc-ba97-f2d4aff72354
+Hyundai Santa Fe|2025|SUV|100|91|83|74|66|51|https://9fleet.com/cars/fcfb1db3-ff89-45b2-b43b-18ac875a85d3
+Toyota Prado|2023|SUV|115|105|95|85|76|59|https://9fleet.com/cars/7c9ed2ba-3a3d-408b-85c9-95193c2b0a69
+BMW 5-Series G30|2021|Business|120|110|99|89|79|62|https://9fleet.com/cars/e6d4ce28-3df8-4445-bb87-52fd68c07469
+Hyundai Grandeur|2023|Business|130|119|108|97|85|67|https://9fleet.com/cars/dd1b7cf8-3b20-4d41-a3d8-6901ff0610af
+Hyundai Staria|2023|VAN|135|123|112|100|89|69|https://9fleet.com/cars/17a84e68-24c5-42c8-8719-b10dc1a0dd86
+Toyota Camry|2024|Business|135|123|112|100|89|69|https://9fleet.com/cars/46b6721e-a4df-405c-ad39-59be909bff2e
+BMW 5-Series G60|2025|Business|150|137|124|111|99|77|https://9fleet.com/cars/1f870ee2-60cd-4849-afb7-27a42bf72769
+Mercedes E-Class|2023|Business|150|137|124|111|99|77|https://9fleet.com/cars/f7947f90-9922-4052-9ab1-a02a5dd5dab6
+Lexus ES200|2023|Business|150|137|124|111|99|77|https://9fleet.com/cars/b8953263-295b-4e68-af0a-965c1b6ed81b
+Mercedes V-Class|2023|VAN|180|165|149|134|118|93|https://9fleet.com/cars/5504ffa3-2c09-4e7a-9e75-f7dc88f74915
+Mercedes S-Class W222|2020|Luxury|199|182|165|148|131|102|https://9fleet.com/cars/f53db0aa-a2fd-4d11-9d32-aa5f0a3eee18
+Toyota Prado|2024|SUV|199|182|165|148|131|102|https://9fleet.com/cars/97d6b709-3a88-43a1-b729-c9d597fdf03f
+BMW X7|2022|SUV|250|229|207|186|164|129|https://9fleet.com/cars/645ce071-968c-4467-b3a4-e8abefc6eb7c
+BMW X6|2022|SUV|250|229|207|186|164|129|https://9fleet.com/cars/f83950a2-6c2e-4118-99b5-a271285fa4e5
+Chevrolet Tahoe|2024|SUV|250|229|207|186|164|129|https://9fleet.com/cars/11c5d9c5-ff9f-4dac-b76e-463c616a4768
+Land Rover Range Rover|2019|SUV|250|229|207|186|164|129|https://9fleet.com/cars/060c2d6d-725b-4fd1-822d-25c3a1310286
+BMW X5|2023|SUV|250|229|207|186|164|129|https://9fleet.com/cars/5870ba3e-a069-4dc3-a09e-bc957bb179ba
+Mercedes GLS|2020|SUV|300|274|249|223|197|154|https://9fleet.com/cars/efda8c8e-eb9b-4d21-bc2f-bc96659c29a6
+Toyota Land Cruiser 300|2024|SUV|300|274|249|223|197|154|https://9fleet.com/cars/f286592f-10c1-46a3-9631-bc53ff699c4c
+BMW X4 M|2023|SUV|300|274|249|223|197|154|https://9fleet.com/cars/65b005ed-d7dd-4290-b0c6-591740eb2d7b
+Land Rover Defender|2024|SUV|350|320|290|260|230|180|https://9fleet.com/cars/bc84aa86-2f0a-4563-8ddd-ee3a3750e5d8
+Lexus LX500|2023|SUV|350|320|290|260|230|180|https://9fleet.com/cars/19d2e6bb-e04f-487a-9793-1b211d27cfe5
+BMW 7-Series|2024|Luxury|500|457|414|371|329|257|https://9fleet.com/cars/c8d7c6ea-7642-4fde-a929-be2b26ec8af8
+Mercedes S-Class W223|2023|Luxury|500|457|414|371|329|257|https://9fleet.com/cars/15b1800c-c4a3-4545-99d2-5a5fd6d6d9e4
+Land Rover Range Rover|2025|SUV|600|549|497|446|394|309|https://9fleet.com/cars/1146a3eb-8cff-47db-91ae-9b80333fb9d4
+BMW XM|2025|Luxury|600|549|497|446|394|309|https://9fleet.com/cars/a3c3be9f-0aa4-496a-974e-0383bfc74a06
+Mercedes G63 AMG|2024|SUV|650|594|539|483|427|334|https://9fleet.com/cars/53bfea5a-25f5-4ee4-820f-b0bd5f591802
+Rolls Royce Wraith|2025|Luxury|1200|1097|994|891|789|617|https://9fleet.com/cars/5c5794b4-ff95-4e36-962f-1ba1cdb2ca90
+Rolls Royce Cullinan|2025|Luxury|1499|1371|1242|1114|985|771|https://9fleet.com/cars/743d93f4-6c9f-4e12-8091-5d16eaded77f

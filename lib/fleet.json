@@ -1,0 +1,772 @@
+[
+  {
+    "id": "chevrolet-spark-2024",
+    "name": "Chevrolet Spark",
+    "year": 2024,
+    "category": "Mini",
+    "ratesUsd": [
+      28,
+      26,
+      23,
+      21,
+      18,
+      14
+    ]
+  },
+  {
+    "id": "chevrolet-cobalt-2024",
+    "name": "Chevrolet Cobalt",
+    "year": 2024,
+    "category": "Economy",
+    "ratesUsd": [
+      30,
+      27,
+      25,
+      22,
+      20,
+      15
+    ]
+  },
+  {
+    "id": "hyundai-i20-2024",
+    "name": "Hyundai i20",
+    "year": 2024,
+    "category": "Economy",
+    "ratesUsd": [
+      33,
+      30,
+      27,
+      25,
+      22,
+      17
+    ]
+  },
+  {
+    "id": "hyundai-accent-2023",
+    "name": "Hyundai Accent",
+    "year": 2023,
+    "category": "Economy",
+    "ratesUsd": [
+      35,
+      32,
+      29,
+      26,
+      23,
+      18
+    ]
+  },
+  {
+    "id": "nissan-sunny-2023",
+    "name": "Nissan Sunny",
+    "year": 2023,
+    "category": "Economy",
+    "ratesUsd": [
+      35,
+      32,
+      29,
+      26,
+      23,
+      18
+    ]
+  },
+  {
+    "id": "volkswagen-polo-2023",
+    "name": "Volkswagen Polo",
+    "year": 2023,
+    "category": "Economy",
+    "ratesUsd": [
+      35,
+      32,
+      29,
+      26,
+      23,
+      18
+    ]
+  },
+  {
+    "id": "byd-destroyer-05-2025",
+    "name": "BYD Destroyer 05",
+    "year": 2025,
+    "category": "Comfort",
+    "ratesUsd": [
+      38,
+      35,
+      31,
+      28,
+      25,
+      20
+    ]
+  },
+  {
+    "id": "chevrolet-monza-2024",
+    "name": "Chevrolet Monza",
+    "year": 2024,
+    "category": "Comfort",
+    "ratesUsd": [
+      40,
+      37,
+      33,
+      30,
+      26,
+      21
+    ]
+  },
+  {
+    "id": "changan-a05-2023",
+    "name": "Changan A05",
+    "year": 2023,
+    "category": "Comfort",
+    "ratesUsd": [
+      40,
+      37,
+      33,
+      30,
+      26,
+      21
+    ]
+  },
+  {
+    "id": "changan-uni-v-2025",
+    "name": "Changan UNI-V",
+    "year": 2025,
+    "category": "Comfort",
+    "ratesUsd": [
+      43,
+      39,
+      36,
+      32,
+      28,
+      22
+    ]
+  },
+  {
+    "id": "hyundai-elantra-2023",
+    "name": "Hyundai Elantra",
+    "year": 2023,
+    "category": "Comfort",
+    "ratesUsd": [
+      43,
+      39,
+      36,
+      32,
+      28,
+      22
+    ]
+  },
+  {
+    "id": "kia-stonic-2023",
+    "name": "Kia Stonic",
+    "year": 2023,
+    "category": "SUV",
+    "ratesUsd": [
+      45,
+      41,
+      37,
+      33,
+      30,
+      23
+    ]
+  },
+  {
+    "id": "hyundai-venue-2024",
+    "name": "Hyundai Venue",
+    "year": 2024,
+    "category": "SUV",
+    "ratesUsd": [
+      46,
+      42,
+      38,
+      34,
+      30,
+      24
+    ]
+  },
+  {
+    "id": "hyundai-creta-2024",
+    "name": "Hyundai Creta",
+    "year": 2024,
+    "category": "SUV",
+    "ratesUsd": [
+      47,
+      43,
+      39,
+      35,
+      31,
+      24
+    ]
+  },
+  {
+    "id": "skoda-karoq-2024",
+    "name": "Skoda Karoq",
+    "year": 2024,
+    "category": "SUV",
+    "ratesUsd": [
+      50,
+      46,
+      41,
+      37,
+      33,
+      26
+    ]
+  },
+  {
+    "id": "skoda-kamiq-2024",
+    "name": "Skoda Kamiq",
+    "year": 2024,
+    "category": "SUV",
+    "ratesUsd": [
+      50,
+      46,
+      41,
+      37,
+      33,
+      26
+    ]
+  },
+  {
+    "id": "toyota-corolla-cross-2023",
+    "name": "Toyota Corolla Cross",
+    "year": 2023,
+    "category": "SUV",
+    "ratesUsd": [
+      55,
+      50,
+      46,
+      41,
+      36,
+      28
+    ]
+  },
+  {
+    "id": "toyota-corolla-2026",
+    "name": "Toyota Corolla",
+    "year": 2026,
+    "category": "Comfort",
+    "ratesUsd": [
+      55,
+      50,
+      46,
+      41,
+      36,
+      28
+    ]
+  },
+  {
+    "id": "chevrolet-malibu-2024",
+    "name": "Chevrolet Malibu",
+    "year": 2024,
+    "category": "Business",
+    "ratesUsd": [
+      65,
+      59,
+      54,
+      48,
+      43,
+      33
+    ]
+  },
+  {
+    "id": "toyota-camry-2022",
+    "name": "Toyota Camry",
+    "year": 2022,
+    "category": "Business",
+    "ratesUsd": [
+      70,
+      64,
+      58,
+      52,
+      46,
+      36
+    ]
+  },
+  {
+    "id": "toyota-rav4-2023",
+    "name": "Toyota RAV4",
+    "year": 2023,
+    "category": "SUV",
+    "ratesUsd": [
+      75,
+      69,
+      62,
+      56,
+      49,
+      39
+    ]
+  },
+  {
+    "id": "hyundai-tucson-2023",
+    "name": "Hyundai Tucson",
+    "year": 2023,
+    "category": "SUV",
+    "ratesUsd": [
+      75,
+      69,
+      62,
+      56,
+      49,
+      39
+    ]
+  },
+  {
+    "id": "kia-sportage-2023",
+    "name": "Kia Sportage",
+    "year": 2023,
+    "category": "SUV",
+    "ratesUsd": [
+      75,
+      69,
+      62,
+      56,
+      49,
+      39
+    ]
+  },
+  {
+    "id": "kia-sorento-2023",
+    "name": "Kia Sorento",
+    "year": 2023,
+    "category": "SUV",
+    "ratesUsd": [
+      89,
+      81,
+      74,
+      66,
+      58,
+      46
+    ]
+  },
+  {
+    "id": "hyundai-santa-fe-2022",
+    "name": "Hyundai Santa Fe",
+    "year": 2022,
+    "category": "SUV",
+    "ratesUsd": [
+      89,
+      81,
+      74,
+      66,
+      58,
+      46
+    ]
+  },
+  {
+    "id": "hyundai-custin-2025",
+    "name": "Hyundai Custin",
+    "year": 2025,
+    "category": "VAN",
+    "ratesUsd": [
+      95,
+      87,
+      79,
+      71,
+      62,
+      49
+    ]
+  },
+  {
+    "id": "hyundai-santa-fe-2025",
+    "name": "Hyundai Santa Fe",
+    "year": 2025,
+    "category": "SUV",
+    "ratesUsd": [
+      100,
+      91,
+      83,
+      74,
+      66,
+      51
+    ]
+  },
+  {
+    "id": "toyota-prado-2023",
+    "name": "Toyota Prado",
+    "year": 2023,
+    "category": "SUV",
+    "ratesUsd": [
+      115,
+      105,
+      95,
+      85,
+      76,
+      59
+    ]
+  },
+  {
+    "id": "bmw-5-series-g30-2021",
+    "name": "BMW 5-Series G30",
+    "year": 2021,
+    "category": "Business",
+    "ratesUsd": [
+      120,
+      110,
+      99,
+      89,
+      79,
+      62
+    ]
+  },
+  {
+    "id": "hyundai-grandeur-2023",
+    "name": "Hyundai Grandeur",
+    "year": 2023,
+    "category": "Business",
+    "ratesUsd": [
+      130,
+      119,
+      108,
+      97,
+      85,
+      67
+    ]
+  },
+  {
+    "id": "hyundai-staria-2023",
+    "name": "Hyundai Staria",
+    "year": 2023,
+    "category": "VAN",
+    "ratesUsd": [
+      135,
+      123,
+      112,
+      100,
+      89,
+      69
+    ]
+  },
+  {
+    "id": "toyota-camry-2024",
+    "name": "Toyota Camry",
+    "year": 2024,
+    "category": "Business",
+    "ratesUsd": [
+      135,
+      123,
+      112,
+      100,
+      89,
+      69
+    ]
+  },
+  {
+    "id": "bmw-5-series-g60-2025",
+    "name": "BMW 5-Series G60",
+    "year": 2025,
+    "category": "Business",
+    "ratesUsd": [
+      150,
+      137,
+      124,
+      111,
+      99,
+      77
+    ]
+  },
+  {
+    "id": "mercedes-e-class-2023",
+    "name": "Mercedes E-Class",
+    "year": 2023,
+    "category": "Business",
+    "ratesUsd": [
+      150,
+      137,
+      124,
+      111,
+      99,
+      77
+    ]
+  },
+  {
+    "id": "lexus-es200-2023",
+    "name": "Lexus ES200",
+    "year": 2023,
+    "category": "Business",
+    "ratesUsd": [
+      150,
+      137,
+      124,
+      111,
+      99,
+      77
+    ]
+  },
+  {
+    "id": "mercedes-v-class-2023",
+    "name": "Mercedes V-Class",
+    "year": 2023,
+    "category": "VAN",
+    "ratesUsd": [
+      180,
+      165,
+      149,
+      134,
+      118,
+      93
+    ]
+  },
+  {
+    "id": "mercedes-s-class-w222-2020",
+    "name": "Mercedes S-Class W222",
+    "year": 2020,
+    "category": "Luxury",
+    "ratesUsd": [
+      199,
+      182,
+      165,
+      148,
+      131,
+      102
+    ]
+  },
+  {
+    "id": "toyota-prado-2024",
+    "name": "Toyota Prado",
+    "year": 2024,
+    "category": "SUV",
+    "ratesUsd": [
+      199,
+      182,
+      165,
+      148,
+      131,
+      102
+    ]
+  },
+  {
+    "id": "bmw-x7-2022",
+    "name": "BMW X7",
+    "year": 2022,
+    "category": "SUV",
+    "ratesUsd": [
+      250,
+      229,
+      207,
+      186,
+      164,
+      129
+    ]
+  },
+  {
+    "id": "bmw-x6-2022",
+    "name": "BMW X6",
+    "year": 2022,
+    "category": "SUV",
+    "ratesUsd": [
+      250,
+      229,
+      207,
+      186,
+      164,
+      129
+    ]
+  },
+  {
+    "id": "chevrolet-tahoe-2024",
+    "name": "Chevrolet Tahoe",
+    "year": 2024,
+    "category": "SUV",
+    "ratesUsd": [
+      250,
+      229,
+      207,
+      186,
+      164,
+      129
+    ]
+  },
+  {
+    "id": "land-rover-range-rover-2019",
+    "name": "Land Rover Range Rover",
+    "year": 2019,
+    "category": "SUV",
+    "ratesUsd": [
+      250,
+      229,
+      207,
+      186,
+      164,
+      129
+    ]
+  },
+  {
+    "id": "bmw-x5-2023",
+    "name": "BMW X5",
+    "year": 2023,
+    "category": "SUV",
+    "ratesUsd": [
+      250,
+      229,
+      207,
+      186,
+      164,
+      129
+    ]
+  },
+  {
+    "id": "mercedes-gls-2020",
+    "name": "Mercedes GLS",
+    "year": 2020,
+    "category": "SUV",
+    "ratesUsd": [
+      300,
+      274,
+      249,
+      223,
+      197,
+      154
+    ]
+  },
+  {
+    "id": "toyota-land-cruiser-300-2024",
+    "name": "Toyota Land Cruiser 300",
+    "year": 2024,
+    "category": "SUV",
+    "ratesUsd": [
+      300,
+      274,
+      249,
+      223,
+      197,
+      154
+    ]
+  },
+  {
+    "id": "bmw-x4-m-2023",
+    "name": "BMW X4 M",
+    "year": 2023,
+    "category": "SUV",
+    "ratesUsd": [
+      300,
+      274,
+      249,
+      223,
+      197,
+      154
+    ]
+  },
+  {
+    "id": "land-rover-defender-2024",
+    "name": "Land Rover Defender",
+    "year": 2024,
+    "category": "SUV",
+    "ratesUsd": [
+      350,
+      320,
+      290,
+      260,
+      230,
+      180
+    ]
+  },
+  {
+    "id": "lexus-lx500-2023",
+    "name": "Lexus LX500",
+    "year": 2023,
+    "category": "SUV",
+    "ratesUsd": [
+      350,
+      320,
+      290,
+      260,
+      230,
+      180
+    ]
+  },
+  {
+    "id": "bmw-7-series-2024",
+    "name": "BMW 7-Series",
+    "year": 2024,
+    "category": "Luxury",
+    "ratesUsd": [
+      500,
+      457,
+      414,
+      371,
+      329,
+      257
+    ]
+  },
+  {
+    "id": "mercedes-s-class-w223-2023",
+    "name": "Mercedes S-Class W223",
+    "year": 2023,
+    "category": "Luxury",
+    "ratesUsd": [
+      500,
+      457,
+      414,
+      371,
+      329,
+      257
+    ]
+  },
+  {
+    "id": "land-rover-range-rover-2025",
+    "name": "Land Rover Range Rover",
+    "year": 2025,
+    "category": "SUV",
+    "ratesUsd": [
+      600,
+      549,
+      497,
+      446,
+      394,
+      309
+    ]
+  },
+  {
+    "id": "bmw-xm-2025",
+    "name": "BMW XM",
+    "year": 2025,
+    "category": "Luxury",
+    "ratesUsd": [
+      600,
+      549,
+      497,
+      446,
+      394,
+      309
+    ]
+  },
+  {
+    "id": "mercedes-g63-amg-2024",
+    "name": "Mercedes G63 AMG",
+    "year": 2024,
+    "category": "SUV",
+    "ratesUsd": [
+      650,
+      594,
+      539,
+      483,
+      427,
+      334
+    ]
+  },
+  {
+    "id": "rolls-royce-wraith-2025",
+    "name": "Rolls Royce Wraith",
+    "year": 2025,
+    "category": "Luxury",
+    "ratesUsd": [
+      1200,
+      1097,
+      994,
+      891,
+      789,
+      617
+    ]
+  },
+  {
+    "id": "rolls-royce-cullinan-2025",
+    "name": "Rolls Royce Cullinan",
+    "year": 2025,
+    "category": "Luxury",
+    "ratesUsd": [
+      1499,
+      1371,
+      1242,
+      1114,
+      985,
+      771
+    ]
+  }
+]
