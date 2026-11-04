@@ -38,7 +38,7 @@ export const dictionaries = {
     carNote: "Это пример категории, не подтверждение наличия автомобиля в парке. Бронирование пока недоступно.",
     airportEyebrow: "БАКУ · GYD",
     airportTitle: "Из аэропорта — в свой маршрут",
-    airportLead: "Укажите аэропорт при поиске, чтобы спланировать получение или возврат автомобиля. Доступность услуги и условия уточняются до запуска.",
+    airportLead: "Выдача автомобиля в аэропорту Баку доступна. Укажите GYD при поиске, затем согласуйте рейс, точку встречи и возможную доплату.",
     airportCta: "Указать аэропорт",
     faqTitle: "Частые вопросы",
     faq: [
@@ -94,7 +94,7 @@ export const dictionaries = {
     carNote: "Bu, kateqoriya nümunəsidir; avtomobilin parkda olduğunu təsdiqləmir. Rezervasiya hələ mövcud deyil.",
     airportEyebrow: "BAKI · GYD",
     airportTitle: "Hava limanından öz marşrutunuza",
-    airportLead: "Avtomobili götürməyi və ya qaytarmağı planlaşdırmaq üçün axtarışda hava limanını seçin. Xidmətin şərtləri istifadəyə verilməzdən əvvəl təsdiqlənəcək.",
+    airportLead: "Bakı hava limanında avtomobil təhvili mövcuddur. Axtarışda GYD seçin, sonra uçuşu, görüş yerini və mümkün əlavə ödənişi razılaşdırın.",
     airportCta: "Hava limanını seçin",
     faqTitle: "Tez-tez verilən suallar",
     faq: [
@@ -150,7 +150,7 @@ export const dictionaries = {
     carNote: "This is a category example, not confirmation that the car is in the fleet. Booking is not available yet.",
     airportEyebrow: "BAKU · GYD",
     airportTitle: "From the airport to your route",
-    airportLead: "Select the airport in search to plan car pick-up or return. Service availability and terms will be confirmed before launch.",
+    airportLead: "Baku airport collection is available. Select GYD in search, then agree on your flight, meeting point and any extra fee.",
     airportCta: "Choose airport",
     faqTitle: "Frequently asked questions",
     faq: [
