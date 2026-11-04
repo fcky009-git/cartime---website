@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { ArrowRight, CalendarDays, CarFront, Check, Clipboard, Mail, MapPin, MessageCircle, ShieldCheck } from "lucide-react";
 import fleet from "@/lib/fleet.json";
+import fleetImages from "@/lib/fleet-images.json";
 import { fleetUi } from "@/lib/fleet-ui";
 import { bookingUi } from "@/lib/booking";
 import { contact } from "@/lib/service-info";
@@ -10,6 +11,9 @@ import type { Locale } from "@/lib/i18n";
 
 type Place = "office" | "airport" | "delivery";
 type Car = (typeof fleet)[number];
+type Currency = "USD" | "AZN" | "EUR" | "RUB" | "KZT" | "CNY" | "AED";
+type Rates = { date: string; aznPerUnit: Record<Currency, number>; source: string; fallback: boolean };
+const currencies: Currency[] = ["USD", "AZN", "EUR", "RUB", "KZT", "CNY", "AED"];
 const places: Place[] = ["office", "airport", "delivery"];
 const parsePlace = (value: string | null): Place => places.includes(value as Place) ? value as Place : "office";
 const localToday = () => {
@@ -27,7 +31,8 @@ const rateIndex = (days: number) => days <= 3 ? 0 : days <= 7 ? 1 : days <= 14 ?
 
 export default function BookingForm({ locale }: { locale: Locale }) {
   const ui = bookingUi[locale];
-  const categories = fleetUi[locale].categories;
+  const fleetText = fleetUi[locale];
+  const categories = fleetText.categories;
   const formRef = useRef<HTMLFormElement>(null);
   const reviewRef = useRef<HTMLDivElement>(null);
   const [today, setToday] = useState("");
@@ -53,6 +58,9 @@ export default function BookingForm({ locale }: { locale: Locale }) {
   const [error, setError] = useState("");
   const [review, setReview] = useState(false);
   const [copied, setCopied] = useState(false);
+  const [currency, setCurrency] = useState<Currency>("USD");
+  const [rates, setRates] = useState<Rates | null>(null);
+  const [ratesError, setRatesError] = useState(false);
 
   useEffect(() => {
     setToday(localToday());
@@ -65,12 +73,23 @@ export default function BookingForm({ locale }: { locale: Locale }) {
     if (fleet.some((car) => car.id === selected)) setCarId(selected || "");
   }, []);
 
+  useEffect(() => {
+    const controller = new AbortController();
+    fetch("/api/rates", { signal: controller.signal }).then((response) => {
+      if (!response.ok) throw new Error("rates unavailable");
+      return response.json() as Promise<Rates>;
+    }).then(setRates).catch(() => { if (!controller.signal.aborted) setRatesError(true); });
+    return () => controller.abort();
+  }, []);
+
   const selectedCar = fleet.find((car) => car.id === carId) as Car | undefined;
   const days = rentalDays(fromDate, fromTime, toDate, toTime);
   const durationMs = Date.parse(`${toDate}T${toTime}:00Z`) - Date.parse(`${fromDate}T${fromTime}:00Z`);
   const rate = selectedCar && durationMs >= 2 * 86_400_000 ? selectedCar.ratesUsd[rateIndex(days)] : null;
   const amount = rate === null ? null : rate * days;
   const visibleCars = fleet.filter((car) => (category === "all" || car.category === category) && `${car.name} ${car.year}`.toLocaleLowerCase().includes(query.trim().toLocaleLowerCase()));
+  const convert = (usd: number) => currency === "USD" || !rates ? usd : usd * rates.aznPerUnit.USD / rates.aznPerUnit[currency];
+  const formatPrice = (usd: number) => `${new Intl.NumberFormat(locale === "az" ? "az-AZ" : locale === "ru" ? "ru-RU" : "en-US", { maximumFractionDigits: currency === "RUB" || currency === "KZT" ? 0 : 2, minimumFractionDigits: currency === "USD" ? 0 : 2 }).format(convert(usd))} ${currency}`;
 
   const locationText = (place: Place, address: string) => place === "delivery" ? `${ui.delivery}: ${address}` : ui[place];
   const message = [
@@ -82,6 +101,7 @@ export default function BookingForm({ locale }: { locale: Locale }) {
     `${ui.to}: ${toDate} ${toTime}`,
     `${ui.days}: ${days}`,
     `${ui.estimate}: ${amount === null ? "—" : `$${amount} USD`} (${ui.rate}: $${rate} USD)`,
+    ...(amount !== null && currency !== "USD" && rates ? [`${ui.currency}: ${formatPrice(amount)} (${ui.rateDate}: ${rates.date})`] : []),
     `${ui.fullName}: ${name.trim()}`,
     `${ui.phone}: ${phone.trim()}`,
     `${ui.email}: ${email.trim()}`,
@@ -99,6 +119,7 @@ export default function BookingForm({ locale }: { locale: Locale }) {
   function showReview(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
     setError("");
+    if (!selectedCar) { setError(ui.carChoose); document.getElementById("booking-car")?.scrollIntoView({ behavior: "smooth", block: "start" }); return; }
     if (!formRef.current?.reportValidity()) return;
     const issue = !fromDate || fromDate < today ? ui.future
       : days === 0 ? ui.invalidDates
@@ -132,8 +153,18 @@ export default function BookingForm({ locale }: { locale: Locale }) {
           <div className="booking-grid booking-dates-grid"><fieldset><legend>{ui.from}</legend><div><label className="booking-field">{ui.date}<input type="date" value={fromDate} min={today || undefined} onInput={(e) => { setFromDate(e.currentTarget.value); setReview(false); }} onBlur={(e) => setFromDate(e.currentTarget.value)} required /></label><label className="booking-field">{ui.time}<input type="time" value={fromTime} onInput={(e) => { setFromTime(e.currentTarget.value); setReview(false); }} required /></label></div></fieldset><fieldset><legend>{ui.to}</legend><div><label className="booking-field">{ui.date}<input type="date" value={toDate} min={fromDate || today || undefined} onInput={(e) => { setToDate(e.currentTarget.value); setReview(false); }} onBlur={(e) => setToDate(e.currentTarget.value)} required /></label><label className="booking-field">{ui.time}<input type="time" value={toTime} onInput={(e) => { setToTime(e.currentTarget.value); setReview(false); }} required /></label></div></fieldset></div>
         </section>
         <section className="booking-card" aria-labelledby="booking-car"><div className="booking-card-head"><span className="booking-card-icon"><CarFront size={22} /></span><div><small>{ui.step} 02</small><h2 id="booking-car">{ui.car}</h2></div></div>
+          <div className="booking-currency"><div><strong>{ui.currency}</strong><p>{ui.currencyNote}</p></div><div className="booking-currency-options" role="group" aria-label={ui.currency}>{currencies.map((code) => <button key={code} type="button" disabled={code !== "USD" && !rates} aria-pressed={currency === code} onClick={() => setCurrency(code)}>{code}</button>)}</div><small>{rates ? <><a href={rates.source} target="_blank" rel="noopener noreferrer">{ui.ratesSource} ↗</a> · {ui.rateDate}: {rates.date}</> : ratesError ? ui.ratesUnavailable : "…"}</small></div>
           <div className="booking-car-tools"><label className="booking-field">{ui.carSearch}<input type="search" value={query} onChange={(e) => setQuery(e.target.value)} placeholder={ui.carSearch} /></label><label className="booking-field">{ui.all}<select value={category} onChange={(e) => setCategory(e.target.value)}><option value="all">{ui.all}</option>{Object.entries(categories).filter(([key]) => key !== "all").map(([key, label]) => <option key={key} value={key}>{label}</option>)}</select></label></div>
-          <label className="booking-field">{ui.carChoose}<select value={carId} onChange={(e) => setCarId(e.target.value)} required><option value="">{ui.carChoose}</option>{selectedCar && !visibleCars.some((car) => car.id === carId) && <option value={selectedCar.id}>{selectedCar.name} · {selectedCar.year}</option>}{visibleCars.map((car) => <option value={car.id} key={car.id}>{car.name} · {car.year} · {categories[car.category]}</option>)}</select></label>{visibleCars.length === 0 && <p className="booking-muted">{ui.noCar}</p>}
+          <p className="booking-car-count">{visibleCars.length} {ui.carsShown}</p>
+          <div className="booking-cars" aria-label={ui.carChoose}>{visibleCars.map((car, index) => {
+            const carRate = car.ratesUsd[durationMs >= 2 * 86_400_000 ? rateIndex(days) : 0];
+            const chosen = car.id === carId;
+            return <button className={`booking-car-option${chosen ? " selected" : ""}`} type="button" aria-pressed={chosen} aria-label={`${ui.chooseCard}: ${car.name} ${car.year}`} onClick={() => { setCarId(car.id); setReview(false); setError(""); }} key={car.id} style={{ animationDelay: `${Math.min(index, 12) * 35}ms` }}>
+              <span className="booking-car-photo"><img src={(fleetImages as Record<string, string>)[car.id]} alt={`${car.name} ${car.year} — ${ui.vehicleImage}`} loading={index < 4 ? "eager" : "lazy"} decoding="async" /><span className="booking-car-photo-year">{car.year}</span></span>
+              <span className="booking-car-content"><span className="booking-car-category">{categories[car.category]}</span><strong>{car.name}</strong><span className="booking-car-price"><b>{formatPrice(carRate)}</b><small>/ {fleetText.perDay.replace("USD / ", "")}</small></span><span className="booking-card-rates">{car.ratesUsd.map((value, rateNumber) => <span key={rateNumber}>{fleetText.durations[rateNumber]} · ${value}</span>)}</span><span className="booking-car-select"><Check size={17} />{chosen ? ui.selectedCard : ui.chooseCard}</span></span>
+            </button>;
+          })}</div>
+          {visibleCars.length === 0 && <p className="booking-muted">{ui.noCar}</p>}
         </section>
         <section className="booking-card" aria-labelledby="booking-driver"><div className="booking-card-head"><span className="booking-card-icon"><ShieldCheck size={21} /></span><div><small>{ui.step} 03</small><h2 id="booking-driver">{ui.driver}</h2></div></div>
           <div className="booking-grid"><label className="booking-field">{ui.fullName}<input autoComplete="name" value={name} onChange={(e) => setName(e.target.value)} required /></label><label className="booking-field">{ui.phone}<input type="tel" autoComplete="tel" value={phone} onChange={(e) => setPhone(e.target.value)} placeholder="+994 ..." required /></label><label className="booking-field">{ui.email}<input type="email" autoComplete="email" value={email} onChange={(e) => setEmail(e.target.value)} required /></label><label className="booking-field">{ui.flight}<input value={flight} onChange={(e) => setFlight(e.target.value)} /></label><label className="booking-field">{ui.age}<input type="number" min="24" max="70" inputMode="numeric" value={age} onChange={(e) => setAge(e.target.value)} required /></label><label className="booking-field">{ui.experience}<input type="number" min="2" max="70" inputMode="numeric" value={experience} onChange={(e) => setExperience(e.target.value)} required /></label></div>
@@ -144,8 +175,8 @@ export default function BookingForm({ locale }: { locale: Locale }) {
         {error && <p className="booking-error" role="alert">{error}</p>}
         <button className="booking-review-button" type="submit">{ui.reviewButton}<ArrowRight size={20} /></button>
       </form>
-      {review && <div className="booking-card booking-review" ref={reviewRef} id="booking-review" aria-live="polite"><div className="booking-card-head"><span className="booking-card-icon"><Check size={22} /></span><div><small>{ui.step} 04</small><h2>{ui.review}</h2></div></div><p>{ui.reviewLead}</p><div className="booking-review-lines"><span>{selectedCar?.name} · {selectedCar?.year}</span><span>{fromDate} {fromTime} → {toDate} {toTime}</span><span>{locationText(pickup, pickupAddress)} → {locationText(dropoff, returnAddress)}</span><strong>{ui.estimate}: ${amount} USD</strong></div><div className="booking-send-actions"><a className="booking-whatsapp" href={whatsappHref} target="_blank" rel="noopener noreferrer"><MessageCircle size={19} />{ui.whatsapp}</a><a href={emailHref}><Mail size={19} />{ui.mail}</a><button type="button" onClick={copyRequest}><Clipboard size={18} />{copied ? ui.copied : ui.copy}</button></div></div>}
+      {review && <div className="booking-card booking-review" ref={reviewRef} id="booking-review" aria-live="polite"><div className="booking-card-head"><span className="booking-card-icon"><Check size={22} /></span><div><small>{ui.step} 04</small><h2>{ui.review}</h2></div></div><p>{ui.reviewLead}</p><div className="booking-review-lines"><span>{selectedCar?.name} · {selectedCar?.year}</span><span>{fromDate} {fromTime} → {toDate} {toTime}</span><span>{locationText(pickup, pickupAddress)} → {locationText(dropoff, returnAddress)}</span><strong>{ui.estimate}: {amount === null ? "—" : formatPrice(amount)}</strong>{currency !== "USD" && <small>USD {amount}</small>}</div><div className="booking-send-actions"><a className="booking-whatsapp" href={whatsappHref} target="_blank" rel="noopener noreferrer"><MessageCircle size={19} />{ui.whatsapp}</a><a href={emailHref}><Mail size={19} />{ui.mail}</a><button type="button" onClick={copyRequest}><Clipboard size={18} />{copied ? ui.copied : ui.copy}</button></div></div>}
     </div>
-    <aside className="booking-side"><div className="booking-summary"><span className="booking-summary-kicker"><CalendarDays size={17} /> {ui.summary}</span><h2>{selectedCar ? `${selectedCar.name} · ${selectedCar.year}` : ui.carChoose}</h2><div className="booking-summary-row"><span>{ui.days}</span><strong>{days >= 2 ? days : "—"}</strong></div><div className="booking-summary-row"><span>{ui.rate}</span><strong>{rate === null ? "—" : `$${rate} USD`}</strong></div><div className="booking-summary-total"><span>{ui.estimate}</span><strong>{amount === null ? "—" : `$${amount} USD`}</strong></div><p>{amount === null ? ui.noEstimate : ui.estimateNote}</p><div className="booking-side-facts"><span><Check size={16} />{ui.noPayment}</span><span><Check size={16} />{ui.support}</span></div><a href={`/${locale}/contact`}>{ui.contact} <ArrowRight size={16} /></a></div></aside>
+    <aside className="booking-side"><div className="booking-summary"><span className="booking-summary-kicker"><CalendarDays size={17} /> {ui.summary}</span><h2>{selectedCar ? `${selectedCar.name} · ${selectedCar.year}` : ui.carChoose}</h2>{selectedCar && <img className="booking-summary-photo" src={(fleetImages as Record<string, string>)[selectedCar.id]} alt={`${selectedCar.name} ${selectedCar.year}`} />}<div className="booking-summary-row"><span>{ui.days}</span><strong>{durationMs >= 2 * 86_400_000 ? days : "—"}</strong></div><div className="booking-summary-row"><span>{ui.rate}</span><strong>{rate === null ? "—" : formatPrice(rate)}</strong></div><div className="booking-summary-total"><span>{ui.estimate}</span><strong>{amount === null ? "—" : formatPrice(amount)}</strong></div>{amount !== null && currency !== "USD" && <div className="booking-summary-base">USD {amount}</div>}<p>{amount === null ? ui.noEstimate : ui.estimateNote}</p><div className="booking-side-facts"><span><Check size={16} />{ui.noPayment}</span><span><Check size={16} />{ui.support}</span></div><a href={`/${locale}/contact`}>{ui.contact} <ArrowRight size={16} /></a></div></aside>
   </div>;
 }

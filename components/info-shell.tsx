@@ -6,6 +6,7 @@ import QuickHelp from "@/components/quick-help";
 import ContactLinks from "@/components/contact-links";
 import { rentalPages, rentalSlugs, rentalUi } from "@/lib/rental-pages";
 import { bookingUi } from "@/lib/booking";
+import SiteDirectory from "@/components/site-directory";
 
 export default function InfoShell({ locale, current, children }: { locale: Locale; current?: string; children: ReactNode }) {
   const ui = guideUi[locale];
@@ -22,10 +23,7 @@ export default function InfoShell({ locale, current, children }: { locale: Local
           <a href={`/${locale}`}>{ui.back}</a>
           <a href={`/${locale}/fleet`}>{ui.carCta}</a>
           <a href={`/${locale}/booking`}>{bookingUi[locale].nav}</a>
-          <a href={`/${locale}/guide/baku`}>{ui.nav}</a>
-          <a href={`/${locale}/rental`}>{rentalUi[locale].nav}</a>
-          <a href={`/${locale}/about`}>{service.aboutNav}</a>
-          <a href={`/${locale}/faq`}>{service.faqNav}</a>
+          <SiteDirectory locale={locale} />
         </nav>
         <div className="info-language-links" aria-label="Language">
           {(["az", "en", "ru"] as Locale[]).map((code) =>
