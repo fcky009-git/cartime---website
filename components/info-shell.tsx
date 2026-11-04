@@ -3,6 +3,7 @@ import type { Locale } from "@/lib/i18n";
 import { guideSlugs, guides, guideUi } from "@/lib/guides";
 import { serviceUi } from "@/lib/service-info";
 import QuickHelp from "@/components/quick-help";
+import ContactLinks from "@/components/contact-links";
 
 export default function InfoShell({ locale, current, children }: { locale: Locale; current?: string; children: ReactNode }) {
   const ui = guideUi[locale];
@@ -32,7 +33,7 @@ export default function InfoShell({ locale, current, children }: { locale: Local
     {children}
     <footer className="site-footer">
       <div className="container info-footer-inner">
-        <div><img src="/assets/logo-dark.png" alt="CarTime" /><p>{ui.homeLead}</p></div>
+        <div><img src="/assets/logo-dark.png" alt="CarTime" /><p>{ui.homeLead}</p><ContactLinks locale={locale} /></div>
         <nav aria-label={ui.next}>
           <a href={`/${locale}`}>{ui.back}</a>
           <a href={`/${locale}/fleet`}>{ui.allCars}</a>

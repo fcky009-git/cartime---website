@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { HelpCircle, X, ArrowRight, ChevronDown } from "lucide-react";
 import type { Locale } from "@/lib/i18n";
 import { faqItems, serviceUi } from "@/lib/service-info";
+import ContactLinks from "@/components/contact-links";
 
 const quickIds = ["rates", "total", "availability", "airport", "deposit"];
 
@@ -23,6 +24,7 @@ export default function QuickHelp({ locale }: { locale: Locale }) {
         const item = faqItems[locale].find((entry) => entry.id === id);
         return item && <details key={id}><summary>{item.question}<ChevronDown size={16} aria-hidden="true" /></summary><p>{item.answer}</p></details>;
       })}</div>
+      <ContactLinks locale={locale} />
       <a href={`/${locale}/faq`}>{ui.quickButton}<ArrowRight size={16} /></a>
     </div>}
     <button className="quick-help-trigger" type="button" aria-expanded={open} aria-label={open ? ui.quickClose : ui.quickOpen} onClick={() => setOpen(!open)}>{open ? <X size={22} /> : <HelpCircle size={24} />}<span>{ui.quickTitle}</span></button>

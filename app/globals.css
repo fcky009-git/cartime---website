@@ -286,8 +286,15 @@ html[data-theme="light"] .info-language-links { border-left-color: #0b254244; }
 .about-status > div:first-child { max-width: 830px; }
 .about-status p:not(.section-kicker) { margin-bottom: 0; font-size: 14px; }
 .about-actions { display: flex; flex: 0 0 auto; flex-direction: column; gap: 10px; }
-.about-actions a { display: block; padding: 12px 16px; border: 1px solid #3b82f6; border-radius: 10px; color: #2d73d3; font-size: 11px; font-weight: 800; }
-.about-actions a:first-child { background: #3b82f6; color: #fff; }
+.about-actions > a { display: block; padding: 12px 16px; border: 1px solid #3b82f6; border-radius: 10px; color: #2d73d3; font-size: 11px; font-weight: 800; }
+.about-actions > a:nth-child(2) { background: #3b82f6; color: #fff; }
+.contact-links { display: flex; flex-direction: column; align-items: flex-start; gap: 9px; }
+.contact-links strong { font-size: 11px; color: var(--ink); }
+.contact-links a { display: inline-flex; align-items: center; gap: 8px; color: #72b5ff; font-size: 12px; font-weight: 700; text-decoration: none; }
+.contact-links a:hover { text-decoration: underline; }
+.about-actions .contact-links { margin-bottom: 15px; }
+.about-actions .contact-links a { color: #2d73d3; }
+.footer-brand .contact-links, .info-footer-inner .contact-links { margin-top: 20px; }
 .faq-page-body { padding-top: 72px; padding-bottom: 105px; }
 .faq-search { display: flex; align-items: center; gap: 12px; max-width: 600px; padding: 16px 19px; border: 1px solid var(--border); border-radius: 13px; background: var(--surface); color: #3178d7; }
 .faq-search input { width: 100%; border: 0; outline: 0; background: transparent; color: var(--ink); font-size: 14px; }
@@ -326,6 +333,8 @@ html[data-theme="light"] .info-language-links { border-left-color: #0b254244; }
 .quick-help-questions details[open] summary svg { transform: rotate(180deg); }
 .quick-help-questions p { margin: -3px 18px 16px; color: var(--muted); font-size: 11px; line-height: 1.7; }
 .quick-help-panel > a { display: flex; justify-content: space-between; align-items: center; padding: 17px 18px; color: #2874da; font-size: 11px; font-weight: 800; }
+.quick-help-panel .contact-links { padding: 16px 18px; border-bottom: 1px solid var(--border); }
+.quick-help-panel .contact-links a { color: #2874da; }
 .modal-backdrop { position: fixed; inset: 0; z-index: 100; display: grid; place-items: center; padding: 20px; background: #020710c9; }
 .detail-modal { position: relative; display: grid; grid-template-columns: .9fr 1.1fr; gap: 24px; width: min(100%, 780px); max-height: min(90vh, 790px); overflow: auto; padding: 32px; border: 1px solid var(--border); border-radius: 20px; background: var(--surface); color: var(--ink); box-shadow: 0 30px 100px #0005; }
 .modal-image { position: relative; display: grid; place-items: center; align-self: start; min-height: 270px; border-radius: 14px; background: linear-gradient(140deg, #eaf1fa, #d9e8f9); }

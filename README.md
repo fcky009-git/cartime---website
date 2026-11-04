@@ -16,6 +16,7 @@ This is the first frontend implementation of the supplied CarTime brand kit. The
 - Airport shortcut, 30 searchable FAQ answers in each language, category filters and quick help panel
 - Full crawlable fleet table and four practical guides (Baku, road trips, GYD airport, rental planning) in RU/AZ/EN
 - Dedicated About and FAQ pages in RU/AZ/EN, with links from the homepage, navigation and sitemap
+- Clickable CarTime phone and email in About, footer and quick help; FAQPage and Organization structured data
 - Per-page titles and descriptions, canonical and hreflang links, a sitemap, robots.txt, and conservative WebSite/Breadcrumb structured data
 
 ## Demo limits
@@ -24,7 +25,7 @@ Vehicle names, model years, categories, and six daily rates were captured from t
 
 The guide pages contain original planning copy based on official Azerbaijan Tourism Board and Heydar Aliyev International Airport sources linked at the bottom of each relevant guide. They do not promise CarTime services or current attraction opening hours. The Site is currently owner-private, so Google cannot crawl it yet. Before public launch, verify business details and rental terms, set the public domain, set `NEXT_PUBLIC_SITE_URL` to that domain for canonical links and the sitemap, then make the Site public. Search indexing and rankings are never guaranteed.
 
-The expanded FAQ follows the topic coverage of the owner's 9fleet site and uses EasyRent as an information-architecture reference. Its copy is original. CarTime's legal identity, contacts, driver requirements, deposit, insurance, delivery and support promises are deliberately left unconfirmed until the owner supplies the actual terms. Update `lib/service-info.ts` when those details are approved.
+The expanded FAQ follows the topic coverage of the owner's 9fleet site and uses EasyRent as an information-architecture reference. Its copy is original. The owner confirmed that CarTime is a new brand of the same business and that the 9fleet driver age, experience, two-day minimum, Azerbaijan-only travel, deposit and basic insurance conditions also apply. The owner also supplied CarTime's phone and email and confirmed airport collection, address delivery and 24/7 support. The exact deposit amount, insurance coverage, delivery charges, payment methods and other unconfirmed details remain open; update `lib/service-info.ts` when confirmed.
 
 ## Development
 
