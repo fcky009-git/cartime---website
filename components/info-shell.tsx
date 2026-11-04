@@ -12,12 +12,13 @@ export default function InfoShell({ locale, current, children }: { locale: Local
   const ui = guideUi[locale];
   const service = serviceUi[locale];
   const suffix = current ? `/${current}` : "";
-  return <div className="site-shell info-shell">
+  return <div className={`site-shell info-shell${current === "booking" ? " info-booking-shell" : ""}`}>
     <header className="site-header">
       <div className="container info-header-inner">
         <a className="brand" href={`/${locale}`} aria-label="CarTime">
           <img className="dark-logo" src="/assets/logo-dark.png" alt="CarTime" />
           <img className="light-logo" src="/assets/logo-light.svg" alt="" aria-hidden="true" />
+            <span className="brand-caption" aria-hidden="true">CAR RENTAL</span>
         </a>
         <nav className="info-header-nav" aria-label={ui.nav}>
           <a href={`/${locale}`}>{ui.back}</a>
@@ -35,7 +36,7 @@ export default function InfoShell({ locale, current, children }: { locale: Local
     {children}
     <footer className="site-footer">
       <div className="container info-footer-inner">
-        <div><img src="/assets/logo-dark.png" alt="CarTime" /><p>{ui.homeLead}</p><ContactLinks locale={locale} /></div>
+        <div><img className="dark-logo" src="/assets/logo-dark.png" alt="CarTime" /><img className="light-logo" src="/assets/logo-light.svg" alt="" aria-hidden="true" /><span className="brand-caption" aria-hidden="true">CAR RENTAL</span><p>{ui.homeLead}</p><ContactLinks locale={locale} /></div>
         <nav aria-label={ui.next}>
           <a href={`/${locale}`}>{ui.back}</a>
           <a href={`/${locale}/fleet`}>{ui.allCars}</a>

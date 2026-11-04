@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { siteOrigin } from "@/lib/seo";
 import "./globals.css";
+import "./home-design.css";
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteOrigin),
