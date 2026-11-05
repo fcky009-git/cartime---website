@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
 import type { Locale } from "./i18n";
 
-export const siteOrigin = (process.env.NEXT_PUBLIC_SITE_URL || "https://cartime.az").replace(/\/$/, "");
+// Preview domain until cartime.az is purchased; then set NEXT_PUBLIC_SITE_URL (or change this default).
+export const siteOrigin = (process.env.NEXT_PUBLIC_SITE_URL || "https://cartime-baku-demo.brawnydill256.chatgpt.site").replace(/\/$/, "");
 export const locales: Locale[] = ["ru", "az", "en"];
 // Language that `/` redirects to; also used as the hreflang x-default target.
 export const defaultLocale: Locale = "ru";

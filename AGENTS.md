@@ -53,7 +53,7 @@ These files connect the project to the Sites/Codex preview and deployment. Do no
 
 ## Site URL
 
-`NEXT_PUBLIC_SITE_URL` sets canonical links, the sitemap and robots. Default: `https://cartime.az`.
+`NEXT_PUBLIC_SITE_URL` sets canonical links, the sitemap and robots. Default: the preview domain in `lib/seo.ts`. The domain `cartime.az` is not purchased yet, so do not point canonical links at it until the owner confirms it is live.
 
 ## Git workflow
 
