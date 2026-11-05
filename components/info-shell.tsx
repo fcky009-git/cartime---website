@@ -1,4 +1,4 @@
-import { switcherOrder } from "@/lib/locales";
+import LanguageSwitcher from "@/components/language-switcher";
 import type { ReactNode } from "react";
 import Image from "next/image";
 import type { Locale } from "@/lib/i18n";
@@ -28,11 +28,7 @@ export default function InfoShell({ locale, current, children }: { locale: Local
           <a href={`/${locale}/booking`}>{bookingUi[locale].nav}</a>
           <SiteDirectory locale={locale} />
         </nav>
-        <div className="info-language-links" aria-label="Language">
-          {switcherOrder.map((code) =>
-            <a key={code} href={`/${code}${suffix}`} lang={code} aria-current={code === locale ? "page" : undefined}>{code.toUpperCase()}</a>,
-          )}
-        </div>
+        <LanguageSwitcher locale={locale} suffix={suffix} label={ui.nav} />
       </div>
     </header>
     {children}

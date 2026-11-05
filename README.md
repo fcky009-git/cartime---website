@@ -1,6 +1,6 @@
 # CarTime website
 
-CarTime is a car rental project in Baku. The site is an owner-private preview in Russian, Azerbaijani and English. The public copy presents CarTime as its own project. The owner confirmed that its history began in 2012 and that its operating fleet has 122 vehicles; the online catalogue lists distinct model and year entries, with repeat vehicles grouped together.
+CarTime is a car rental project in Baku. The site is an owner-private preview in Russian, Azerbaijani, English, German, Simplified Chinese, Korean, French and Arabic. The five newest language versions are machine-translation drafts and need native-speaker review before a public launch. The public copy presents CarTime as its own project. The owner confirmed that its history began in 2012 and that its operating fleet has 122 vehicles; the online catalogue lists distinct model and year entries, with repeat vehicles grouped together.
 
 ## Current experience
 

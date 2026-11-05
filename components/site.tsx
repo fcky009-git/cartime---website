@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState, useSyncExternalStore } from "react";
 import { useRouter } from "next/navigation";
 import { switcherOrder } from "@/lib/locales";
+import LanguageSwitcher from "@/components/language-switcher";
 import { ArrowDown, ArrowDownRight, ArrowRight, ChevronDown, Menu, Search, X } from "lucide-react";
 import { dictionaries, type Locale } from "@/lib/i18n";
 import { fleetUi } from "@/lib/fleet-ui";
@@ -55,6 +56,11 @@ const editorialUi: Record<Locale, { lineOne: string; lineTwo: string; lead: stri
   ru: { lineOne: "Баку ближе.", lineTwo: "Когда вы за рулём.", lead: "Выберите автомобиль для поездок по Баку и всему Азербайджану. Маршрут задаёте вы.", select: "Выбрать автомобиль", explore: "Смотреть автопарк", scroll: "Листайте вниз", pickup: "Начните поездку", collection: "Выберите место и даты — покажем автомобили и тарифы.", styles: "Стиль сайта" },
   az: { lineOne: "Bakı daha yaxındır.", lineTwo: "Sükan sizdədir.", lead: "Bakı və bütün Azərbaycan üzrə səfəriniz üçün avtomobil seçin. Marşrutu siz müəyyənləşdirirsiniz.", select: "Avtomobil seçin", explore: "Avtoparka baxın", scroll: "Aşağı keçin", pickup: "Səfərə başlayın", collection: "Məkan və tarixləri seçin — avtomobilləri və tarifləri göstərəcəyik.", styles: "Saytın üslubu" },
   en: { lineOne: "Baku gets closer.", lineTwo: "Take the wheel.", lead: "Choose a car for Baku and the rest of Azerbaijan. The route is yours to make.", select: "Find your car", explore: "Explore the fleet", scroll: "Scroll to explore", pickup: "Begin your journey", collection: "Choose your place and dates to see cars and published rates.", styles: "Site style" },
+  de: { lineOne: "Baku rückt näher.", lineTwo: "Übernimm das Steuer.", lead: "Wählen Sie ein Auto für Baku und den Rest von Aserbaidschan. Die Route liegt ganz bei Ihnen.", select: "Finden Sie Ihr Auto", explore: "Entdecken Sie die Flotte", scroll: "Scrollen Sie zum Erkunden", pickup: "Beginnen Sie Ihre Reise", collection: "Wählen Sie Ihren Ort und Ihre Daten, um Autos und veröffentlichte Preise anzuzeigen.", styles: "Site-Stil" },
+  zh: { lineOne: "巴库越来越近了。", lineTwo: "握紧方向盘。", lead: "选择前往巴库和阿塞拜疆其他地区的汽车。路线由你来制定。", select: "找到你的车", explore: "浏览车队", scroll: "滚动浏览", pickup: "开始你的旅程", collection: "选择您的地点和日期以查看汽车和公布的价格。", styles: "网站风格" },
+  ko: { lineOne: "바쿠가 가까워진다.", lineTwo: "운전대를 잡으세요.", lead: "바쿠와 아제르바이잔의 나머지 지역을 위한 자동차를 선택하세요. 경로는 당신이 만드는 것입니다.", select: "차를 찾아보세요", explore: "차량 목록 보기", scroll: "스크롤하여 탐색하세요.", pickup: "여행을 시작하세요", collection: "장소와 날짜를 선택하여 자동차와 공시 요금을 확인하세요.", styles: "사이트 스타일" },
+  fr: { lineOne: "Bakou se rapproche.", lineTwo: "Prenez le volant.", lead: "Choisissez une voiture pour Bakou et le reste de l'Azerbaïdjan. L'itinéraire vous appartient.", select: "Trouvez votre voiture", explore: "Explorez la flotte", scroll: "Faites défiler pour explorer", pickup: "Commencez votre voyage", collection: "Choisissez votre lieu et vos dates pour voir les voitures et les tarifs publiés.", styles: "Style du site" },
+  ar: { lineOne: "باكو تقترب.", lineTwo: "خذ عجلة القيادة.", lead: "اختر سيارة لباكو وبقية أذربيجان. الطريق هو لك لجعل.", select: "ابحث عن سيارتك", explore: "اكتشف الأسطول", scroll: "قم بالتمرير للاستكشاف", pickup: "ابدأ رحلتك", collection: "اختر مكانك وتواريخك لرؤية السيارات والأسعار المعلنة.", styles: "أسلوب الموقع" },
 };
 const categories = ["all", "Mini", "Economy", "Comfort", "SUV", "Business", "VAN", "Luxury"] as const;
 const bakuToday = () => {
@@ -66,6 +72,11 @@ const mapUi: Record<Locale, { kicker: string; title: string; lead: string; open:
   ru: { kicker: "CARTIME / КАРТА", title: "Наш офис в центре Баку", lead: "221F Nizami Gəncəvi, Bakı 1000. Можем согласовать получение здесь, в аэропорту GYD или доставку по адресу.", open: "Открыть в Google Картах", contact: "Контакты и маршрут" },
   az: { kicker: "CARTIME / XƏRİTƏ", title: "Bakının mərkəzində ofisimiz", lead: "221F Nizami Gəncəvi, Bakı 1000. Avtomobili burada, GYD hava limanında və ya ünvanda təhvil almağı razılaşdıra bilərsiniz.", open: "Google Xəritədə açın", contact: "Əlaqə və yol" },
   en: { kicker: "CARTIME / MAP", title: "Our office in central Baku", lead: "221F Nizami Gəncəvi, Bakı 1000. Arrange collection here, at GYD airport or at your address.", open: "Open in Google Maps", contact: "Contact and directions" },
+  de: { kicker: "CARTIME / KARTE", title: "Unser Büro im Zentrum von Baku", lead: "221F Nizami Gəncəvi, Bakı 1000. Vereinbaren Sie die Abholung hier, am GYD-Flughafen oder an Ihrer Adresse.", open: "In Google Maps öffnen", contact: "Kontakt und Wegbeschreibung" },
+  zh: { kicker: "CARTIME / 地图", title: "我们位于巴库市中心的办公室", lead: "221F Nizami Gəncəvi, Bakı 1000。在此处、GYD 机场或您的地址安排领取。", open: "在 Google 地图中打开", contact: "联系方式和路线" },
+  ko: { kicker: "CARTIME / 지도", title: "바쿠 중심부에 있는 사무실", lead: "221F Nizami Gəncəvi, Bakı 1000. 여기, GYD 공항 또는 귀하의 주소에서 수거를 준비하십시오.", open: "Google 지도에서 열기", contact: "연락처 및 오시는 길" },
+  fr: { kicker: "CARTIME / CARTE", title: "Notre bureau au centre de Bakou", lead: "221F Nizami Gəncəvi, Bakı 1000. Organisez la collecte ici, à l'aéroport GYD ou à votre adresse.", open: "Ouvrir dans Google Maps", contact: "Contact et itinéraire" },
+  ar: { kicker: "CARTIME / خريطة", title: "مكتبنا في وسط باكو", lead: "221F Nizami Gəncəvi, Bakı 1000. قم بترتيب الاستلام هنا، في مطار GYD أو على عنوانك.", open: "مفتوح في خرائط جوجل", contact: "الاتصال والاتجاهات" },
 };
 
 export default function CarTimeSite({ locale }: { locale: Locale }) {
@@ -209,9 +220,7 @@ export default function CarTimeSite({ locale }: { locale: Locale }) {
             <SiteDirectory locale={locale} />
           </nav>
           <div className="header-actions">
-            <div className="language-links" aria-label={t.languageLabel}>
-              {switcherOrder.map((code) => <a key={code} href={`/${code}`} lang={code} aria-current={code === locale ? "page" : undefined}>{code.toUpperCase()}</a>)}
-            </div>
+            <LanguageSwitcher locale={locale} label={t.languageLabel} />
             <div className="theme-picker" role="group" aria-label={e.styles}>
               {themeNames.map((name, index) => <button key={name} type="button" title={themeConcepts[name]} aria-label={`${t.themes[index]} — ${themeConcepts[name]}`} aria-pressed={theme === name} onClick={() => changeTheme(name)}><span>{t.themes[index]}</span></button>)}
             </div>
@@ -220,7 +229,7 @@ export default function CarTimeSite({ locale }: { locale: Locale }) {
           </div>
           <span className="nav-progress" aria-hidden="true" />
         </div>
-        {menuOpen && <nav className="mobile-nav" aria-label="Mobile navigation"><a href="#search" onClick={() => setMenuOpen(false)}>{e.select}<ArrowRight size={18} /></a><a href="#fleet" onClick={() => setMenuOpen(false)}>{t.nav[0]}<ArrowRight size={18} /></a><a href="#airport" onClick={() => setMenuOpen(false)}>{t.nav[2]}<ArrowRight size={18} /></a><a href="#map" onClick={() => setMenuOpen(false)}>{locale === "ru" ? "Карта" : locale === "az" ? "Xəritə" : "Map"}<ArrowRight size={18} /></a><SiteDirectory locale={locale} /><div className="mobile-theme-picker" role="group" aria-label={e.styles}>{themeNames.map((name, index) => <button key={name} type="button" aria-pressed={theme === name} onClick={() => { changeTheme(name); setMenuOpen(false); }}>{t.themes[index]}</button>)}</div></nav>}
+        {menuOpen && <nav className="mobile-nav" aria-label={t.mobileMenu}><a href="#search" onClick={() => setMenuOpen(false)}>{e.select}<ArrowRight size={18} /></a><a href="#fleet" onClick={() => setMenuOpen(false)}>{t.nav[0]}<ArrowRight size={18} /></a><a href="#airport" onClick={() => setMenuOpen(false)}>{t.nav[2]}<ArrowRight size={18} /></a><a href="#map" onClick={() => setMenuOpen(false)}>{mapUi[locale].kicker}<ArrowRight size={18} /></a><SiteDirectory locale={locale} /><div className="mobile-theme-picker" role="group" aria-label={e.styles}>{themeNames.map((name, index) => <button key={name} type="button" aria-pressed={theme === name} onClick={() => { changeTheme(name); setMenuOpen(false); }}>{t.themes[index]}</button>)}</div></nav>}
       </header>
 
       <main id="top">
@@ -285,7 +294,7 @@ export default function CarTimeSite({ locale }: { locale: Locale }) {
         <section className="section faq-section" id="faq"><div className="container faq-inner"><div><p className="section-kicker">CARTIME / FAQ</p><h2>{s.faqTitle}</h2><p className="faq-slogan">{s.quickLead}</p><a className="faq-all-link" href={`/${locale}/faq`}>{s.quickButton}<ArrowRight size={17} /></a></div><div className="faq-list">{homeFaqIds.map((id) => faqItems[locale].find((item) => item.id === id)).filter((item) => !!item).map((item) => <details key={item.id}><summary>{item.question}<ChevronDown size={20} /></summary><p>{item.answer}</p></details>)}</div></div></section>
       </main>
 
-      <footer className="site-footer"><div className="container footer-inner"><div className="footer-brand"><img className="dark-logo" src="/assets/logo-dark.png" alt="CarTime" /><img className="light-logo" src="/assets/logo-light.svg" alt="" aria-hidden="true" /><span className="brand-caption" aria-hidden="true">CAR RENTAL</span><p>{t.footerText}</p><ContactLinks locale={locale} /></div><div className="footer-right"><p>{t.footerDemo}</p><a href={`/${locale}/fleet`}>{g.allCars} ↗</a><a href={`/${locale}/booking`}>{bookingUi[locale].nav} ↗</a><a href="#top">{t.backTop} ↑</a></div></div><nav className="container footer-guides" aria-label={g.nav}><a href={`/${locale}/booking`}>{bookingUi[locale].nav}</a><a href={`/${locale}/about`}>{s.aboutNav}</a><a href={`/${locale}/faq`}>{s.faqNav}</a><a href={`/${locale}/rental`}>{rental.nav}</a><a href={`/${locale}/contact`}>{rental.contact}</a>{rentalSlugs.map((slug) => <a key={slug} href={`/${locale}/rental/${slug}`}>{rentalPages[locale][slug].title}</a>)}{guideSlugs.map((slug) => <a key={slug} href={`/${locale}/guide/${slug}`}>{guides[locale][slug].title}</a>)}</nav><div className="container footer-bottom"><span>© {new Date().getFullYear()} CarTime</span><span>AZ / EN / RU</span></div></footer>
+      <footer className="site-footer"><div className="container footer-inner"><div className="footer-brand"><img className="dark-logo" src="/assets/logo-dark.png" alt="CarTime" /><img className="light-logo" src="/assets/logo-light.svg" alt="" aria-hidden="true" /><span className="brand-caption" aria-hidden="true">CAR RENTAL</span><p>{t.footerText}</p><ContactLinks locale={locale} /></div><div className="footer-right"><p>{t.footerDemo}</p><a href={`/${locale}/fleet`}>{g.allCars} ↗</a><a href={`/${locale}/booking`}>{bookingUi[locale].nav} ↗</a><a href="#top">{t.backTop} ↑</a></div></div><nav className="container footer-guides" aria-label={g.nav}><a href={`/${locale}/booking`}>{bookingUi[locale].nav}</a><a href={`/${locale}/about`}>{s.aboutNav}</a><a href={`/${locale}/faq`}>{s.faqNav}</a><a href={`/${locale}/rental`}>{rental.nav}</a><a href={`/${locale}/contact`}>{rental.contact}</a>{rentalSlugs.map((slug) => <a key={slug} href={`/${locale}/rental/${slug}`}>{rentalPages[locale][slug].title}</a>)}{guideSlugs.map((slug) => <a key={slug} href={`/${locale}/guide/${slug}`}>{guides[locale][slug].title}</a>)}</nav><div className="container footer-bottom"><span>© {new Date().getFullYear()} CarTime</span><span>{switcherOrder.map((code) => code.toUpperCase()).join(" / ")}</span></div></footer>
 
       <QuickHelp locale={locale} />
 

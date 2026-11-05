@@ -22,6 +22,36 @@ const labels = {
     travel: "Baku and routes", baku: "Explore Baku", routes: "Azerbaijan road trips", absheron: "Absheron and fire", gobustan: "Gobustan", sheki: "Sheki and north-west", airportGuide: "Arriving in Baku", rentalGuide: "Choosing a rental",
     company: "Company and help", about: "About CarTime", faq: "Questions and answers", contact: "Contact",
   },
+  de: {
+    all: "Entdecken", cars: "Autos", fleet: "Flotte und Preise", booking: "Mietanfrage", map: "Finden Sie uns auf der Karte",
+    services: "Dienstleistungen", terms: "Mietbedingungen", classes: "Fahrzeugklassen", rental: "Alle Mietbedingungen", conditions: "Mietbedingungen", airport: "Abholung vom Flughafen", delivery: "Adresszustellung", longTerm: "Lange Miete", insurance: "Versicherung und Kaution", mileage: "Unbegrenzte Kilometerzahl", economy: "Economy-Autos", suv: "Crossover und SUVs",
+    travel: "Baku und Routen", baku: "Entdecken Sie Baku", routes: "Roadtrips durch Aserbaidschan", absheron: "Absheron und Feuer", gobustan: "Gobustan", sheki: "Scheki und Nordwesten", airportGuide: "Ankunft in Baku", rentalGuide: "Eine Miete auswählen",
+    company: "Gesellschaft und Hilfe", about: "Über CarTime", faq: "Fragen und Antworten", contact: "Kontakt",
+  },
+  zh: {
+    all: "探索", cars: "汽车", fleet: "机队和费率", booking: "租赁请求", map: "在地图上找到我们",
+    services: "服务", terms: "租赁条款", classes: "汽车类", rental: "所有租赁条款", conditions: "租赁条件", airport: "机场接机", delivery: "地址递送", longTerm: "长租", insurance: "保险及押金", mileage: "无限里程", economy: "经济型轿车", suv: "跨界车和 SUV",
+    travel: "巴库和航线", baku: "探索巴库", routes: "阿塞拜疆公路旅行", absheron: "阿布歇隆与火", gobustan: "戈布斯坦", sheki: "舍基和西北部", airportGuide: "抵达巴库", rentalGuide: "选择租赁",
+    company: "陪伴与帮助", about: "关于 CarTime", faq: "问题与解答", contact: "联系方式",
+  },
+  ko: {
+    all: "탐색", cars: "자동차", fleet: "함대 및 요금", booking: "대여요청", map: "지도에서 우리를 찾아보세요",
+    services: "서비스", terms: "대여 조건", classes: "자동차 강습", rental: "모든 임대 조건", conditions: "대여 조건", airport: "공항 픽업", delivery: "주소 전달", longTerm: "장기 임대", insurance: "보험 및 보증금", mileage: "마일리지 무제한", economy: "경제형 자동차", suv: "크로스오버 및 SUV",
+    travel: "바쿠 및 노선", baku: "바쿠 탐색", routes: "아제르바이잔 자동차 여행", absheron: "압셰론과 불", gobustan: "고부스탄", sheki: "셰키 및 북서쪽", airportGuide: "바쿠 도착", rentalGuide: "렌탈 선택",
+    company: "회사 및 도움", about: "CarTime 소개", faq: "질문과 답변", contact: "연락처",
+  },
+  fr: {
+    all: "Explorer", cars: "Voitures", fleet: "Flotte et tarifs", booking: "Demande de location", map: "Retrouvez-nous sur le plan",
+    services: "Prestations", terms: "Conditions de location", classes: "Cours de voitures", rental: "Toutes les conditions de location", conditions: "Conditions de location", airport: "Prise en charge à l'aéroport", delivery: "Adresse de livraison", longTerm: "Locations longues", insurance: "Assurance et caution", mileage: "Kilométrage illimité", economy: "Voitures économiques", suv: "Crossovers et SUV",
+    travel: "Bakou et itinéraires", baku: "Explorez Bakou", routes: "Road trips en Azerbaïdjan", absheron: "Absheron et le feu", gobustan: "Gobustan", sheki: "Sheki et nord-ouest", airportGuide: "Arrivée à Bakou", rentalGuide: "Choisir une location",
+    company: "Entreprise et aide", about: "À propos de CarTime", faq: "Questions et réponses", contact: "Contact",
+  },
+  ar: {
+    all: "اكتشف", cars: "سيارات", fleet: "الأسطول والأسعار", booking: "طلب الإيجار", map: "تابعونا على الخريطة",
+    services: "الخدمات", terms: "شروط الإيجار", classes: "فئات السيارات", rental: "جميع شروط الإيجار", conditions: "شروط الإيجار", airport: "التوصيل من المطار", delivery: "تسليم العنوان", longTerm: "الإيجارات الطويلة", insurance: "التأمين والوديعة", mileage: "أميال غير محدودة", economy: "سيارات اقتصادية", suv: "سيارات الكروس أوفر وسيارات الدفع الرباعي",
+    travel: "باكو والطرق", baku: "اكتشف باكو", routes: "رحلات برية أذربيجان", absheron: "ابشرون ونار", gobustan: "قبوستان", sheki: "شكي والشمال الغربي", airportGuide: "الوصول إلى باكو", rentalGuide: "اختيار الإيجار",
+    company: "صحبة ومساعدة", about: "نبذة عن CarTime", faq: "أسئلة وأجوبة", contact: "إتصل",
+  },
 } satisfies Record<Locale, Record<string, string>>;
 
 export default function SiteDirectory({ locale }: { locale: Locale }) {
