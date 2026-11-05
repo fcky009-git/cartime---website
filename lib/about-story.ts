@@ -157,7 +157,7 @@ export const aboutStory: Record<Locale, Story> = {
     fleetCards: [
       { title: "Wählen Sie für die Reise", body: "Beginnen Sie mit Ihren Bedürfnissen: ein kompaktes Stadtauto, eine Limousine für Meetings, ein Familien-Crossover oder ein geräumiges Fahrzeug für eine Gruppe." },
       { title: "Preise nach Dauer", body: "Der Tagespreis hängt von der Mietdauer ab. Für einen aussagekräftigeren Vergleich werden in jedem Katalogeintrag sechs Perioden angezeigt." },
-      { title: "Eine echte Bestätigung", body: "Nachdem Sie Daten und Modell ausgewählt haben, prüft unser Team die Verfügbarkeit, Anzahlung, Abholstelle und den Endpreis. Eine Website-Anfrage ist keine bezahlte Buchung." },
+      { title: "Eine echte Bestätigung", body: "Nachdem Sie Daten und Modell ausgewählt haben, prüft unser Team die Verfügbarkeit, Kaution, Abholstelle und den Endpreis. Eine Website-Anfrage ist keine bezahlte Buchung." },
     ],
     galleryTitle: "Eine Stadt, andere Anfänge",
     galleryLead: "Entdecken Sie drei Möglichkeiten, wie eine Reise beginnen kann. Bilder dienen der Veranschaulichung; Das tatsächliche Fahrzeug wird separat bestätigt.",
@@ -175,7 +175,7 @@ export const aboutStory: Record<Locale, Story> = {
       { title: "Nehmen Sie die Straße", body: "Abholung am Flughafen oder Anforderung einer Adresszustellung. Der Support ist rund um die Uhr verfügbar, mit unbegrenzter Kilometerzahl innerhalb Aserbaidschans." },
     ],
     promiseTitle: "Was uns wichtig ist",
-    promise: ["Preise im Kontext der Mietdauer anzeigen.", "Helfen Sie dabei, ein Fahrzeug der tatsächlichen Reise und seinem Gepäck anzupassen.", "Besprechen Sie vor der Bestätigung die Anzahlung, Versicherung und den Endpreis.", "Bieten Sie neben den Autos auch nützliche Routen nach Baku und Aserbaidschan an."],
+    promise: ["Preise im Kontext der Mietdauer anzeigen.", "Helfen Sie dabei, ein Fahrzeug der tatsächlichen Reise und seinem Gepäck anzupassen.", "Besprechen Sie vor der Bestätigung die Kaution, Versicherung und den Endpreis.", "Bieten Sie neben den Autos auch nützliche Routen nach Baku und Aserbaidschan an."],
     editorialNote: "Das Startdatum 2012 und die Flottengröße wurden von CarTime bereitgestellt. Den Wachstumsstadien sind keine unbestätigten Daten zugeordnet; Bilder dienen der Veranschaulichung.",
   },
   zh: {
@@ -186,7 +186,7 @@ export const aboutStory: Record<Locale, Story> = {
     timeline: [
       { year: "2012", title: "CarTime 开始", body: "CarTime开始从事汽车租赁业务。我们的指导思想是让汽车与旅行者的计划相匹配，并在旅程开始前明确条款。" },
       { year: "成长", title: "年年进步", body: "我们不断扩大机队。选择范围从紧凑型城市汽车到适合不同旅程的家庭用车、跨界车和行政车型。" },
-      { year: "24/7", title: "围绕客户服务", body: "今天，我们提供巴库机场接送、地址递送和 24/7 支持，帮助客户在适合他们的地方开始他们的旅行。" },
+      { year: "24/7", title: "围绕客户服务", body: "今天，我们提供巴库机场接送、送车上门和 24/7 支持，帮助客户在适合他们的地方开始他们的旅行。" },
       { year: "122\n实际车队中", title: "今天的船队", body: `CarTime 的工作车队拥有 122 辆车。该网站显示 ${fleetCount} 不同的条目，因为多辆汽车可以共享相同的型号和年份。` },
       { year: "2026", title: "数字章节", body: "目录、费率期限、答案和阿塞拜疆指南现在位于一处。经理在收到请求后确认具体的汽车和最终条款。" },
       { year: "下一个", title: "不断提高标准", body: "今天的规模并不是终点线。我们希望不断改善车辆选择、预订旅程以及客户返回的服务。" },
@@ -196,7 +196,7 @@ export const aboutStory: Record<Locale, Story> = {
     fleetCards: [
       { title: "选择旅程", body: "从您的需求开始：紧凑型城市汽车、会议轿车、家庭跨界车或宽敞的团体车辆。" },
       { title: "按时长划分的费率", body: "每日费率取决于租赁时间。每个目录条目都显示六个时期，以便进行更有意义的比较。" },
-      { title: "真实确认", body: "在您选择日期和型号后，我们的团队会检查可用性、押金、收集点和最终价格。网站请求不是付费预订。" },
+      { title: "真实确认", body: "在您选择日期和型号后，我们的团队会检查可用性、押金、取车点和最终价格。网站请求不是付费预订。" },
     ],
     galleryTitle: "一座城市，不同的开始",
     galleryLead: "探索旅程开始的三种方式。图片仅供参考；实际车辆另行确认。",
@@ -208,10 +208,10 @@ export const aboutStory: Record<Locale, Story> = {
     journeyTitle: "您与 CarTime 的旅程",
     journeyLead: "从想法到道路的清晰步骤。",
     journey: [
-      { title: "描述一下您的旅行", body: "选择日期、时间、接送地点、乘客数量和首选舱位。如果前往巴库以外的地方，请提及您的路线。" },
+      { title: "描述一下您的旅行", body: "选择日期、时间、接送地点、乘客数量和首选车型。如果前往巴库以外的地方，请提及您的路线。" },
       { title: "比较选项", body: "查看适合您租赁时间的车型、年份和日费率。向我们询问有关行李、儿童座椅和旅行需求的信息。" },
       { title: "获得确认", body: "经理在安排交接前检查具体车辆、押金、保险、取车点和总价。" },
-      { title: "走路", body: "机场领取或要求送货地址。全天候 (24/7) 提供支持，阿塞拜疆境内里程不限。" },
+      { title: "走路", body: "机场领取或要求送车地址。全天候 (24/7) 提供支持，阿塞拜疆境内里程不限。" },
     ],
     promiseTitle: "什么对我们重要",
     promise: ["显示租赁期限内的费率。", "帮助将车辆与真实行程及其行李进行匹配。", "在确认前讨论押金、保险和最终价格。", "在汽车旁边提供有用的巴库和阿塞拜疆路线。"],
@@ -235,7 +235,7 @@ export const aboutStory: Record<Locale, Story> = {
     fleetCards: [
       { title: "여행을 선택하세요", body: "원하는 것부터 시작하세요: 소형 도시형 자동차, 회의용 세단, 가족용 크로스오버 또는 단체용 넓은 차량." },
       { title: "기간별 요금", body: "일일 요금은 대여 기간에 따라 다릅니다. 모든 카탈로그 항목에는 보다 의미 있는 비교를 위해 6개의 기간이 표시됩니다." },
-      { title: "실제 확인", body: "날짜와 모델을 선택하시면 당사 팀에서 재고 여부, 보증금, 수거 장소 및 최종 가격을 확인합니다. 웹사이트 요청은 유료 예약이 아닙니다." },
+      { title: "실제 확인", body: "날짜와 모델을 선택하시면 당사 팀에서 재고 여부, 보증금, 수령 장소 및 최종 가격을 확인합니다. 웹사이트 요청은 유료 예약이 아닙니다." },
     ],
     galleryTitle: "하나의 도시, 다른 시작",
     galleryLead: "여행을 시작할 수 있는 세 가지 방법을 알아보세요. 이미지는 예시입니다. 실제 차량은 별도로 확인됩니다.",
@@ -274,21 +274,21 @@ export const aboutStory: Record<Locale, Story> = {
     fleetCards: [
       { title: "Choisissez pour le voyage", body: "Commencez par vos besoins : une citadine compacte, une berline pour les réunions, un crossover familial ou un véhicule spacieux pour un groupe." },
       { title: "Tarifs par durée", body: "Le tarif journalier dépend de la durée de la location. Chaque entrée de catalogue affiche six périodes pour une comparaison plus significative." },
-      { title: "Une vraie confirmation", body: "Après avoir choisi les dates et un modèle, notre équipe vérifie la disponibilité, le dépôt, le point de retrait et le prix final. Une demande sur le site Web n’est pas une réservation payante." },
+      { title: "Une vraie confirmation", body: "Après avoir choisi les dates et un modèle, notre équipe vérifie la disponibilité, la caution, le point de retrait et le prix final. Une demande sur le site Web n’est pas une réservation payante." },
     ],
     galleryTitle: "Une ville, des débuts différents",
     galleryLead: "Explorez trois façons dont un voyage peut commencer. Les images sont illustratives ; le véhicule réel est confirmé séparément.",
     gallery: [
       { image: "/assets/cartime-baku-sunrise.jpg", alt: "Bakou et une voiture au bord de la Caspienne", title: "Matin à Bakou", body: "Découvrez Icherisheher, le boulevard, l'architecture du boom pétrolier et la ville contemporaine. Découvrez le centre historique à pied." },
-      { image: "/assets/cartime-airport-bmw7-v3.jpg", alt: "Une voiture près de l'aéroport de Bakou", title: "Après l'atterrissage", body: "Partagez votre vol et votre heure d'arrivée, puis convenez du point de rendez-vous. La collecte à l'aéroport est disponible sur arrangement préalable." },
+      { image: "/assets/cartime-airport-bmw7-v3.jpg", alt: "Une voiture près de l'aéroport de Bakou", title: "Après l'atterrissage", body: "Partagez votre vol et votre heure d'arrivée, puis convenez du point de rendez-vous. Le retrait à l'aéroport est disponible sur arrangement préalable." },
       { image: "/assets/cartime-baku-night-bmw-xm.jpg", alt: "BMW XM against Baku at night", title: "Au-delà de la ville", body: "Absheron, Gobustan et le nord-ouest révèlent un autre Azerbaïdjan. Vérifiez les routes, la météo et les arrêts avant un trajet plus long." },
     ],
     journeyTitle: "Votre voyage avec CarTime",
     journeyLead: "Des étapes claires de l'idée à la route.",
     journey: [
-      { title: "Décrivez votre voyage", body: "Choisissez les dates, les heures, les points de collecte et de retour, le nombre de passagers et la classe préférée. Mentionnez votre itinéraire si vous voyagez au-delà de Bakou." },
+      { title: "Décrivez votre voyage", body: "Choisissez les dates, les heures, les points de retrait et de retour, le nombre de passagers et la classe préférée. Mentionnez votre itinéraire si vous voyagez au-delà de Bakou." },
       { title: "Comparer les options", body: "Consultez les modèles, les années et les tarifs journaliers pour la durée de votre location. Renseignez-vous sur les bagages, les sièges enfants et les besoins de voyage." },
-      { title: "Obtenir une confirmation", body: "Un responsable vérifie la voiture spécifique, la caution, l'assurance, le point de collecte et le prix total avant d'organiser la remise." },
+      { title: "Obtenir une confirmation", body: "Un responsable vérifie la voiture spécifique, la caution, l'assurance, le point de retrait et le prix total avant d'organiser la remise." },
       { title: "Prendre la route", body: "Récupérez à l'aéroport ou demandez la livraison à l'adresse. L'assistance est disponible 24h/24 et 7j/7, avec un kilométrage illimité en Azerbaïdjan." },
     ],
     promiseTitle: "Ce qui compte pour nous",
@@ -313,7 +313,7 @@ export const aboutStory: Record<Locale, Story> = {
     fleetCards: [
       { title: "اختر للرحلة", body: "ابدأ باحتياجاتك: سيارة مدينة صغيرة، سيارة سيدان للاجتماعات، سيارة كروس أوفر عائلية أو سيارة فسيحة لمجموعة." },
       { title: "الأسعار حسب المدة", body: "السعر اليومي يعتمد على مدة الإيجار. يُظهر كل إدخال في الكتالوج ست فترات لإجراء مقارنة ذات معنى أكبر." },
-      { title: "تأكيد حقيقي", body: "بعد اختيار التواريخ والنموذج، يقوم فريقنا بالتحقق من التوفر والإيداع ونقطة التجميع والسعر النهائي. طلب الموقع الإلكتروني ليس حجزًا مدفوعًا." },
+      { title: "تأكيد حقيقي", body: "بعد اختيار التواريخ والنموذج، يقوم فريقنا بالتحقق من التوفر ومبلغ التأمين ونقطة الاستلام والسعر النهائي. طلب الموقع الإلكتروني ليس حجزًا مدفوعًا." },
     ],
     galleryTitle: "مدينة واحدة، بدايات مختلفة",
     galleryLead: "اكتشف ثلاث طرق يمكن أن تبدأ بها الرحلة. الصور توضيحية؛ يتم تأكيد السيارة الفعلية بشكل منفصل.",
@@ -327,11 +327,11 @@ export const aboutStory: Record<Locale, Story> = {
     journey: [
       { title: "صف رحلتك", body: "اختيار التواريخ والأوقات ونقاط التجمع والعودة وعدد الركاب والدرجة المفضلة. اذكر طريقك إذا كنت مسافرًا خارج باكو." },
       { title: "مقارنة الخيارات", body: "مراجعة النماذج والسنوات والأسعار اليومية لمدة الإيجار الخاصة بك. اسألنا عن الأمتعة ومقاعد الأطفال واحتياجات السفر." },
-      { title: "احصل على التأكيد", body: "يقوم المدير بفحص السيارة المحددة والإيداع والتأمين ونقطة التحصيل والسعر الإجمالي قبل ترتيب التسليم." },
+      { title: "احصل على التأكيد", body: "يقوم المدير بفحص السيارة المحددة ومبلغ التأمين والتأمين ونقطة التحصيل والسعر الإجمالي قبل ترتيب التسليم." },
       { title: "خذ الطريق", body: "الاستلام في المطار أو طلب تسليم العنوان. يتوفر الدعم على مدار الساعة طوال أيام الأسبوع، مع عدد غير محدود من الأميال داخل أذربيجان." },
     ],
     promiseTitle: "ما يهمنا",
-    promise: ["عرض الأسعار في سياق مدة الإيجار.", "المساعدة في مطابقة المركبة للرحلة الحقيقية وأمتعتها.", "مناقشة الوديعة والتأمين والسعر النهائي قبل التأكيد.", "عرض طرق باكو وأذربيجان المفيدة بجانب السيارات."],
+    promise: ["عرض الأسعار في سياق مدة الإيجار.", "المساعدة في مطابقة المركبة للرحلة الحقيقية وأمتعتها.", "مناقشة مبلغ التأمين والتأمين والسعر النهائي قبل التأكيد.", "عرض طرق باكو وأذربيجان المفيدة بجانب السيارات."],
     editorialNote: "تم توفير تاريخ البدء وحجم الأسطول لعام 2012 بواسطة CarTime. لم يتم تعيين تواريخ لم يتم التحقق منها لمراحل النمو؛ الصور توضيحية.",
   },
 };

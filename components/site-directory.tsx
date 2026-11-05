@@ -30,7 +30,7 @@ const labels = {
   },
   zh: {
     all: "探索", cars: "汽车", fleet: "机队和费率", booking: "租赁请求", map: "在地图上找到我们",
-    services: "服务", terms: "租赁条款", classes: "汽车类", rental: "所有租赁条款", conditions: "租赁条件", airport: "机场接机", delivery: "地址递送", longTerm: "长租", insurance: "保险及押金", mileage: "无限里程", economy: "经济型轿车", suv: "跨界车和 SUV",
+    services: "服务", terms: "租赁条款", classes: "汽车类", rental: "所有租赁条款", conditions: "租赁条件", airport: "机场接机", delivery: "送车上门", longTerm: "长租", insurance: "保险及押金", mileage: "无限里程", economy: "经济型轿车", suv: "跨界车和 SUV",
     travel: "巴库和航线", baku: "探索巴库", routes: "阿塞拜疆公路旅行", absheron: "阿布歇隆与火", gobustan: "戈布斯坦", sheki: "舍基和西北部", airportGuide: "抵达巴库", rentalGuide: "选择租赁",
     company: "陪伴与帮助", about: "关于 CarTime", faq: "问题与解答", contact: "联系方式",
   },
@@ -48,9 +48,9 @@ const labels = {
   },
   ar: {
     all: "اكتشف", cars: "سيارات", fleet: "الأسطول والأسعار", booking: "طلب الإيجار", map: "تابعونا على الخريطة",
-    services: "الخدمات", terms: "شروط الإيجار", classes: "فئات السيارات", rental: "جميع شروط الإيجار", conditions: "شروط الإيجار", airport: "التوصيل من المطار", delivery: "تسليم العنوان", longTerm: "الإيجارات الطويلة", insurance: "التأمين والوديعة", mileage: "أميال غير محدودة", economy: "سيارات اقتصادية", suv: "سيارات الكروس أوفر وسيارات الدفع الرباعي",
+    services: "الخدمات", terms: "شروط الإيجار", classes: "فئات السيارات", rental: "جميع شروط الإيجار", conditions: "شروط الإيجار", airport: "التوصيل من المطار", delivery: "تسليم العنوان", longTerm: "الإيجارات الطويلة", insurance: "التأمين ومبلغ التأمين", mileage: "أميال غير محدودة", economy: "سيارات اقتصادية", suv: "سيارات الكروس أوفر وسيارات الدفع الرباعي",
     travel: "باكو والطرق", baku: "اكتشف باكو", routes: "رحلات برية أذربيجان", absheron: "ابشرون ونار", gobustan: "قبوستان", sheki: "شكي والشمال الغربي", airportGuide: "الوصول إلى باكو", rentalGuide: "اختيار الإيجار",
-    company: "صحبة ومساعدة", about: "نبذة عن CarTime", faq: "أسئلة وأجوبة", contact: "إتصل",
+    company: "صحبة ومساعدة", about: "نبذة عن CarTime", faq: "أسئلة وأجوبة", contact: "اتصل",
   },
 } satisfies Record<Locale, Record<string, string>>;
 

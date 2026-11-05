@@ -61,7 +61,7 @@ const editorialUi: Record<Locale, { lineOne: string; lineTwo: string; lead: stri
   zh: { lineOne: "巴库越来越近了。", lineTwo: "握紧方向盘。", lead: "选择前往巴库和阿塞拜疆其他地区的汽车。路线由你来制定。", select: "找到你的车", explore: "浏览车队", scroll: "滚动浏览", pickup: "开始你的旅程", collection: "选择您的地点和日期以查看汽车和公布的价格。", styles: "网站风格" },
   ko: { lineOne: "바쿠가 가까워진다.", lineTwo: "운전대를 잡으세요.", lead: "바쿠와 아제르바이잔의 나머지 지역을 위한 자동차를 선택하세요. 경로는 당신이 만드는 것입니다.", select: "차를 찾아보세요", explore: "차량 목록 보기", scroll: "스크롤하여 탐색하세요.", pickup: "여행을 시작하세요", collection: "장소와 날짜를 선택하여 자동차와 공시 요금을 확인하세요.", styles: "사이트 스타일" },
   fr: { lineOne: "Bakou se rapproche.", lineTwo: "Prenez le volant.", lead: "Choisissez une voiture pour Bakou et le reste de l'Azerbaïdjan. L'itinéraire vous appartient.", select: "Trouvez votre voiture", explore: "Explorez la flotte", scroll: "Faites défiler pour explorer", pickup: "Commencez votre voyage", collection: "Choisissez votre lieu et vos dates pour voir les voitures et les tarifs publiés.", styles: "Style du site" },
-  ar: { lineOne: "باكو تقترب.", lineTwo: "خذ عجلة القيادة.", lead: "اختر سيارة لباكو وبقية أذربيجان. الطريق هو لك لجعل.", select: "ابحث عن سيارتك", explore: "اكتشف الأسطول", scroll: "قم بالتمرير للاستكشاف", pickup: "ابدأ رحلتك", collection: "اختر مكانك وتواريخك لرؤية السيارات والأسعار المعلنة.", styles: "أسلوب الموقع" },
+  ar: { lineOne: "باكو تقترب.", lineTwo: "خذ عجلة القيادة.", lead: "اختر سيارة لباكو وبقية أذربيجان. أنت من يرسم الطريق.", select: "ابحث عن سيارتك", explore: "اكتشف الأسطول", scroll: "قم بالتمرير للاستكشاف", pickup: "ابدأ رحلتك", collection: "اختر مكانك وتواريخك لرؤية السيارات والأسعار المعلنة.", styles: "أسلوب الموقع" },
 };
 const categories = ["all", "Mini", "Economy", "Comfort", "SUV", "Business", "VAN", "Luxury"] as const;
 const bakuToday = () => {
@@ -76,9 +76,9 @@ const mapUi: Record<Locale, { kicker: string; title: string; lead: string; open:
   en: { kicker: "CARTIME / MAP", title: "Our office in central Baku", lead: "221F Nizami Gəncəvi, Bakı 1000. Arrange collection here, at GYD airport or at your address.", open: "Open in Google Maps", contact: "Contact and directions" },
   de: { kicker: "CARTIME / KARTE", title: "Unser Büro im Zentrum von Baku", lead: "221F Nizami Gəncəvi, Bakı 1000. Vereinbaren Sie die Abholung hier, am GYD-Flughafen oder an Ihrer Adresse.", open: "In Google Maps öffnen", contact: "Kontakt und Wegbeschreibung" },
   zh: { kicker: "CARTIME / 地图", title: "我们位于巴库市中心的办公室", lead: "221F Nizami Gəncəvi, Bakı 1000。在此处、GYD 机场或您的地址安排领取。", open: "在 Google 地图中打开", contact: "联系方式和路线" },
-  ko: { kicker: "CARTIME / 지도", title: "바쿠 중심부에 있는 사무실", lead: "221F Nizami Gəncəvi, Bakı 1000. 여기, GYD 공항 또는 귀하의 주소에서 수거를 준비하십시오.", open: "Google 지도에서 열기", contact: "연락처 및 오시는 길" },
-  fr: { kicker: "CARTIME / CARTE", title: "Notre bureau au centre de Bakou", lead: "221F Nizami Gəncəvi, Bakı 1000. Organisez la collecte ici, à l'aéroport GYD ou à votre adresse.", open: "Ouvrir dans Google Maps", contact: "Contact et itinéraire" },
-  ar: { kicker: "CARTIME / خريطة", title: "مكتبنا في وسط باكو", lead: "221F Nizami Gəncəvi, Bakı 1000. قم بترتيب الاستلام هنا، في مطار GYD أو على عنوانك.", open: "مفتوح في خرائط جوجل", contact: "الاتصال والاتجاهات" },
+  ko: { kicker: "CARTIME / 지도", title: "바쿠 중심부에 있는 사무실", lead: "221F Nizami Gəncəvi, Bakı 1000. 여기, GYD 공항 또는 귀하의 주소에서 수령를 준비하십시오.", open: "Google 지도에서 열기", contact: "연락처 및 오시는 길" },
+  fr: { kicker: "CARTIME / CARTE", title: "Notre bureau au centre de Bakou", lead: "221F Nizami Gəncəvi, Bakı 1000. Organisez le retrait ici, à l'aéroport GYD ou à votre adresse.", open: "Ouvrir dans Google Maps", contact: "Contact et itinéraire" },
+  ar: { kicker: "CARTIME / خريطة", title: "مكتبنا في وسط باكو", lead: "221F Nizami Gəncəvi, Bakı 1000. قم بترتيب الاستلام هنا، في مطار GYD أو على عنوانك.", open: "افتح في خرائط Google", contact: "الاتصال والاتجاهات" },
 };
 
 export default function CarTimeSite({ locale }: { locale: Locale }) {

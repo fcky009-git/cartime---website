@@ -44,7 +44,7 @@ All languages are configured in `lib/locales.ts` (codes, hreflang, og:locale, te
 - Every user-facing string must exist in every language of `locales`. Copy lives in `lib/i18n.ts`, `lib/service-info.ts`, `lib/guides.ts`, `lib/rental-pages.ts` and `lib/fleet-ui.ts`.
 - Never type the number of cars into copy. Use `fleetCount` from `lib/fleet-count.ts`.
 - Fleet data is `lib/fleet.json`. Its source snapshot and reconciliation are in `data/` (rates from 9fleet.com, captured 4 Nov 2026, USD per day).
-- Do not use 9fleet.com photos: their number plates show the other brand. Catalog images are labelled category illustrations until clean CarTime photos exist.
+- Fleet photos live in `public/assets/fleet/` and `lib/fleet-images.json` points to them. The other brand's name was removed from their number plates. Never link to or re-upload the original 9fleet.com images; replace these files only with photos that show no other brand. Real CarTime photos are still needed before launch.
 - Do not invent availability, deposit amounts, insurance coverage or delivery prices. Open items are listed in `README.md`; update `lib/service-info.ts` only when the owner confirms them.
 - Do not add ratings, reviews, price ranges or social profile links to structured data unless they are real and confirmed.
 - Do not claim instant confirmed booking or online payment. The request form is live and saves leads in the admin panel.
