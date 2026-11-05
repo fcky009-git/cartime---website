@@ -66,7 +66,7 @@ export default async function GuidePage({ params }: RouteParams) {
         <div className="container">
           <div className="info-related-head"><div><p className="section-kicker">CARTIME / GUIDE</p><h2>{ui.next}</h2></div><a href={`/${language}/fleet`}>{ui.allCars} →</a></div>
           <div className="guide-card-grid">
-            {related.map((item, index) => <a className="guide-card" key={item} href={`/${language}/guide/${item}`}><span>0{index + 1} / {guides[language][item].eyebrow}</span><h3>{guides[language][item].title}</h3><p>{guides[language][item].teaser}</p><b>{ui.read} ↗</b></a>)}
+            {related.map((item, index) => <a className={`guide-card guide-card--${item}`} key={item} href={`/${language}/guide/${item}`}><span>0{index + 1} / {guides[language][item].eyebrow}</span><h3>{guides[language][item].title}</h3><p>{guides[language][item].teaser}</p><b>{ui.read} ↗</b></a>)}
           </div>
         </div>
       </section>

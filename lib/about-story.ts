@@ -45,7 +45,7 @@ export const aboutStory: Record<Locale, Story> = {
     galleryLead: "Пролистайте три сценария поездки. Изображения передают настроение маршрутов; конкретный автомобиль при выдаче подтверждается отдельно.",
     gallery: [
       { image: "/assets/cartime-baku-sunrise.jpg", alt: "Баку и автомобиль у Каспийского моря", title: "Утро в Баку", body: "Начните с города: Ичери-шехер, бульвар, архитектура нефтяного Баку и современный центр. Для исторического ядра оставьте время на прогулку пешком." },
-      { image: "/assets/cartime-airport-daylight.jpg", alt: "Автомобиль у аэропорта Баку", title: "Сразу после прилёта", body: "Укажите рейс и время прибытия, согласуйте точку встречи и начните маршрут в своём темпе. Выдача в аэропорту доступна по предварительной договорённости." },
+      { image: "/assets/cartime-airport-bmw7-v3.jpg", alt: "Автомобиль у аэропорта Баку", title: "Сразу после прилёта", body: "Укажите рейс и время прибытия, согласуйте точку встречи и начните маршрут в своём темпе. Выдача в аэропорту доступна по предварительной договорённости." },
       { image: "/assets/cartime-baku-night-bmw-xm.jpg", alt: "BMW XM на фоне ночного Баку", title: "Дальше за город", body: "Апшерон, Гобустан и северо-запад страны раскрывают другой Азербайджан. Для дальней поездки заранее проверьте дорогу, погоду и план остановок." },
     ],
     journeyTitle: "Как выглядит путь с CarTime",
@@ -84,7 +84,7 @@ export const aboutStory: Record<Locale, Story> = {
     galleryLead: "Üç səyahət ssenarisini nəzərdən keçirin. Şəkillər marşrutların əhvalını göstərir; konkret avtomobil ayrıca təsdiqlənir.",
     gallery: [
       { image: "/assets/cartime-baku-sunrise.jpg", alt: "Xəzər sahilində Bakı və avtomobil", title: "Bakıda səhər", body: "İçərişəhər, Bulvar, neft dövrünün memarlığı və müasir mərkəz. Tarixi hissəni piyada kəşf etmək üçün vaxt ayırın." },
-      { image: "/assets/cartime-airport-daylight.jpg", alt: "Bakı hava limanı yanında avtomobil", title: "Enişdən sonra", body: "Reys və gəliş vaxtını bildirin, görüş yerini razılaşdırın. Hava limanında təhvil əvvəlcədən razılaşdırılmaqla mümkündür." },
+      { image: "/assets/cartime-airport-bmw7-v3.jpg", alt: "Bakı hava limanı yanında avtomobil", title: "Enişdən sonra", body: "Reys və gəliş vaxtını bildirin, görüş yerini razılaşdırın. Hava limanında təhvil əvvəlcədən razılaşdırılmaqla mümkündür." },
       { image: "/assets/cartime-baku-night-bmw-xm.jpg", alt: "Gecə Bakısı fonunda BMW XM", title: "Şəhərdən kənara", body: "Abşeron, Qobustan və şimal-qərb bölgəsi Azərbaycanın başqa tərəfini göstərir. Yol və hava şəraitini əvvəlcədən yoxlayın." },
     ],
     journeyTitle: "CarTime ilə səfər necə başlayır",
@@ -123,7 +123,7 @@ export const aboutStory: Record<Locale, Story> = {
     galleryLead: "Explore three ways a journey can start. Images are illustrative; the actual vehicle is confirmed separately.",
     gallery: [
       { image: "/assets/cartime-baku-sunrise.jpg", alt: "Baku and a car beside the Caspian", title: "Morning in Baku", body: "Discover Icherisheher, the Boulevard, oil-boom architecture and the contemporary city. Explore the historic centre on foot." },
-      { image: "/assets/cartime-airport-daylight.jpg", alt: "A car near Baku airport", title: "After landing", body: "Share your flight and arrival time, then agree on the meeting point. Airport collection is available by prior arrangement." },
+      { image: "/assets/cartime-airport-bmw7-v3.jpg", alt: "A car near Baku airport", title: "After landing", body: "Share your flight and arrival time, then agree on the meeting point. Airport collection is available by prior arrangement." },
       { image: "/assets/cartime-baku-night-bmw-xm.jpg", alt: "BMW XM against Baku at night", title: "Beyond the city", body: "Absheron, Gobustan and the north-west reveal another Azerbaijan. Check roads, weather and stops before a longer drive." },
     ],
     journeyTitle: "Your journey with CarTime",

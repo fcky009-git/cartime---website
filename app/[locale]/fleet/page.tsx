@@ -54,7 +54,7 @@ export default async function FleetPage({ params }: { params: Promise<{ locale: 
         })}
         <div className="fleet-page-more">
           <h2>{ui.next}</h2>
-          <div className="guide-card-grid">{guideSlugs.map((slug) => <a className="guide-card" href={`/${language}/guide/${slug}`} key={slug}><span>{guides[language][slug].eyebrow}</span><h3>{guides[language][slug].title}</h3><p>{guides[language][slug].teaser}</p><b>{ui.read} ↗</b></a>)}</div>
+          <div className="guide-card-grid">{guideSlugs.map((slug) => <a className={`guide-card guide-card--${slug}`} href={`/${language}/guide/${slug}`} key={slug}><span>{guides[language][slug].eyebrow}</span><h3>{guides[language][slug].title}</h3><p>{guides[language][slug].teaser}</p><b>{ui.read} ↗</b></a>)}</div>
         </div>
       </div>
     </main>
