@@ -4,11 +4,12 @@ import InfoShell from "@/components/info-shell";
 import { dictionaries, type Locale } from "@/lib/i18n";
 import { guideSlugs, guides, guideSources, guideUi, type GuideSlug } from "@/lib/guides";
 import { jsonLd, pageMetadata, siteOrigin } from "@/lib/seo";
+import { locales } from "@/lib/locales";
 
 type RouteParams = { params: Promise<{ locale: string; slug: string }> };
 
 export function generateStaticParams() {
-  return (["ru", "az", "en"] as Locale[]).flatMap((locale) => guideSlugs.map((slug) => ({ locale, slug })));
+  return locales.flatMap((locale) => guideSlugs.map((slug) => ({ locale, slug })));
 }
 
 export async function generateMetadata({ params }: RouteParams): Promise<Metadata> {

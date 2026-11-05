@@ -1,3 +1,5 @@
+import type { Locale } from "./locales";
+
 export const dictionaries = {
   ru: {
     nav: ["Автомобили", "Преимущества", "Аэропорт", "FAQ"],
@@ -167,6 +169,6 @@ export const dictionaries = {
     themeLabel: "Site theme",
     languageLabel: "Site language",
   },
-} as const;
+} as const satisfies Record<Locale, unknown>;
 
-export type Locale = keyof typeof dictionaries;
+export type { Locale } from "./locales";
