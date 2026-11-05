@@ -1,0 +1,16 @@
+import type { Locale } from "./i18n";
+
+export const carDetailUi: Record<Locale, {
+  fit: Record<string, string>; highlights: string; included: string[]; before: string; terms: string[];
+  rates: string; rateNote: string; compare: string; close: string; details: string;
+}> = {
+  ru: {
+    fit: { Mini: "Компактный вариант для городских поездок и коротких маршрутов.", Economy: "Практичный выбор для поездок по Баку и Азербайджану.", Comfort: "Комфортный класс для города и путешествий между регионами.", SUV: "Класс для тех, кто предпочитает более высокий кузов на длинных маршрутах.", Business: "Представительный вариант для деловых встреч и поездок.", VAN: "Класс для поездок компанией и с большим количеством вещей.", Luxury: "Премиальный класс для особых поездок и мероприятий." },
+    highlights: "Во время аренды", included: ["Пробег без лимита по Азербайджану", "Базовая страховка включена", "Поддержка 24/7"], before: "Перед подтверждением", terms: ["Залог зависит от автомобиля", "Возраст водителя 24–70 лет, стаж от 2 лет", "Минимальный срок — 2 дня", "Выдача в офисе, аэропорту или доставка"], rates: "Тарифы по сроку", rateNote: "Цена за день в USD. Наличие, итог, залог и доставку подтвердит менеджер.", compare: "Сравнить все авто", close: "Закрыть", details: "Подробнее об авто" },
+  az: {
+    fit: { Mini: "Şəhər və qısa marşrutlar üçün kompakt seçim.", Economy: "Bakı və Azərbaycan səfərləri üçün praktik seçim.", Comfort: "Şəhər və regionlararası səfərlər üçün rahat sinif.", SUV: "Uzun marşrutlarda hündür kuzova üstünlük verənlər üçün.", Business: "İşgüzar görüşlər və səfərlər üçün təmsilçi seçim.", VAN: "Qrup və çox baqajla səfərlər üçün sinif.", Luxury: "Xüsusi səfərlər və tədbirlər üçün premium sinif." },
+    highlights: "İcarə müddətində", included: ["Azərbaycan üzrə limitsiz yürüş", "Baza sığortası daxildir", "24/7 dəstək"], before: "Təsdiqdən əvvəl", terms: ["Depozit avtomobildən asılıdır", "Sürücü 24–70 yaş, ən azı 2 il təcrübə", "Minimum müddət 2 gündür", "Ofis, hava limanı və ya ünvana çatdırılma"], rates: "Müddətə görə tariflər", rateNote: "USD ilə gündəlik qiymət. Mövcudluq, yekun məbləğ, depozit və çatdırılmanı menecer təsdiqləyir.", compare: "Bütün avtomobillər", close: "Bağla", details: "Avtomobil haqqında ətraflı" },
+  en: {
+    fit: { Mini: "A compact option for city trips and short routes.", Economy: "A practical choice for Baku and wider Azerbaijan.", Comfort: "A comfortable class for city and intercity journeys.", SUV: "For travellers who prefer a taller vehicle on longer routes.", Business: "A refined option for meetings and business travel.", VAN: "A class suited to group trips and extra luggage.", Luxury: "A premium class for special trips and events." },
+    highlights: "During the rental", included: ["Unlimited mileage within Azerbaijan", "Basic insurance included", "24/7 support"], before: "Before confirmation", terms: ["Deposit depends on the vehicle", "Driver age 24–70, licence held for 2+ years", "Minimum rental is 2 days", "Office, airport or address delivery"], rates: "Rates by rental length", rateNote: "Daily USD rate. The manager confirms availability, final price, deposit and delivery.", compare: "Compare all cars", close: "Close", details: "Vehicle details" },
+};

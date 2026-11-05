@@ -1,12 +1,12 @@
+import { localeParams } from "@/lib/locales";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import InfoShell from "@/components/info-shell";
+import JsonLd from "@/components/json-ld";
 import { dictionaries, type Locale } from "@/lib/i18n";
 import { rentalPages, rentalSlugs, rentalUi } from "@/lib/rental-pages";
 import { guideUi } from "@/lib/guides";
 import { pageMetadata } from "@/lib/seo";
-import { localeParams } from "@/lib/locales";
-import JsonLd from "@/components/json-ld";
 import { breadcrumbJsonLd } from "@/lib/structured-data";
 
 type Props = { params: Promise<{ locale: string }> };

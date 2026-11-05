@@ -6,6 +6,9 @@ import { defaultLocale, isLocale, localeInfo } from "@/lib/locales";
 import { indexingEnabled, siteOrigin } from "@/lib/seo";
 import { organizationJsonLd } from "@/lib/structured-data";
 import "../globals.css";
+import "../home-design.css";
+import "../admin.css";
+import "../navigation-polish.css";
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteOrigin),
@@ -17,7 +20,7 @@ export const metadata: Metadata = {
 };
 
 const themeScript = `try{var t=localStorage.getItem('cartime-theme');document.documentElement.dataset.theme=['hybrid','dark','light'].includes(t)?t:'hybrid'}catch(e){document.documentElement.dataset.theme='hybrid'}`;
-const fontsHref = "https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Sora:wght@400;500;600;700;800&display=swap";
+const fontsHref = "https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Inter:wght@400;500;600;700;800&family=Sora:wght@400;500;600;700;800&display=swap";
 
 // Root layout for every language page: <html lang> and dir come from the URL segment.
 export default async function LocaleLayout({ children, params }: Readonly<{ children: React.ReactNode; params: Promise<{ locale: string }> }>) {

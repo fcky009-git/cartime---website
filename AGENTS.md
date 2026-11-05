@@ -4,7 +4,7 @@ Instructions for coding agents (Codex, Claude Code and similar). Read `README.md
 
 ## Project
 
-Car-rental site for Baku, Azerbaijan, in three languages (`/ru`, `/az`, `/en`); more languages are planned. Next.js App Router API run by `vinext` on Cloudflare Workers. Status: under construction, owner-private, no booking or payment backend yet.
+Car-rental site for Baku, Azerbaijan, in three languages (`/ru`, `/az`, `/en`); more languages are planned. Next.js App Router API run by `vinext` on Cloudflare Workers. Status: owner-private preview. The request form saves leads to D1 for the owner-only admin panel; availability and final terms still require a manager. There is no online payment or instant confirmed booking.
 
 ## Commands
 
@@ -47,8 +47,8 @@ All languages are configured in `lib/locales.ts` (codes, hreflang, og:locale, te
 - Do not use 9fleet.com photos: their number plates show the other brand. Catalog images are labelled category illustrations until clean CarTime photos exist.
 - Do not invent availability, deposit amounts, insurance coverage or delivery prices. Open items are listed in `README.md`; update `lib/service-info.ts` only when the owner confirms them.
 - Do not add ratings, reviews, price ranges or social profile links to structured data unless they are real and confirmed.
-- Do not claim online booking or payment works.
-- The README says the public interface should not mention 9fleet, but the About copy currently does (owner decision pending). Do not add new public mentions.
+- Do not claim instant confirmed booking or online payment. The request form is live and saves leads in the admin panel.
+- The owner explicitly decided that CarTime is a separate project and the public interface must not mention 9fleet. Keep public copy about CarTime only.
 
 ## Adding a page
 

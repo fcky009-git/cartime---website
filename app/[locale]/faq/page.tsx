@@ -1,13 +1,13 @@
+import { localeParams } from "@/lib/locales";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import InfoShell from "@/components/info-shell";
+import JsonLd from "@/components/json-ld";
 import FaqExplorer from "@/components/faq-explorer";
 import { dictionaries, type Locale } from "@/lib/i18n";
 import { faqItems, serviceUi } from "@/lib/service-info";
 import { guideUi } from "@/lib/guides";
 import { jsonLd, pageMetadata, siteOrigin } from "@/lib/seo";
-import { localeParams } from "@/lib/locales";
-import JsonLd from "@/components/json-ld";
 import { breadcrumbJsonLd } from "@/lib/structured-data";
 
 export function generateStaticParams() {

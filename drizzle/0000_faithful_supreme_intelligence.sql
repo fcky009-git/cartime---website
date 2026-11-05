@@ -1,0 +1,32 @@
+CREATE TABLE `booking_requests` (
+	`id` text PRIMARY KEY NOT NULL,
+	`created_at` text NOT NULL,
+	`updated_at` text NOT NULL,
+	`status` text DEFAULT 'new' NOT NULL,
+	`locale` text NOT NULL,
+	`car_id` text NOT NULL,
+	`car_name` text NOT NULL,
+	`car_year` integer NOT NULL,
+	`pickup` text NOT NULL,
+	`pickup_address` text,
+	`dropoff` text NOT NULL,
+	`return_address` text,
+	`from_date` text NOT NULL,
+	`from_time` text NOT NULL,
+	`to_date` text NOT NULL,
+	`to_time` text NOT NULL,
+	`days` integer NOT NULL,
+	`daily_rate_usd` integer NOT NULL,
+	`estimate_usd` integer NOT NULL,
+	`customer_name` text NOT NULL,
+	`phone` text NOT NULL,
+	`email` text NOT NULL,
+	`age` integer NOT NULL,
+	`experience` integer NOT NULL,
+	`flight` text,
+	`second_driver` integer NOT NULL,
+	`payment` text NOT NULL,
+	`notes` text
+);
+--> statement-breakpoint
+CREATE INDEX `booking_requests_status_created_idx` ON `booking_requests` (`status`,`created_at`);

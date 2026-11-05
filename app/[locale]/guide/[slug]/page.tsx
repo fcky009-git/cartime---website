@@ -1,10 +1,13 @@
+import { locales } from "@/lib/locales";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import InfoShell from "@/components/info-shell";
+import JsonLd from "@/components/json-ld";
 import { dictionaries, type Locale } from "@/lib/i18n";
 import { guideSlugs, guides, guideSources, guideUi, type GuideSlug } from "@/lib/guides";
-import { jsonLd, pageMetadata, siteOrigin } from "@/lib/seo";
-import { locales } from "@/lib/locales";
+import { guideDeepDive } from "@/lib/guide-deep-dive";
+import { pageMetadata } from "@/lib/seo";
+import { breadcrumbJsonLd } from "@/lib/structured-data";
 
 type RouteParams = { params: Promise<{ locale: string; slug: string }> };
 
@@ -25,6 +28,7 @@ export default async function GuidePage({ params }: RouteParams) {
   const language = locale as Locale;
   const key = slug as GuideSlug;
   const guide = guides[language][key];
+  const sections = key === "baku" || key === "routes" ? [...guide.sections, ...guideDeepDive[language][key]] : guide.sections;
   const ui = guideUi[language];
   const related = guideSlugs.filter((item) => item !== key);
   return <InfoShell locale={language} current={`guide/${key}`}>
@@ -40,11 +44,11 @@ export default async function GuidePage({ params }: RouteParams) {
       <div className="container info-body">
         <nav className="info-toc" aria-label={guide.title}>
           <strong>{guide.eyebrow}</strong>
-          {guide.sections.map((section, index) => <a key={section.heading} href={`#section-${index + 1}`}><span>0{index + 1}</span>{section.heading}</a>)}
+          {sections.map((section, index) => <a key={section.heading} href={`#section-${index + 1}`}><span>0{index + 1}</span>{section.heading}</a>)}
           <a href="#checklist"><span>✓</span>{guide.checklistTitle}</a>
         </nav>
         <article className="info-article">
-          {guide.sections.map((section, index) => <section key={section.heading} id={`section-${index + 1}`}>
+          {sections.map((section, index) => <section key={section.heading} id={`section-${index + 1}`}>
             <p className="info-section-number">0{index + 1} / {guide.eyebrow}</p>
             <h2>{section.heading}</h2>
             {section.paragraphs.map((paragraph) => <p key={paragraph}>{paragraph}</p>)}
@@ -65,18 +69,11 @@ export default async function GuidePage({ params }: RouteParams) {
         <div className="container">
           <div className="info-related-head"><div><p className="section-kicker">CARTIME / GUIDE</p><h2>{ui.next}</h2></div><a href={`/${language}/fleet`}>{ui.allCars} →</a></div>
           <div className="guide-card-grid">
-            {related.map((item, index) => <a className="guide-card" key={item} href={`/${language}/guide/${item}`}><span>0{index + 1} / {guides[language][item].eyebrow}</span><h3>{guides[language][item].title}</h3><p>{guides[language][item].teaser}</p><b>{ui.read} ↗</b></a>)}
+            {related.map((item, index) => <a className={`guide-card guide-card--${item}`} key={item} href={`/${language}/guide/${item}`}><span>0{index + 1} / {guides[language][item].eyebrow}</span><h3>{guides[language][item].title}</h3><p>{guides[language][item].teaser}</p><b>{ui.read} ↗</b></a>)}
           </div>
         </div>
       </section>
     </main>
-    <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLd({
-      "@context": "https://schema.org",
-      "@type": "BreadcrumbList",
-      itemListElement: [
-        { "@type": "ListItem", position: 1, name: "CarTime", item: `${siteOrigin}/${language}` },
-        { "@type": "ListItem", position: 2, name: guide.title, item: `${siteOrigin}/${language}/guide/${key}` },
-      ],
-    }) }} />
+    <JsonLd data={breadcrumbJsonLd(language, [{ name: guide.title, path: `guide/${key}` }])} />
   </InfoShell>;
 }
