@@ -262,7 +262,7 @@ html[data-theme='light'] .info-shell .info-footer-inner .brand-caption { color: 
   .home-site .desktop-nav { display: none; }
   .home-site .header-actions { grid-area: 1 / 2; }
   .home-site .theme-picker { display: none; }
-  .home-site .menu-button { display: grid; place-items: center; margin-left: 7px; }
+  .home-site .menu-button { display: grid; place-items: center; min-width: 44px; min-height: 44px; margin-left: 3px; }
   html[data-theme='light'] .home-site .menu-button { color: #182f3d; }
   .home-site .mobile-nav { position: fixed; display: flex; flex-direction: column; gap: 0; top: 87px; left: 19px; right: 19px; max-height: calc(100dvh - 107px); overflow-y: auto; padding: 22px 25px; border: 1px solid #ffffff42; border-radius: 22px; background: #151e29f5; box-shadow: 0 25px 70px #0008; backdrop-filter: blur(28px); pointer-events: auto; }
   html[data-theme='light'] .home-site .mobile-nav { border-color: #dbe4e7; background: #fffffff7; color: #172f3f; }

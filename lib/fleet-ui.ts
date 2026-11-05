@@ -5,7 +5,6 @@ export const fleetUi: Record<Locale, {
   kicker: string;
   title: string;
   lead: string;
-  count: string;
   categories: Record<string, string>;
   searchPlaceholder: string;
   searchLabel: string;
@@ -26,7 +25,6 @@ export const fleetUi: Record<Locale, {
     kicker: "АВТОПАРК",
     title: "Найдите автомобиль для своей поездки",
     lead: `${fleetCount} моделей и комплектаций с опубликованными тарифами в USD. Выберите класс, сравните сроки аренды и уточните наличие перед оформлением.`,
-    count: "автомобилей",
     categories: { all: "Все", Mini: "Мини", Economy: "Эконом", Comfort: "Комфорт", SUV: "SUV", Business: "Бизнес", VAN: "Минивэны", Luxury: "Люкс" },
     searchPlaceholder: "Поиск по модели",
     searchLabel: "Поиск автомобиля",
@@ -47,7 +45,6 @@ export const fleetUi: Record<Locale, {
     kicker: "AVTOPARK",
     title: "Səyahətiniz üçün avtomobil tapın",
     lead: `USD ilə dərc olunmuş tarifləri olan ${fleetCount} model və komplektasiya. Sinifləri və icarə müddətlərini müqayisə edin, sonra mövcudluğu təsdiqləyin.`,
-    count: "avtomobil",
     categories: { all: "Hamısı", Mini: "Mini", Economy: "Ekonom", Comfort: "Komfort", SUV: "SUV", Business: "Biznes", VAN: "Miniven", Luxury: "Lüks" },
     searchPlaceholder: "Modelə görə axtarış",
     searchLabel: "Avtomobil axtarışı",
@@ -68,7 +65,6 @@ export const fleetUi: Record<Locale, {
     kicker: "THE FLEET",
     title: "Find a car for your journey",
     lead: `${fleetCount} models and specifications with published rates in USD. Compare classes and rental periods, then confirm availability before booking.`,
-    count: "cars",
     categories: { all: "All", Mini: "Mini", Economy: "Economy", Comfort: "Comfort", SUV: "SUV", Business: "Business", VAN: "Vans", Luxury: "Luxury" },
     searchPlaceholder: "Search by model",
     searchLabel: "Search cars",
@@ -89,7 +85,6 @@ export const fleetUi: Record<Locale, {
     kicker: "DIE FLOTTE",
     title: "Finden Sie ein Auto für Ihre Reise",
     lead: `${fleetCount} Modelle und Spezifikationen mit veröffentlichten Kursen in USD. Vergleichen Sie Kurse und Mietzeiträume und bestätigen Sie die Verfügbarkeit vor der Buchung.`,
-    count: "Autos",
     categories: { all: "Alle", Mini: "Mini", Economy: "Wirtschaft", Comfort: "Komfort", SUV: "SUV", Business: "Geschäft", VAN: "Vans", Luxury: "Luxus" },
     searchPlaceholder: "Suche nach Modell",
     searchLabel: "Autos suchen",
@@ -110,7 +105,6 @@ export const fleetUi: Record<Locale, {
     kicker: "舰队",
     title: "为您的旅程寻找一辆车",
     lead: `${fleetCount} 型号和规格，以美元公布价格。比较课程和租赁期限，然后在预订前确认空房情况。`,
-    count: "汽车",
     categories: { all: "全部", Mini: "迷你", Economy: "经济", Comfort: "舒适度", SUV: "SUV", Business: "业务", VAN: "货车", Luxury: "豪华" },
     searchPlaceholder: "按型号搜索",
     searchLabel: "搜索汽车",
@@ -131,7 +125,6 @@ export const fleetUi: Record<Locale, {
     kicker: "함대",
     title: "여행에 적합한 차량 찾기",
     lead: `${fleetCount} 모델 및 사양은 USD로 표시됩니다. 수업과 대여 기간을 비교한 후 예약하기 전에 이용 가능 여부를 확인하세요.`,
-    count: "자동차",
     categories: { all: "전체", Mini: "미니", Economy: "경제", Comfort: "편안함", SUV: "SUV", Business: "비즈니스", VAN: "반스", Luxury: "럭셔리" },
     searchPlaceholder: "모델로 검색",
     searchLabel: "자동차 검색",
@@ -152,7 +145,6 @@ export const fleetUi: Record<Locale, {
     kicker: "LA FLOTTE",
     title: "Trouvez une voiture pour votre voyage",
     lead: `Modèles et spécifications ${fleetCount} avec tarifs publiés en USD. Comparez les classes et les périodes de location, puis confirmez la disponibilité avant de réserver.`,
-    count: "voitures",
     categories: { all: "Tous", Mini: "Mini", Economy: "Économie", Comfort: "Confort", SUV: "SUV", Business: "Affaires", VAN: "Fourgons", Luxury: "Luxe" },
     searchPlaceholder: "Recherche par modèle",
     searchLabel: "Rechercher des voitures",
@@ -173,7 +165,6 @@ export const fleetUi: Record<Locale, {
     kicker: "الأسطول",
     title: "ابحث عن سيارة لرحلتك",
     lead: `موديلات ومواصفات ${fleetCount} بالأسعار المنشورة بالدولار الأمريكي. قارن بين الفصول وفترات الإيجار، ثم تأكد من التوفر قبل الحجز.`,
-    count: "سيارات",
     categories: { all: "الكل", Mini: "ميني", Economy: "الاقتصاد", Comfort: "راحة", SUV: "سيارات الدفع الرباعي", Business: "الأعمال", VAN: "فانز", Luxury: "فاخر" },
     searchPlaceholder: "البحث حسب الموديل",
     searchLabel: "بحث السيارات",

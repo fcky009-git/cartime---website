@@ -2,6 +2,7 @@
 
 import { useMemo, useState } from "react";
 import { Search, ChevronDown, ArrowRight } from "lucide-react";
+import { answerCountLabel } from "@/lib/count-labels";
 import type { Locale } from "@/lib/i18n";
 import { faqItems, serviceUi, type FaqGroup } from "@/lib/service-info";
 
@@ -24,7 +25,7 @@ export default function FaqExplorer({ locale }: { locale: Locale }) {
       <button type="button" aria-pressed={group === "all"} onClick={() => setGroup("all")}>{ui.faqAll}</button>
       {groups.map((key) => <button key={key} type="button" aria-pressed={group === key} onClick={() => setGroup(key)}>{ui.faqGroups[key]}</button>)}
     </div>
-    <p className="faq-result-count" role="status">{matches.length} {locale === "ru" ? russianAnswerCount(matches.length) : locale === "en" && matches.length === 1 ? "answer" : ui.faqCount}</p>
+    <p className="faq-result-count" role="status">{answerCountLabel(locale, matches.length)}</p>
     {matches.length ? <div className="faq-full-list">{matches.map((item) => <details id={`q-${item.id}`} key={item.id}>
       <summary><span><small>{ui.faqGroups[item.group]}</small>{item.question}</span><ChevronDown size={20} aria-hidden="true" /></summary>
       <div className="faq-answer"><p>{item.answer}</p>{(topicLinks[item.id] || item.href) && <a href={`/${locale}${topicLinks[item.id] || item.href}`}>{ui.faqDetails}<ArrowRight size={15} /></a>}</div>
@@ -40,10 +41,3 @@ const topicLinks: Record<string, string> = {
   deposit: "/rental/insurance", payment: "/rental/conditions", fuel: "/rental/conditions",
   "extra-driver": "/rental/conditions", support: "/contact",
 };
-
-function russianAnswerCount(count: number) {
-  if (count % 100 >= 11 && count % 100 <= 14) return "ответов";
-  if (count % 10 === 1) return "ответ";
-  if (count % 10 >= 2 && count % 10 <= 4) return "ответа";
-  return "ответов";
-}

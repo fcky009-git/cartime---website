@@ -1,4 +1,7 @@
+import type { Metadata } from "next";
 import { localeInfo, locales } from "@/lib/locales";
+
+export const metadata: Metadata = { title: "404 | CarTime", robots: { index: false, follow: false } };
 
 // Shown for unknown URLs. The language is not known here, so every language is offered.
 export default function NotFound() {

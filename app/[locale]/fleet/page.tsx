@@ -1,5 +1,6 @@
 import { fleetCount } from "@/lib/fleet-count";
-import { localeParams } from "@/lib/locales";
+import { carCountLabel } from "@/lib/count-labels";
+import { localeInfo, localeParams } from "@/lib/locales";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import InfoShell from "@/components/info-shell";
@@ -11,6 +12,8 @@ import { guideSlugs, guides, guideUi } from "@/lib/guides";
 import { pageMetadata } from "@/lib/seo";
 import { breadcrumbJsonLd } from "@/lib/structured-data";
 import { bookingUi } from "@/lib/booking";
+
+const modelYearLabel: Record<Locale, string> = { ru: "Модель / год", az: "Model / il", en: "Model / year", de: "Modell / Jahr", zh: "车型 / 年份", ko: "모델 / 연식", fr: "Modèle / année", ar: "الطراز / السنة" };
 
 export function generateStaticParams() {
   return localeParams();
@@ -35,7 +38,7 @@ export default async function FleetPage({ params }: { params: Promise<{ locale: 
       <header className="info-hero info-hero--fleet">
         <div className="container info-hero-inner">
           <a className="info-back" href={`/${language}`}>← {ui.back}</a>
-          <p className="section-kicker">CARTIME / {fleetCount} CARS</p>
+          <p className="section-kicker">CARTIME / {carCountLabel(language, fleetCount).toLocaleUpperCase(localeInfo[language].hreflang)}</p>
           <h1>{ui.fleetTitle}</h1>
           <p>{ui.fleetIntro}</p>
           <span className="info-date">{ui.updated}</span>
@@ -52,7 +55,7 @@ export default async function FleetPage({ params }: { params: Promise<{ locale: 
           return <section className="fleet-page-group" id={`category-${key}`} key={key}>
             <div className="fleet-page-group-head"><h2>{name}</h2><span>{cars.length}</span></div>
             <div className="fleet-table-scroll"><table className="fleet-table">
-              <thead><tr><th scope="col">{language === "ru" ? "Модель / год" : language === "az" ? "Model / il" : "Model / year"}</th>{ui.fleetDuration.map((duration) => <th scope="col" key={duration}>{duration}<small>{ui.perDay}</small></th>)}<th scope="col">{bookingUi[language].nav}</th></tr></thead>
+              <thead><tr><th scope="col">{modelYearLabel[language]}</th>{ui.fleetDuration.map((duration) => <th scope="col" key={duration}>{duration}<small>{ui.perDay}</small></th>)}<th scope="col">{bookingUi[language].nav}</th></tr></thead>
               <tbody>{cars.map((car) => <tr key={car.id}><th scope="row">{car.name}<small>{car.year}</small></th>{car.ratesUsd.map((rate, index) => <td key={index}>${rate}</td>)}</tr>)}</tbody>
             </table></div>
           </section>;

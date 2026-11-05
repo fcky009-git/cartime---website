@@ -18,6 +18,7 @@ import { bookingUi } from "@/lib/booking";
 import { carDetailUi } from "@/lib/car-detail-ui";
 import { addDaysIso, rentalDuration } from "@/lib/rental-duration";
 import SiteDirectory from "@/components/site-directory";
+import { carCountLabel } from "@/lib/count-labels";
 import { contactLocation } from "@/lib/service-info";
 
 type Theme = "hybrid" | "dark" | "light";
@@ -68,6 +69,7 @@ const bakuToday = () => {
   return `${parts.year}-${parts.month}-${parts.day}`;
 };
 const homeFaqIds = ["rates", "cars", "airport", "documents", "deposit", "booking"];
+const normalizeQuery = (value: string) => value.replace(/[İı]/g, "i").toLowerCase().trim();
 const mapUi: Record<Locale, { kicker: string; title: string; lead: string; open: string; contact: string }> = {
   ru: { kicker: "CARTIME / КАРТА", title: "Наш офис в центре Баку", lead: "221F Nizami Gəncəvi, Bakı 1000. Можем согласовать получение здесь, в аэропорту GYD или доставку по адресу.", open: "Открыть в Google Картах", contact: "Контакты и маршрут" },
   az: { kicker: "CARTIME / XƏRİTƏ", title: "Bakının mərkəzində ofisimiz", lead: "221F Nizami Gəncəvi, Bakı 1000. Avtomobili burada, GYD hava limanında və ya ünvanda təhvil almağı razılaşdıra bilərsiniz.", open: "Google Xəritədə açın", contact: "Əlaqə və yol" },
@@ -107,7 +109,7 @@ export default function CarTimeSite({ locale }: { locale: Locale }) {
   const selectedCar = fleet.find((car) => car.id === detailCar);
   const filteredCars = fleet.filter((car) =>
     (category === "all" || car.category === category) &&
-    car.name.toLocaleLowerCase().includes(modelQuery.trim().toLocaleLowerCase()),
+    normalizeQuery(car.name).includes(normalizeQuery(modelQuery)),
   ).sort((a, b) => sort === "priceDesc" ? b.ratesUsd[0] - a.ratesUsd[0] : sort === "yearDesc" ? b.year - a.year || a.ratesUsd[0] - b.ratesUsd[0] : a.ratesUsd[0] - b.ratesUsd[0]);
 
   useEffect(() => {
@@ -272,7 +274,7 @@ export default function CarTimeSite({ locale }: { locale: Locale }) {
             <div className="section-head"><div><p className="section-kicker">CARTIME / 02 · {f.kicker}</p><h2>{f.title}</h2></div><p className="section-intro">{f.lead}</p></div>
             <div className="fleet-toolbar"><label className="fleet-query"><Search size={17} /><span className="sr-only">{f.searchLabel}</span><input type="search" value={modelQuery} placeholder={f.searchPlaceholder} onChange={(event) => { setModelQuery(event.target.value); setVisibleCount(8); }} /></label><label className="fleet-sort"><span>{f.sortLabel}</span><select value={sort} onChange={(event) => setSort(event.target.value)}><option value="priceAsc">{f.sortOptions[0]}</option><option value="priceDesc">{f.sortOptions[1]}</option><option value="yearDesc">{f.sortOptions[2]}</option></select></label></div>
             <div className="filter-row" role="group" aria-label={f.title}>{categories.map((item) => <button type="button" key={item} className={category === item ? "active" : ""} aria-pressed={category === item} onClick={() => { setCategory(item); setVisibleCount(8); }}>{f.categories[item]}</button>)}</div>
-            <p className="fleet-count">{filteredCars.length} {f.count}</p>
+            <p className="fleet-count">{carCountLabel(locale, filteredCars.length)}</p>
             <div className="fleet-showcase">{filteredCars.length ? <div className="car-grid">{filteredCars.slice(0, visibleCount).map((car, index) => <article className="car-card" key={car.id}><button className="car-card-open" type="button" onClick={() => setDetailCar(car.id)} aria-label={`${carInfo.details}: ${car.name} ${car.year}`}><div className="car-image"><span className="car-tag">{f.categories[car.category]}</span><img src={(fleetImages as Record<string, string>)[car.id]} alt={`${car.name} ${car.year}`} loading={index < 4 ? "eager" : "lazy"} decoding="async" onError={(event) => { event.currentTarget.src = car.category === "SUV" ? "/assets/suv.svg" : "/assets/sedan.svg"; }} /></div><div className="car-info"><div className="car-heading"><div><p className="car-year">{car.year} · {f.categories[car.category]}</p><h3>{car.name}</h3></div><span className="car-card-arrow"><ArrowRight size={18} /></span></div><p className="car-fit">{carInfo.fit[car.category]}</p><div className="car-features"><span>{carInfo.included[0]}</span><span>{carInfo.included[1]}</span></div><div className="car-bottom"><div className="car-price"><strong>${car.ratesUsd[0]}</strong><small>{f.durations[0]} · {f.perDay}</small></div><div className="car-price car-price-long"><strong>${car.ratesUsd[1]}</strong><small>{f.durations[1]} · {f.perDay}</small></div></div></div></button></article>)}</div> : <p className="fleet-empty">{f.empty}</p>}</div>
             {filteredCars.length > visibleCount && <button className="load-more" type="button" onClick={() => setVisibleCount((count) => count + 12)}>{f.more}<ArrowDownRight size={17} /></button>}
             <a className="fleet-all-link" href={`/${locale}/fleet`}>{g.allCars}<ArrowRight size={18} /></a>
