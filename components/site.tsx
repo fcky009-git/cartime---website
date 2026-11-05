@@ -10,6 +10,7 @@ import QuickHelp from "@/components/quick-help";
 import ContactLinks from "@/components/contact-links";
 import { rentalPages, rentalSlugs, rentalUi } from "@/lib/rental-pages";
 import fleet from "@/lib/fleet.json";
+import { switcherOrder } from "@/lib/locales";
 
 type Theme = "hybrid" | "dark" | "light";
 const themeNames: Theme[] = ["hybrid", "dark", "light"];
@@ -122,7 +123,7 @@ export default function CarTimeSite({ locale }: { locale: Locale }) {
         <div className="container header-inner">
           <a className="brand" href="#top" aria-label="CarTime — home">
             {/* The dark mark is extracted from the supplied approved reference. */}
-            <img className="dark-logo" src="/assets/logo-dark.png" alt="CarTime" />
+            <img className="dark-logo" src="/assets/logo-dark.webp" alt="CarTime" />
             <img className="light-logo" src="/assets/logo-light.svg" alt="" aria-hidden="true" />
           </a>
           <nav className="desktop-nav" aria-label="Main navigation">
@@ -133,7 +134,7 @@ export default function CarTimeSite({ locale }: { locale: Locale }) {
           </nav>
           <div className="header-actions">
             <div className="language-links" aria-label={t.languageLabel}>
-              {(["az", "en", "ru"] as Locale[]).map((code) => <a key={code} href={`/${code}`} lang={code} aria-current={code === locale ? "page" : undefined}>{code.toUpperCase()}</a>)}
+              {switcherOrder.map((code) => <a key={code} href={`/${code}`} lang={code} aria-current={code === locale ? "page" : undefined}>{code.toUpperCase()}</a>)}
             </div>
             <div className="theme-picker" role="group" aria-label={t.themeLabel}>
               {themeNames.map((name, index) => <button key={name} type="button" aria-pressed={theme === name} onClick={() => changeTheme(name)}>{t.themes[index]}</button>)}
@@ -208,7 +209,7 @@ export default function CarTimeSite({ locale }: { locale: Locale }) {
         <section className="section faq-section" id="faq"><div className="container faq-inner"><div><p className="section-kicker">CARTIME / FAQ</p><h2>{s.faqTitle}</h2><p className="faq-slogan">{s.quickLead}</p><a className="faq-all-link" href={`/${locale}/faq`}>{s.quickButton}<ArrowRight size={17} /></a></div><div className="faq-list">{homeFaqIds.map((id) => faqItems[locale].find((item) => item.id === id)).filter((item) => !!item).map((item) => <details key={item.id}><summary>{item.question}<ChevronDown size={20} /></summary><p>{item.answer}</p></details>)}</div></div></section>
       </main>
 
-      <footer className="site-footer"><div className="container footer-inner"><div className="footer-brand"><img className="dark-logo" src="/assets/logo-dark.png" alt="CarTime" /><img className="light-logo" src="/assets/logo-light.svg" alt="" aria-hidden="true" /><p>{t.footerText}</p><ContactLinks locale={locale} /></div><div className="footer-right"><p>{t.footerDemo}</p><a href={`/${locale}/fleet`}>{g.allCars} ↗</a><a href="#top">{t.backTop} ↑</a></div></div><nav className="container footer-guides" aria-label={g.nav}><a href={`/${locale}/about`}>{s.aboutNav}</a><a href={`/${locale}/faq`}>{s.faqNav}</a><a href={`/${locale}/rental`}>{rental.nav}</a><a href={`/${locale}/contact`}>{rental.contact}</a>{rentalSlugs.map((slug) => <a key={slug} href={`/${locale}/rental/${slug}`}>{rentalPages[locale][slug].title}</a>)}{guideSlugs.map((slug) => <a key={slug} href={`/${locale}/guide/${slug}`}>{guides[locale][slug].title}</a>)}</nav><div className="container footer-bottom"><span>© {new Date().getFullYear()} CarTime</span><span>AZ / EN / RU</span></div></footer>
+      <footer className="site-footer"><div className="container footer-inner"><div className="footer-brand"><img className="dark-logo" src="/assets/logo-dark.webp" alt="CarTime" /><img className="light-logo" src="/assets/logo-light.svg" alt="" aria-hidden="true" /><p>{t.footerText}</p><ContactLinks locale={locale} /></div><div className="footer-right"><p>{t.footerDemo}</p><a href={`/${locale}/fleet`}>{g.allCars} ↗</a><a href="#top">{t.backTop} ↑</a></div></div><nav className="container footer-guides" aria-label={g.nav}><a href={`/${locale}/about`}>{s.aboutNav}</a><a href={`/${locale}/faq`}>{s.faqNav}</a><a href={`/${locale}/rental`}>{rental.nav}</a><a href={`/${locale}/contact`}>{rental.contact}</a>{rentalSlugs.map((slug) => <a key={slug} href={`/${locale}/rental/${slug}`}>{rentalPages[locale][slug].title}</a>)}{guideSlugs.map((slug) => <a key={slug} href={`/${locale}/guide/${slug}`}>{guides[locale][slug].title}</a>)}</nav><div className="container footer-bottom"><span>© {new Date().getFullYear()} CarTime</span><span>AZ / EN / RU</span></div></footer>
 
       <QuickHelp locale={locale} />
 

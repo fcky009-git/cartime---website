@@ -2,13 +2,16 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import InfoShell from "@/components/info-shell";
 import { dictionaries, type Locale } from "@/lib/i18n";
-import { contact, contactLocation, serviceUi } from "@/lib/service-info";
+import { serviceUi } from "@/lib/service-info";
 import { guideUi } from "@/lib/guides";
-import { jsonLd, pageMetadata, siteOrigin } from "@/lib/seo";
+import { pageMetadata } from "@/lib/seo";
 import ContactLinks from "@/components/contact-links";
+import { localeParams } from "@/lib/locales";
+import JsonLd from "@/components/json-ld";
+import { breadcrumbJsonLd } from "@/lib/structured-data";
 
 export function generateStaticParams() {
-  return [{ locale: "ru" }, { locale: "az" }, { locale: "en" }];
+  return localeParams();
 }
 
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
@@ -24,17 +27,7 @@ export default async function AboutPage({ params }: { params: Promise<{ locale: 
   const language = locale as Locale;
   const ui = serviceUi[language];
   return <InfoShell locale={language} current="about">
-    <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLd({
-      "@context": "https://schema.org",
-      "@type": "Organization",
-      name: "CarTime",
-      url: `${siteOrigin}/${language}`,
-      email: contact.email,
-      telephone: contact.phone,
-      address: { "@type": "PostalAddress", streetAddress: "221F Nizami Gəncəvi", addressLocality: "Baku", postalCode: "1000", addressCountry: "AZ" },
-      hasMap: contactLocation.mapsUrl,
-      contactPoint: { "@type": "ContactPoint", telephone: contact.phone, email: contact.email, contactType: "customer support", availableLanguage: ["Azerbaijani", "English", "Russian"] },
-    }) }} />
+    <JsonLd data={breadcrumbJsonLd(language, [{ name: ui.aboutTitle, path: "about" }])} />
     <main>
       <header className="info-hero info-hero--about"><div className="container info-hero-inner"><a className="info-back" href={`/${language}`}>← {guideUi[language].back}</a><p className="section-kicker">{ui.aboutEyebrow}</p><h1>{ui.aboutTitle}</h1><p>{ui.aboutIntro}</p></div></header>
       <section className="container about-body">

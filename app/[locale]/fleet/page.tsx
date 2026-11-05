@@ -7,9 +7,12 @@ import { fleetUi } from "@/lib/fleet-ui";
 import { guideSlugs, guides, guideUi } from "@/lib/guides";
 import { fleetCount } from "@/lib/fleet-count";
 import { pageMetadata } from "@/lib/seo";
+import { localeParams } from "@/lib/locales";
+import JsonLd from "@/components/json-ld";
+import { breadcrumbJsonLd } from "@/lib/structured-data";
 
 export function generateStaticParams() {
-  return [{ locale: "ru" }, { locale: "az" }, { locale: "en" }];
+  return localeParams();
 }
 
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
@@ -26,6 +29,7 @@ export default async function FleetPage({ params }: { params: Promise<{ locale: 
   const ui = guideUi[language];
   const categories = fleetUi[language].categories;
   return <InfoShell locale={language} current="fleet">
+    <JsonLd data={breadcrumbJsonLd(language, [{ name: ui.fleetTitle, path: "fleet" }])} />
     <main>
       <header className="info-hero info-hero--fleet">
         <div className="container info-hero-inner">
