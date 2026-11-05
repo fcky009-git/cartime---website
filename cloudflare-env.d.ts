@@ -3,5 +3,6 @@ declare namespace Cloudflare {
     DB?: D1Database;
     BUCKET?: R2Bucket;
     CARTIME_ADMIN_USER_ID?: string;
+    CARTIME_ADMIN_EMAIL?: string;
   }
 }
