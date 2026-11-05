@@ -7,10 +7,9 @@ import { dictionaries, type Locale } from "@/lib/i18n";
 import { rentalPages, rentalSlugs, rentalUi, type RentalSlug } from "@/lib/rental-pages";
 import { guideUi } from "@/lib/guides";
 import { jsonLd, pageMetadata, siteOrigin } from "@/lib/seo";
-import { locales } from "@/lib/locales";
 
 type Props = { params: Promise<{ locale: string; slug: string }> };
-export function generateStaticParams() { return locales.flatMap((locale) => rentalSlugs.map((slug) => ({ locale, slug }))); }
+export function generateStaticParams() { return (["ru", "az", "en"] as Locale[]).flatMap((locale) => rentalSlugs.map((slug) => ({ locale, slug }))); }
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { locale, slug } = await params;
   if (!(locale in dictionaries) || !rentalSlugs.includes(slug as RentalSlug)) return {};
