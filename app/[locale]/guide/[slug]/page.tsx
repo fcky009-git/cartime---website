@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import InfoShell from "@/components/info-shell";
 import { dictionaries, type Locale } from "@/lib/i18n";
 import { guideSlugs, guides, guideSources, guideUi, type GuideSlug } from "@/lib/guides";
+import { guideDeepDive } from "@/lib/guide-deep-dive";
 import { jsonLd, pageMetadata, siteOrigin } from "@/lib/seo";
 
 type RouteParams = { params: Promise<{ locale: string; slug: string }> };
@@ -24,6 +25,7 @@ export default async function GuidePage({ params }: RouteParams) {
   const language = locale as Locale;
   const key = slug as GuideSlug;
   const guide = guides[language][key];
+  const sections = key === "baku" || key === "routes" ? [...guide.sections, ...guideDeepDive[language][key]] : guide.sections;
   const ui = guideUi[language];
   const related = guideSlugs.filter((item) => item !== key);
   return <InfoShell locale={language} current={`guide/${key}`}>
@@ -39,11 +41,11 @@ export default async function GuidePage({ params }: RouteParams) {
       <div className="container info-body">
         <nav className="info-toc" aria-label={guide.title}>
           <strong>{guide.eyebrow}</strong>
-          {guide.sections.map((section, index) => <a key={section.heading} href={`#section-${index + 1}`}><span>0{index + 1}</span>{section.heading}</a>)}
+          {sections.map((section, index) => <a key={section.heading} href={`#section-${index + 1}`}><span>0{index + 1}</span>{section.heading}</a>)}
           <a href="#checklist"><span>✓</span>{guide.checklistTitle}</a>
         </nav>
         <article className="info-article">
-          {guide.sections.map((section, index) => <section key={section.heading} id={`section-${index + 1}`}>
+          {sections.map((section, index) => <section key={section.heading} id={`section-${index + 1}`}>
             <p className="info-section-number">0{index + 1} / {guide.eyebrow}</p>
             <h2>{section.heading}</h2>
             {section.paragraphs.map((paragraph) => <p key={paragraph}>{paragraph}</p>)}

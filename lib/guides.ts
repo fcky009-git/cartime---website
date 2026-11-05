@@ -1,6 +1,7 @@
 import type { Locale } from "./i18n";
+import { extraGuides } from "./guide-extra";
 
-export const guideSlugs = ["baku", "routes", "airport", "rental"] as const;
+export const guideSlugs = ["baku", "routes", "absheron", "gobustan", "sheki", "airport", "rental"] as const;
 export type GuideSlug = (typeof guideSlugs)[number];
 
 type GuideSection = { heading: string; paragraphs: string[]; points?: string[] };
@@ -19,12 +20,30 @@ export const guideSources: Record<GuideSlug, { name: string; url: string }[]> = 
   baku: [
     { name: "Azerbaijan Tourism Board — Old City", url: "https://azerbaijan.travel/explore-bakus-old-city" },
     { name: "Azerbaijan Tourism Board — Baku sights", url: "https://azerbaijan.travel/best-historical-and-cultural-sights-in-baku" },
+    { name: "Azerbaijan Tourism Board — Baku Boulevard", url: "https://azerbaijan.travel/feel-bakus-mediterranean-atmosphere-stroll-along-the-boulevard-19909" },
+    { name: "Azerbaijan Tourism Board — Carpet Museum", url: "https://azerbaijan.travel/visit-bakus-carpet-museum-cant-be-missed" },
+    { name: "Azerbaijan Tourism Board — visitor information", url: "https://azerbaijan.travel/tourist-info-points" },
     { name: "Azerbaijan Tourism Board — visitor map", url: "https://azerbaijan.travel/storage/pages/9537/5f179346-0024-4d5a-83e9-4546f339b3af.pdf" },
   ],
   routes: [
     { name: "Azerbaijan Tourism Board — Gobustan", url: "https://azerbaijan.travel/discover-gobustans-ancient-rock-art" },
     { name: "Azerbaijan Tourism Board — Ateshgah and Yanardag", url: "https://azerbaijan.travel/sites-of-ancient-fire-leave-a-burning-legacy" },
     { name: "Azerbaijan Tourism Board — north-western route", url: "https://azerbaijan.travel/north-western-route" },
+    { name: "Azerbaijan Tourism Board — Lahij", url: "https://azerbaijan.travel/take-day-trip-lahij" },
+    { name: "Azerbaijan Tourism Board — historic Sheki", url: "https://azerbaijan.travel/explore-the-history-of-shaki" },
+  ],
+  absheron: [
+    { name: "Azerbaijan Tourism Board — Ateshgah and Yanardag", url: "https://azerbaijan.travel/sites-of-ancient-fire-leave-a-burning-legacy" },
+  ],
+  gobustan: [
+    { name: "Azerbaijan Tourism Board — Gobustan", url: "https://azerbaijan.travel/discover-gobustans-ancient-rock-art" },
+    { name: "UNESCO — Gobustan Rock Art Cultural Landscape", url: "https://whc.unesco.org/en/list/1076/" },
+  ],
+  sheki: [
+    { name: "Azerbaijan Tourism Board — north-western route", url: "https://azerbaijan.travel/north-western-route" },
+    { name: "Azerbaijan Tourism Board — historic Sheki", url: "https://azerbaijan.travel/explore-the-history-of-shaki" },
+    { name: "Azerbaijan Tourism Board — Lahij", url: "https://azerbaijan.travel/take-day-trip-lahij" },
+    { name: "UNESCO — Azerbaijan World Heritage", url: "https://whc.unesco.org/en/statesparties/az" },
   ],
   airport: [
     { name: "Heydar Aliyev International Airport — getting to the airport", url: "https://www.airport.az/en/guidelines-for-passengers/1.1.1/" },
@@ -39,7 +58,7 @@ export const guideUi = {
     homeTitle: "Планируйте поездку по Баку и дальше",
     homeLead: "Короткие практические гиды: прогулки по городу, маршруты на автомобиле, прилёт в GYD и выбор срока аренды.",
     read: "Читать гид",
-    allCars: "Все 55 автомобилей и тарифы",
+    allCars: "55 позиций каталога и тарифы",
     sources: "Источники и проверка фактов",
     sourcesLead: "Сведения о достопримечательностях и аэропорте сверены с официальными ресурсами. Уточняйте часы работы, дороги и условия посещения перед поездкой.",
     back: "На главную",
@@ -59,7 +78,7 @@ export const guideUi = {
     homeTitle: "Bakı və ölkə üzrə səfərinizi planlaşdırın",
     homeLead: "Şəhər gəzintisi, avtomobil marşrutları, GYD-yə gəliş və icarə müddəti barədə praktik bələdçilər.",
     read: "Bələdçini oxuyun",
-    allCars: "55 avtomobil və bütün tariflər",
+    allCars: "55 kataloq mövqeyi və tariflər",
     sources: "Mənbələr və faktların yoxlanması",
     sourcesLead: "Görməli yerlər və hava limanı barədə məlumat rəsmi mənbələrlə yoxlanılıb. Səfərdən əvvəl iş saatlarını, yolları və ziyarət şərtlərini dəqiqləşdirin.",
     back: "Əsas səhifəyə",
@@ -79,7 +98,7 @@ export const guideUi = {
     homeTitle: "Plan Baku and the road beyond",
     homeLead: "Practical guides to city walks, road trips, arriving at GYD and choosing a rental period.",
     read: "Read guide",
-    allCars: "All 55 cars and rates",
+    allCars: "All 55 catalogue entries and rates",
     sources: "Sources and fact checking",
     sourcesLead: "Place and airport facts were checked against official sources. Confirm opening hours, road conditions and visitor rules before you travel.",
     back: "Back to home",
@@ -98,6 +117,7 @@ export const guideUi = {
 
 export const guides: Record<Locale, Record<GuideSlug, Guide>> = {
   ru: {
+    ...extraGuides.ru,
     baku: {
       title: "Что посмотреть в Баку: город, море и архитектура",
       description: "Практический гид по Баку: Ичери-шехер, Приморский бульвар, современная архитектура и план прогулки на один или два дня.",
@@ -156,6 +176,7 @@ export const guides: Record<Locale, Record<GuideSlug, Guide>> = {
     },
   },
   az: {
+    ...extraGuides.az,
     baku: {
       title: "Bakıda nə görməli: İçərişəhər, dənizkənarı və memarlıq",
       description: "Bakı bələdçisi: İçərişəhər, Qız qalası, Şirvanşahlar sarayı, Bulvar və bir-iki günlük gəzinti planı.",
@@ -214,6 +235,7 @@ export const guides: Record<Locale, Record<GuideSlug, Guide>> = {
     },
   },
   en: {
+    ...extraGuides.en,
     baku: {
       title: "What to see in Baku: Old City, seafront and architecture",
       description: "A practical Baku guide to Icherisheher, the Caspian promenade, modern architecture and a one or two day city plan.",

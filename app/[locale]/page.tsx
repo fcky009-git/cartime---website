@@ -5,9 +5,9 @@ import { dictionaries, type Locale } from "@/lib/i18n";
 import { pageMetadata, jsonLd, siteOrigin } from "@/lib/seo";
 
 const homeMeta = {
-  ru: ["Аренда автомобилей в Баку — каталог и тарифы", "Сравните 55 автомобилей и дневные тарифы в USD для поездок по Баку и Азербайджану. Гиды по городу, аэропорту GYD и маршрутам."],
-  az: ["Bakıda avtomobil icarəsi — kataloq və tariflər", "Bakı və Azərbaycan səfərləri üçün 55 avtomobili və USD ilə gündəlik tarifləri müqayisə edin. Şəhər, GYD və marşrut bələdçiləri."],
-  en: ["Car rental in Baku — cars and daily rates", "Compare 55 cars and USD daily rates for trips around Baku and Azerbaijan. Guides to the city, GYD airport and road trips."],
+  ru: ["Аренда автомобилей в Баку — каталог и тарифы", "Сравните 55 позиций каталога и дневные тарифы в USD. В парке CarTime 122 автомобиля; гиды по Баку и маршрутам помогут спланировать поездку."],
+  az: ["Bakıda avtomobil icarəsi — kataloq və tariflər", "Kataloqdakı 55 mövqeni və USD ilə gündəlik tarifləri müqayisə edin. CarTime parkında 122 avtomobil var; Bakı və bölgə bələdçilərinə baxın."],
+  en: ["Car rental in Baku — cars and daily rates", "Compare 55 catalogue entries and USD daily rates. CarTime's actual fleet has 122 vehicles; explore Baku and Azerbaijan road guides."],
 } as const;
 
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
