@@ -1,6 +1,6 @@
 import { desc, eq, lte } from "drizzle-orm";
 import { z } from "zod";
-import { bookingRequests } from "@/db/schema";
+import { adminBookingEvents, bookingRequests } from "@/db/schema";
 import { getDb } from "@/db";
 import { currentBookingAdmin } from "@/lib/admin-auth";
 import { ADMIN_PAGE_SIZE } from "@/lib/admin-bookings";
@@ -35,9 +35,33 @@ export async function PATCH(request: Request) {
     const updatedAt = new Date().toISOString();
     const updated = await getDb().update(bookingRequests).set({ status: parsed.data.status, updatedAt }).where(eq(bookingRequests.id, parsed.data.id)).returning({ id: bookingRequests.id });
     if (!updated.length) return Response.json({ error: "Request not found" }, { status: 404 });
+    try {
+      await getDb().insert(adminBookingEvents).values({ id: crypto.randomUUID(), bookingId: parsed.data.id, type: "status", value: parsed.data.status, createdAt: updatedAt });
+    } catch (error) {
+      // The status itself is saved, so a history problem must not fail the request.
+      console.error("Admin status history failed", error);
+    }
     return Response.json({ id: parsed.data.id, status: parsed.data.status, updatedAt }, { headers: { "Cache-Control": "no-store" } });
   } catch (error) {
     console.error("Admin booking update failed", error);
     return Response.json({ error: "Could not update request" }, { status: 503 });
+  }
+}
+
+export async function DELETE(request: Request) {
+  if (!await currentBookingAdmin()) return Response.json({ error: "Forbidden" }, { status: 403 });
+  const origin = request.headers.get("origin");
+  if (!origin || origin !== new URL(request.url).origin) return Response.json({ error: "Forbidden" }, { status: 403 });
+  const id = z.string().uuid().safeParse(new URL(request.url).searchParams.get("id"));
+  if (!id.success) return Response.json({ error: "Invalid request" }, { status: 400 });
+  try {
+    const db = getDb();
+    const removed = await db.delete(bookingRequests).where(eq(bookingRequests.id, id.data)).returning({ id: bookingRequests.id });
+    if (!removed.length) return Response.json({ error: "Request not found" }, { status: 404 });
+    await db.delete(adminBookingEvents).where(eq(adminBookingEvents.bookingId, id.data));
+    return Response.json({ id: id.data }, { headers: { "Cache-Control": "no-store" } });
+  } catch (error) {
+    console.error("Admin booking delete failed", error);
+    return Response.json({ error: "Could not delete request" }, { status: 503 });
   }
 }

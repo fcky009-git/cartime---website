@@ -20,4 +20,8 @@ Vehicle images and editorial scenes are illustrative. The published rates are a 
 
 Use Node.js 22.13+ and run `npm run install:ci`, `npm run lint`, `npx tsc --noEmit` and `npm run build`. The Sites deployment has its own source repository; the GitHub repository is used for collaboration and must be synchronized deliberately.
 
+The home page has a trip-based car finder, a price calculator in the car window and a comparison of up to three cars, kept in the browser and shareable by link. `Ctrl/⌘+K` searches cars, pages and questions in the current language. The site can be added to a phone's home screen through its web manifest; there is no service worker, so nothing is cached offline. In the admin panel each request shows the customer's language, a history of status changes, private notes and a warning when the same model has overlapping dates.
+
+New requests can also be sent to Telegram: set the Sites runtime secrets `CARTIME_TELEGRAM_BOT_TOKEN` and `CARTIME_TELEGRAM_CHAT_ID`. Without them nothing is sent. A delivery problem never blocks a request.
+
 Admin login uses the Sites runtime secrets `CARTIME_ADMIN_PASSWORD_HASH` and `CARTIME_ADMIN_SESSION_SECRET`. The password hash format is `pbkdf2:<iterations>:<base64url salt>:<base64url derived key>` (PBKDF2-SHA256, 32-byte key, use exactly 100,000 iterations: Cloudflare Workers may reject higher counts, and the login then reports that it is unavailable). Generate a fresh random session secret of at least 32 characters. Neither value belongs in Git or client code. Sessions expire after eight hours and signing out ends all of them; five failed login attempts from one IP block further attempts for 15 minutes. Keep the Site owner-private while it is a preview.

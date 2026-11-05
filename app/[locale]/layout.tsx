@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 import JsonLd from "@/components/json-ld";
+import SiteSearch from "@/components/site-search";
+import { buildSearchIndex } from "@/lib/search-index";
 import { clickEventsScript, gtmHeadScript, gtmId } from "@/lib/analytics";
 import { dictionaries } from "@/lib/i18n";
 import { defaultLocale, isLocale, localeInfo } from "@/lib/locales";
@@ -9,6 +11,7 @@ import "../globals.css";
 import "../home-design.css";
 import "../admin.css";
 import "../navigation-polish.css";
+import "../upgrades.css";
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteOrigin),
@@ -36,6 +39,9 @@ export default async function LocaleLayout({ children, params }: Readonly<{ chil
     <html lang={info.hreflang} dir={info.dir} suppressHydrationWarning>
       <head>
         <script dangerouslySetInnerHTML={{ __html: themeScript }} />
+        <meta name="theme-color" content="#080f1a" />
+        <link rel="manifest" href="/manifest.webmanifest" crossOrigin="use-credentials" />
+        <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png" />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link rel="stylesheet" href={fontsHref} />
@@ -46,6 +52,7 @@ export default async function LocaleLayout({ children, params }: Readonly<{ chil
         {gtmId && <noscript><iframe src={`https://www.googletagmanager.com/ns.html?id=${gtmId}`} height="0" width="0" style={{ display: "none", visibility: "hidden" }} /></noscript>}
         <JsonLd data={organizationJsonLd()} />
         {children}
+        <SiteSearch locale={code} items={buildSearchIndex(code)} />
       </body>
     </html>
   );

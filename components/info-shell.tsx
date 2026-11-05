@@ -9,6 +9,7 @@ import ContactLinks from "@/components/contact-links";
 import { rentalPages, rentalSlugs, rentalUi } from "@/lib/rental-pages";
 import { bookingUi } from "@/lib/booking";
 import SiteDirectory from "@/components/site-directory";
+import { SearchButton } from "@/components/site-search";
 
 export default function InfoShell({ locale, current, children }: { locale: Locale; current?: string; children: ReactNode }) {
   const ui = guideUi[locale];
@@ -28,6 +29,7 @@ export default function InfoShell({ locale, current, children }: { locale: Local
           <a href={`/${locale}/booking`}>{bookingUi[locale].nav}</a>
           <SiteDirectory locale={locale} />
         </nav>
+        <SearchButton locale={locale} />
         <LanguageSwitcher locale={locale} suffix={suffix} label={ui.nav} />
       </div>
     </header>

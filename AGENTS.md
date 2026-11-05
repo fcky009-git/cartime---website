@@ -12,7 +12,7 @@ Node 22.13+ and npm.
 
 ```
 npm run install:ci     # install (use this, not plain npm install)
-npm run lint           # must stay at 0 errors (11 known <img> warnings)
+npm run lint           # must stay at 0 errors (14 known <img> warnings)
 npx tsc --noEmit       # must stay clean
 npm run build          # must succeed
 ```

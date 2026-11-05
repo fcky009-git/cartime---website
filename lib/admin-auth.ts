@@ -57,6 +57,8 @@ export function ensureAdminTables() {
   adminTables ??= env.DB.batch([
     env.DB.prepare("CREATE TABLE IF NOT EXISTS admin_login_attempts (fingerprint TEXT PRIMARY KEY, attempts INTEGER NOT NULL, window_start INTEGER NOT NULL, locked_until INTEGER NOT NULL DEFAULT 0)"),
     env.DB.prepare("CREATE TABLE IF NOT EXISTS admin_session_state (id INTEGER PRIMARY KEY, not_before INTEGER NOT NULL)"),
+    env.DB.prepare("CREATE TABLE IF NOT EXISTS admin_booking_events (id TEXT PRIMARY KEY, booking_id TEXT NOT NULL, type TEXT NOT NULL, value TEXT NOT NULL, created_at TEXT NOT NULL)"),
+    env.DB.prepare("CREATE INDEX IF NOT EXISTS admin_booking_events_booking_idx ON admin_booking_events (booking_id, created_at)"),
   ]).catch((error) => { adminTables = null; throw error; });
   return adminTables;
 }
