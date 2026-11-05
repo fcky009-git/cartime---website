@@ -72,7 +72,7 @@ html[data-theme="light"] .dark-logo { display: none; }
 .menu-button { display: none; border: 0; background: none; color: var(--header-ink); }
 .mobile-nav { display: none; }
 .hero { position: relative; min-height: 620px; background: var(--hero); color: var(--hero-ink); isolation: isolate; }
-.hero-photo { position: absolute; inset: 0; background: url('/assets/hero-baku-editorial.jpg') center 55% / cover no-repeat; z-index: -2; }
+.hero-photo { position: absolute; inset: 0; background: url('/assets/hero-baku-editorial.webp') center 55% / cover no-repeat; z-index: -2; }
 .hero-sheen { position: absolute; inset: 0; z-index: -1; background: linear-gradient(90deg, #080f1afc 0%, #080f1aeb 30%, #080f1a85 60%, #080f1a15 100%), linear-gradient(0deg, #080f1a66, transparent 48%); }
 html[data-theme="light"] .hero-photo { opacity: .63; }
 html[data-theme="light"] .hero-sheen { background: linear-gradient(90deg, #ebf3fd 0%, #ebf3fdeb 36%, #ebf3fd5e 68%, #ebf3fd17), linear-gradient(0deg, #ebf3fd99, transparent 55%); }
@@ -151,7 +151,7 @@ html[data-theme="dark"] .car-image { background: linear-gradient(140deg, #1c3048
 .load-more:hover { border-color: #3b82f6; color: #3b82f6; }
 .fleet-all-link { display: flex; align-items: center; justify-content: center; gap: 12px; width: fit-content; margin: 28px auto 0; padding: 13px 19px; border: 1px solid #3b82f6; border-radius: 11px; color: #2369db; font-size: 12px; font-weight: 800; }
 .fleet-all-link:hover { background: #3b82f6; color: #fff; }
-.airport-section { position: relative; overflow: hidden; background: linear-gradient(90deg, #080f1afa 0%, #080f1ae8 39%, #080f1a50 78%, #080f1a18), url('/assets/airport-editorial.jpg') center 55% / cover no-repeat; color: #fff; scroll-margin-top: 20px; }
+.airport-section { position: relative; overflow: hidden; background: linear-gradient(90deg, #080f1afa 0%, #080f1ae8 39%, #080f1a50 78%, #080f1a18), url('/assets/airport-editorial.webp') center 55% / cover no-repeat; color: #fff; scroll-margin-top: 20px; }
 .airport-inner { min-height: 410px; display: flex; align-items: center; position: relative; }
 .airport-inner > div:first-child { position: relative; z-index: 2; max-width: 670px; padding: 75px 0; }
 .airport-kicker { color: #80beff; font-size: 11px; font-weight: 800; letter-spacing: .18em; }
@@ -209,10 +209,10 @@ html[data-theme="dark"] .car-image { background: linear-gradient(140deg, #1c3048
 .info-language-links a[aria-current="page"] { color: #72b5ff; }
 html[data-theme="light"] .info-language-links { border-left-color: #0b254244; }
 .info-hero { min-height: 395px; display: flex; align-items: center; background: radial-gradient(circle at 78% 28%, #1f69bd 0%, #113864 29%, #080f1a 70%); color: #fff; }
-.info-hero--baku { background: linear-gradient(90deg, #080f1af7, #080f1add 44%, #080f1a5c 100%), url('/assets/hero-baku-editorial.jpg') center 54% / cover; }
-.info-hero--airport { background: linear-gradient(90deg, #080f1af7, #080f1add 44%, #080f1a5c 100%), url('/assets/airport-editorial.jpg') center 54% / cover; }
+.info-hero--baku { background: linear-gradient(90deg, #080f1af7, #080f1add 44%, #080f1a5c 100%), url('/assets/hero-baku-editorial.webp') center 54% / cover; }
+.info-hero--airport { background: linear-gradient(90deg, #080f1af7, #080f1add 44%, #080f1a5c 100%), url('/assets/airport-editorial.webp') center 54% / cover; }
 .info-hero--fleet { background: radial-gradient(circle at 77% 23%, #245d9e 0%, #102c4c 34%, #080f1a 74%); }
-.info-hero--about { background: linear-gradient(90deg, #080f1afa, #080f1adf 50%, #080f1a6a), url('/assets/hero-baku-editorial.jpg') center 53% / cover; }
+.info-hero--about { background: linear-gradient(90deg, #080f1afa, #080f1adf 50%, #080f1a6a), url('/assets/hero-baku-editorial.webp') center 53% / cover; }
 .info-hero--faq { background: radial-gradient(circle at 84% 12%, #275d9c 0%, #15365e 34%, #080f1a 77%); }
 .info-hero-inner { padding: 56px 0 66px; }
 .info-back { display: inline-block; margin-bottom: 36px; color: #b8d8f9; font-size: 12px; font-weight: 700; }
@@ -350,8 +350,8 @@ html[data-theme="light"] .info-language-links { border-left-color: #0b254244; }
 .rental-hub-cta a, .rental-action > a { display: inline-flex; align-items: center; min-height: 42px; padding: 11px 16px; border: 1px solid #4487e3; border-radius: 10px; color: #347ad9; font-size: 11px; font-weight: 800; }
 .rental-hub-cta a:first-child, .rental-action > a:nth-child(2) { background: #3b82f6; color: #fff; }
 .info-hero--rental { background: radial-gradient(circle at 82% 15%, #2365a7, #153c66 32%, #080f1a 78%); }
-.info-hero--rental-airport { background: linear-gradient(90deg, #080f1afa, #080f1add 52%, #080f1a74), url('/assets/airport-editorial.jpg') center / cover; }
-.info-hero--rental-economy, .info-hero--rental-suv, .info-hero--contact { background: linear-gradient(90deg, #080f1afa, #080f1add 52%, #080f1a74), url('/assets/hero-baku-editorial.jpg') center / cover; }
+.info-hero--rental-airport { background: linear-gradient(90deg, #080f1afa, #080f1add 52%, #080f1a74), url('/assets/airport-editorial.webp') center / cover; }
+.info-hero--rental-economy, .info-hero--rental-suv, .info-hero--contact { background: linear-gradient(90deg, #080f1afa, #080f1add 52%, #080f1a74), url('/assets/hero-baku-editorial.webp') center / cover; }
 .rental-models { scroll-margin-top: 25px; }
 .rental-models > div { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
 .rental-models a { display: flex; justify-content: space-between; align-items: center; gap: 15px; padding: 14px 16px; border: 1px solid var(--border); border-radius: 12px; background: var(--surface); font-size: 12px; }
@@ -479,7 +479,7 @@ html[data-theme="dark"] .modal-image { background: linear-gradient(140deg, #1c30
   .fleet-sort { justify-content: space-between; }
   .airport-inner { min-height: 410px; }
   .airport-inner > div:first-child { padding: 65px 0 145px; }
-  .airport-section { background-image: linear-gradient(180deg, #080f1af7 0%, #080f1ad1 45%, #080f1a5e 100%), url('/assets/airport-editorial.jpg'); background-position: 70% center; }
+  .airport-section { background-image: linear-gradient(180deg, #080f1af7 0%, #080f1ad1 45%, #080f1a5e 100%), url('/assets/airport-editorial.webp'); background-position: 70% center; }
   .airport-section h2 { font-size: 32px; }
   .airport-section p:not(.airport-kicker) { font-size: 12px; }
   .guide-card-grid, .info-related .guide-card-grid { grid-template-columns: 1fr; }
