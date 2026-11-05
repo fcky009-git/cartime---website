@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useSyncExternalStore } from "react";
 import { ArrowDownRight, ArrowRight, ChevronDown, Menu, Search, X } from "lucide-react";
 import { dictionaries, type Locale } from "@/lib/i18n";
 import { fleetUi } from "@/lib/fleet-ui";
@@ -13,6 +13,36 @@ import fleet from "@/lib/fleet.json";
 
 type Theme = "hybrid" | "dark" | "light";
 const themeNames: Theme[] = ["hybrid", "dark", "light"];
+const themeStorageKey = "cartime-theme";
+const themeChangeEvent = "cartime-theme-change";
+function subscribeToTheme(onChange: () => void) {
+  window.addEventListener("storage", onChange);
+  window.addEventListener(themeChangeEvent, onChange);
+  return () => {
+    window.removeEventListener("storage", onChange);
+    window.removeEventListener(themeChangeEvent, onChange);
+  };
+}
+// Used only when localStorage is unavailable (for example private mode).
+let sessionTheme: Theme | null = null;
+function readStoredTheme(): Theme {
+  if (sessionTheme) return sessionTheme;
+  try {
+    const stored = localStorage.getItem(themeStorageKey);
+    return themeNames.includes(stored as Theme) ? (stored as Theme) : "hybrid";
+  } catch {
+    return "hybrid";
+  }
+}
+function saveTheme(next: Theme) {
+  try {
+    localStorage.setItem(themeStorageKey, next);
+    sessionTheme = null;
+  } catch {
+    sessionTheme = next;
+  }
+  window.dispatchEvent(new Event(themeChangeEvent));
+}
 const anchors = ["fleet", "benefits", "airport", "faq"];
 const categories = ["all", "Mini", "Economy", "Comfort", "SUV", "Business", "VAN", "Luxury"] as const;
 const illustrationFor = (category: string) => category === "SUV" || category === "VAN" ? "/assets/suv.svg" : category === "Luxury" || category === "Business" ? "/assets/sedan-dark.svg" : "/assets/sedan.svg";
@@ -29,7 +59,7 @@ export default function CarTimeSite({ locale }: { locale: Locale }) {
   const g = guideUi[locale];
   const s = serviceUi[locale];
   const rental = rentalUi[locale];
-  const [theme, setTheme] = useState<Theme>("hybrid");
+  const theme = useSyncExternalStore(subscribeToTheme, readStoredTheme, (): Theme => "hybrid");
   const [menuOpen, setMenuOpen] = useState(false);
   const [category, setCategory] = useState<string>("all");
   const [modelQuery, setModelQuery] = useState("");
@@ -48,11 +78,6 @@ export default function CarTimeSite({ locale }: { locale: Locale }) {
   ).sort((a, b) => sort === "priceDesc" ? b.ratesUsd[0] - a.ratesUsd[0] : sort === "yearDesc" ? b.year - a.year || a.ratesUsd[0] - b.ratesUsd[0] : a.ratesUsd[0] - b.ratesUsd[0]);
 
   useEffect(() => {
-    const stored = localStorage.getItem("cartime-theme");
-    if (themeNames.includes(stored as Theme)) setTheme(stored as Theme);
-  }, []);
-
-  useEffect(() => {
     document.documentElement.dataset.theme = theme;
   }, [theme]);
 
@@ -68,8 +93,7 @@ export default function CarTimeSite({ locale }: { locale: Locale }) {
   }, [detailCar]);
 
   function changeTheme(next: Theme) {
-    setTheme(next);
-    localStorage.setItem("cartime-theme", next);
+    saveTheme(next);
   }
 
   function submitSearch(event: React.FormEvent<HTMLFormElement>) {
