@@ -1,14 +1,17 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { ArrowRight, CalendarDays, Check, Clipboard, Download, ExternalLink, LogOut, Mail, MessageCircle, Printer, RefreshCw, Search, Sparkles } from "lucide-react";
+import { ArrowRight, CalendarDays, Check, Clipboard, Download, ExternalLink, LogOut, Mail, MessageCircle, Printer, RefreshCw, Search, Sparkles, Trash2, TriangleAlert } from "lucide-react";
 import type { bookingRequests } from "@/db/schema";
 import type { Locale } from "@/lib/i18n";
 import fleetImages from "@/lib/fleet-images.json";
 import { fleetUi } from "@/lib/fleet-ui";
 import { bookingUi } from "@/lib/booking";
 import { dayCountLabel } from "@/lib/count-labels";
-import { ADMIN_PAGE_SIZE } from "@/lib/admin-bookings";
+import { ADMIN_PAGE_SIZE, bakuClock, bakuDate, bakuStamp } from "@/lib/admin-bookings";
+import { adminExtraUi, customerGreeting } from "@/lib/admin-extra-ui";
+import { isLocale, localeInfo } from "@/lib/locales";
+import AdminTimeline from "@/components/admin-timeline";
 import { adminAccessCopy } from "@/components/admin-login";
 
 type Booking = typeof bookingRequests.$inferSelect;
@@ -38,17 +41,9 @@ const extra: Record<Locale, { live: string; paused: string; logout: string; cale
 
 type DateFilter = "all" | "today" | "week" | "past";
 type Sort = "newest" | "oldest" | "pickup" | "highest";
-const bakuDate = (date: Date) => {
-  const parts = Object.fromEntries(new Intl.DateTimeFormat("en-US", { timeZone: "Asia/Baku", year: "numeric", month: "2-digit", day: "2-digit" }).formatToParts(date).map((part) => [part.type, part.value]));
-  return `${parts.year}-${parts.month}-${parts.day}`;
-};
 const calendarStamp = (date: string, time: string) => `${date.replaceAll("-", "")}T${time.replace(":", "")}00`;
-// Baku time in one fixed format: locale formats differ between the server and browsers and break hydration.
-const bakuClock = (date: Date) => {
-  const parts = Object.fromEntries(new Intl.DateTimeFormat("en-US", { timeZone: "Asia/Baku", hour: "2-digit", minute: "2-digit", hourCycle: "h23" }).formatToParts(date).map((part) => [part.type, part.value]));
-  return `${parts.hour}:${parts.minute}`;
-};
-const bakuStamp = (date: Date) => `${bakuDate(date)} ${bakuClock(date)}`;
+const greetingFor = (item: Booking) => customerGreeting[isLocale(item.locale) ? item.locale : "en"](item.customerName, `${item.carName} ${item.carYear}`, item.fromDate, item.toDate, `#${item.id.slice(0, 8).toUpperCase()}`);
+const tripDetails = (item: Booking, pickupText: string) => [`#${item.id.slice(0, 8).toUpperCase()}`, `${item.customerName}, ${item.phone}, ${item.email}`, pickupText, ...(item.flight ? [item.flight] : []), `$${item.estimateUsd} USD`].join("\n");
 const normalizeSearch = (value: string) => value.replace(/[İı]/g, "i").toLowerCase();
 const sessionEnded = (response: Response) => response.status === 401 || response.status === 403;
 const mergeBookings = (current: Booking[], incoming: Booking[]) => {
@@ -69,6 +64,7 @@ const place = (value: string, address: string | null, locale: Locale) => {
 export default function AdminBoard({ locale, initialItems, loadError, initialNow }: { locale: Locale; initialItems: Booking[]; loadError: boolean; initialNow: number }) {
   const t = labels[locale];
   const x = extra[locale];
+  const ax = adminExtraUi[locale];
   const [items, setItems] = useState(initialItems);
   const [filter, setFilter] = useState<Status | "all">("all");
   const [dateFilter, setDateFilter] = useState<DateFilter>("all");
@@ -81,7 +77,10 @@ export default function AdminBoard({ locale, initialItems, loadError, initialNow
   const [error, setError] = useState(loadError ? t.fail : "");
   const [notice, setNotice] = useState("");
   const [lastRefresh, setLastRefresh] = useState(initialNow);
+  const [fresh, setFresh] = useState(0);
   const searchRef = useRef<HTMLInputElement>(null);
+  const detailRef = useRef<HTMLElement>(null);
+  const knownIds = useRef(new Set(initialItems.map((item) => item.id)));
   const today = bakuDate(new Date(lastRefresh));
   const weekEnd = bakuDate(new Date(lastRefresh + 7 * 86400000));
   const counts = Object.fromEntries(statuses.map((status) => [status, items.filter((item) => item.status === status).length])) as Record<Status, number>;
@@ -94,6 +93,7 @@ export default function AdminBoard({ locale, initialItems, loadError, initialNow
     }).sort((a, b) => sort === "oldest" ? a.createdAt.localeCompare(b.createdAt) : sort === "pickup" ? `${a.fromDate}${a.fromTime}`.localeCompare(`${b.fromDate}${b.fromTime}`) : sort === "highest" ? b.estimateUsd - a.estimateUsd : b.createdAt.localeCompare(a.createdAt));
   }, [items, filter, dateFilter, sort, query, today, weekEnd]);
   const selected = visible.find((item) => item.id === selectedId) || visible[0];
+  const conflicts = selected && selected.status !== "cancelled" ? items.filter((item) => item.id !== selected.id && item.carId === selected.carId && item.status !== "cancelled" && item.fromDate <= selected.toDate && selected.fromDate <= item.toDate) : [];
   const confirmedEstimate = items.filter((item) => item.status === "confirmed").reduce((sum, item) => sum + item.estimateUsd, 0);
   const weekItems = items.filter((item) => bakuDate(new Date(item.createdAt)) >= bakuDate(new Date(lastRefresh - 6 * 86400000)));
   const chart = Array.from({ length: 7 }, (_, index) => {
@@ -110,11 +110,14 @@ export default function AdminBoard({ locale, initialItems, loadError, initialNow
       if (sessionEnded(response)) { window.location.reload(); return; }
       if (!response.ok) throw new Error("reload failed");
       const data = await response.json() as { items: Booking[] };
+      const newcomers = data.items.filter((item) => !knownIds.current.has(item.id)).length;
+      data.items.forEach((item) => knownIds.current.add(item.id));
+      if (newcomers) { setFresh((count) => count + newcomers); setNotice(`${ax.newRequests}: ${newcomers}`); }
       setItems((current) => mergeBookings(current, data.items));
       setLastRefresh(Date.now());
     } catch { setError(t.fail); }
     finally { setBusy(false); }
-  }, [t.fail]);
+  }, [t.fail, ax.newRequests]);
 
   // The first response holds the newest requests. Older ones load in the background
   // so statistics, search and CSV cover every request.
@@ -129,6 +132,7 @@ export default function AdminBoard({ locale, initialItems, loadError, initialNow
           if (sessionEnded(response)) { window.location.reload(); return; }
           if (!response.ok) throw new Error("older requests failed");
           const data = await response.json() as { items: Booking[] };
+          data.items.forEach((item) => knownIds.current.add(item.id));
           if (active) setItems((current) => mergeBookings(current, data.items));
           const last = data.items[data.items.length - 1]?.createdAt;
           if (data.items.length < ADMIN_PAGE_SIZE || !last || last === oldest) return;
@@ -140,6 +144,13 @@ export default function AdminBoard({ locale, initialItems, loadError, initialNow
   }, [initialItems, t.fail]);
 
   useEffect(() => {
+    document.title = fresh ? `(${fresh}) CarTime Admin` : "CarTime Admin";
+    const clear = () => setFresh(0);
+    window.addEventListener("focus", clear);
+    return () => window.removeEventListener("focus", clear);
+  }, [fresh]);
+
+  useEffect(() => {
     if (!notice) return;
     const timer = window.setTimeout(() => setNotice(""), 3000);
     return () => window.clearTimeout(timer);
@@ -147,7 +158,7 @@ export default function AdminBoard({ locale, initialItems, loadError, initialNow
 
   useEffect(() => {
     if (!live) return;
-    const interval = window.setInterval(() => { if (document.visibilityState === "visible") void refresh(); }, 30_000);
+    const interval = window.setInterval(() => void refresh(), 30_000);
     return () => window.clearInterval(interval);
   }, [live, refresh]);
 
@@ -172,8 +183,28 @@ export default function AdminBoard({ locale, initialItems, loadError, initialNow
     finally { setPendingId(null); }
   }
 
+  function select(id: string) {
+    setSelectedId(id);
+    setFresh(0);
+    if (window.matchMedia("(max-width: 900px)").matches) window.requestAnimationFrame(() => detailRef.current?.scrollIntoView({ behavior: "smooth", block: "start" }));
+  }
+
+  async function removeBooking(id: string) {
+    if (!window.confirm(ax.removeConfirm)) return;
+    setPendingId(id); setError(""); setNotice("");
+    try {
+      const response = await fetch(`/api/admin/bookings?id=${encodeURIComponent(id)}`, { method: "DELETE" });
+      if (sessionEnded(response)) { window.location.reload(); return; }
+      if (!response.ok) throw new Error("delete failed");
+      setItems((current) => current.filter((item) => item.id !== id));
+      setSelectedId(null);
+      setNotice(t.saved);
+    } catch { setError(t.fail); }
+    finally { setPendingId(null); }
+  }
+
   function exportCsv() {
-    const columns = ["id", "createdAt", "status", "carName", "carYear", "fromDate", "fromTime", "toDate", "toTime", "days", "pickup", "pickupAddress", "dropoff", "returnAddress", "dailyRateUsd", "estimateUsd", "customerName", "phone", "email", "age", "experience", "flight", "secondDriver", "payment", "notes"] as const;
+    const columns = ["id", "createdAt", "status", "locale", "carName", "carYear", "fromDate", "fromTime", "toDate", "toTime", "days", "pickup", "pickupAddress", "dropoff", "returnAddress", "dailyRateUsd", "estimateUsd", "customerName", "phone", "email", "age", "experience", "flight", "secondDriver", "payment", "notes"] as const;
     const safeCell = (value: unknown) => {
       const text = String(value ?? "");
       // A leading tab keeps phone numbers as text in Excel without a visible apostrophe.
@@ -194,7 +225,7 @@ export default function AdminBoard({ locale, initialItems, loadError, initialNow
   }
 
   function downloadCalendar(item: Booking) {
-    const lines = ["BEGIN:VCALENDAR", "VERSION:2.0", "PRODID:-//CarTime//Booking Admin//EN", "BEGIN:VEVENT", `UID:${item.id}@cartime.az`, `DTSTAMP:${new Date().toISOString().replace(/[-:]/g, "").replace(/\.\d{3}/, "")}`, `DTSTART;TZID=Asia/Baku:${calendarStamp(item.fromDate, item.fromTime)}`, `DTEND;TZID=Asia/Baku:${calendarStamp(item.toDate, item.toTime)}`, `SUMMARY:${escapeIcs(`CarTime · ${item.carName}`)}`, `DESCRIPTION:${escapeIcs(`Request #${item.id.slice(0, 8).toUpperCase()}`)}`, "END:VEVENT", "END:VCALENDAR"].join("\r\n") + "\r\n";
+    const lines = ["BEGIN:VCALENDAR", "VERSION:2.0", "PRODID:-//CarTime//Booking Admin//EN", "BEGIN:VEVENT", `UID:${item.id}@cartime.az`, `DTSTAMP:${new Date().toISOString().replace(/[-:]/g, "").replace(/\.\d{3}/, "")}`, `DTSTART;TZID=Asia/Baku:${calendarStamp(item.fromDate, item.fromTime)}`, `DTEND;TZID=Asia/Baku:${calendarStamp(item.toDate, item.toTime)}`, `SUMMARY:${escapeIcs(`CarTime · ${item.carName} · ${item.customerName}`)}`, `LOCATION:${escapeIcs(place(item.pickup, item.pickupAddress, locale))}`, `DESCRIPTION:${escapeIcs(tripDetails(item, `${place(item.pickup, item.pickupAddress, locale)} → ${place(item.dropoff, item.returnAddress, locale)}`))}`, "END:VEVENT", "END:VCALENDAR"].join("\r\n") + "\r\n";
     const url = URL.createObjectURL(new Blob([lines], { type: "text/calendar;charset=utf-8" }));
     const anchor = document.createElement("a"); anchor.href = url; anchor.download = `cartime-${item.id.slice(0, 8)}.ics`; anchor.click();
     setTimeout(() => URL.revokeObjectURL(url), 1000);
@@ -205,25 +236,27 @@ export default function AdminBoard({ locale, initialItems, loadError, initialNow
     finally { window.location.reload(); }
   }
 
-  const googleCalendarUrl = selected ? `https://calendar.google.com/calendar/render?${new URLSearchParams({ action: "TEMPLATE", text: `CarTime · ${selected.carName}`, dates: `${calendarStamp(selected.fromDate, selected.fromTime)}/${calendarStamp(selected.toDate, selected.toTime)}`, ctz: "Asia/Baku", details: `Request #${selected.id.slice(0, 8).toUpperCase()}` })}` : "";
+  const googleCalendarUrl = selected ? `https://calendar.google.com/calendar/render?${new URLSearchParams({ action: "TEMPLATE", text: `CarTime · ${selected.carName} · ${selected.customerName}`, location: place(selected.pickup, selected.pickupAddress, locale), dates: `${calendarStamp(selected.fromDate, selected.fromTime)}/${calendarStamp(selected.toDate, selected.toTime)}`, ctz: "Asia/Baku", details: tripDetails(selected, `${place(selected.pickup, selected.pickupAddress, locale)} → ${place(selected.dropoff, selected.returnAddress, locale)}`) })}` : "";
 
   return <main className="admin-shell">
     <header className="admin-top"><a className="admin-logo" href={`/${locale}`}><img src="/assets/logo-dark.png" alt="CarTime" /></a><span className="admin-top-label"><span className="admin-live-dot" />CARTIME / OPERATIONS</span><div className="admin-top-actions"><a href={`/${locale}`}>{t.site} <ArrowRight size={16} /></a><button type="button" onClick={signOut}><LogOut size={16} />{adminAccessCopy[locale].signout}</button></div></header>
     <div className="admin-wrap">
       <div className="admin-heading"><div><p><Sparkles size={14} /> CARTIME / CONTROL ROOM</p><h1>{t.title}</h1><span>{t.subtitle}</span></div><div className="admin-tools"><button type="button" className={live ? "admin-live-toggle active" : "admin-live-toggle"} onClick={() => setLive(!live)} aria-pressed={live}><span className="admin-live-dot" />{live ? x.live : x.paused}</button><button type="button" onClick={() => void refresh()} disabled={busy}><RefreshCw size={16} className={busy ? "admin-spin" : ""} />{t.refresh}</button><button type="button" onClick={exportCsv} disabled={!visible.length}><Download size={16} />{t.export}</button></div></div>
       <div className="admin-stats"><button type="button" className={filter === "all" ? "active" : ""} onClick={() => setFilter("all")}><span>{t.all}</span><strong>{items.length}</strong></button>{statuses.map((status) => <button type="button" key={status} className={filter === status ? "active" : ""} onClick={() => setFilter(status)}><span>{t[status]}</span><strong>{counts[status]}</strong></button>)}</div>
-      <div className="admin-overview"><section className="admin-activity"><div className="admin-panel-heading"><div><small>{x.activity}</small><strong>{weekItems.length} · {x.lastWeek}</strong></div><span>{live ? x.autoRefresh : x.manualRefresh} · {bakuClock(new Date(lastRefresh))}</span></div><div className="admin-chart" role="img" aria-label={`${x.activity}: ${chart.map((day) => `${day.date} ${day.count}`).join(", ")}`}>{chart.map((day) => <div key={day.date}><span style={{ height: `${Math.max(8, day.count / chartMax * 100)}%` }} data-count={day.count} /><small>{day.date.slice(5)}</small></div>)}</div></section><section className="admin-upcoming"><div className="admin-panel-heading"><div><small>{x.upcoming}</small><strong>{upcoming.length} · {x.nextWeek}</strong></div><CalendarDays size={19} /></div><div className="admin-upcoming-list">{upcoming.length ? upcoming.map((item) => <button type="button" key={item.id} onClick={() => { setFilter("all"); setDateFilter("all"); setQuery(""); setSelectedId(item.id); }}><time>{item.fromDate.slice(5)}<small>{item.fromTime}</small></time><span><strong>{item.carName}</strong><small>{item.customerName}</small></span><ArrowRight size={15} /></button>) : <p>{t.empty}</p>}</div></section></div>
+      <div className="admin-overview"><section className="admin-activity"><div className="admin-panel-heading"><div><small>{x.activity}</small><strong>{weekItems.length} · {x.lastWeek}</strong></div><span>{live ? x.autoRefresh : x.manualRefresh} · {bakuClock(new Date(lastRefresh))}</span></div><div className="admin-chart" role="img" aria-label={`${x.activity}: ${chart.map((day) => `${day.date} ${day.count}`).join(", ")}`}>{chart.map((day) => <div key={day.date}><span style={{ height: `${Math.max(8, day.count / chartMax * 100)}%` }} data-count={day.count} /><small>{day.date.slice(5)}</small></div>)}</div></section><section className="admin-upcoming"><div className="admin-panel-heading"><div><small>{x.upcoming}</small><strong>{upcoming.length} · {x.nextWeek}</strong></div><CalendarDays size={19} /></div><div className="admin-upcoming-list">{upcoming.length ? upcoming.map((item) => <button type="button" key={item.id} onClick={() => { setFilter("all"); setDateFilter("all"); setQuery(""); select(item.id); }}><time>{item.fromDate.slice(5)}<small>{item.fromTime}</small></time><span><strong>{item.carName}</strong><small>{item.customerName}</small></span><ArrowRight size={15} /></button>) : <p>{t.empty}</p>}</div></section></div>
       <div className="admin-quickfacts"><span>{x.todayPickup}: <strong>{items.filter((item) => item.status !== "cancelled" && item.fromDate === today).length}</strong></span><span>{x.todayReturn}: <strong>{items.filter((item) => item.status !== "cancelled" && item.toDate === today).length}</strong></span><span>{x.activeTrips}: <strong>{counts.contacted}</strong></span><span>{x.estimate}: <strong>${confirmedEstimate} USD</strong></span></div>
       <div className="admin-workbar"><div className="admin-search"><Search size={18} /><input ref={searchRef} type="search" value={query} onChange={(event) => setQuery(event.target.value)} placeholder={t.search} aria-label={t.search} /><small>{t.visible}: {visible.length}</small></div><label>{x.sort}<select value={sort} onChange={(event) => setSort(event.target.value as Sort)}><option value="newest">{x.newest}</option><option value="oldest">{x.oldest}</option><option value="pickup">{x.pickup}</option><option value="highest">{x.highest}</option></select></label></div>
       <div className="admin-date-filters" role="group" aria-label={x.calendar}>{(["all", "today", "week", "past"] as DateFilter[]).map((choice) => <button key={choice} type="button" className={dateFilter === choice ? "active" : ""} onClick={() => setDateFilter(choice)}>{choice === "all" ? x.allDates : choice === "today" ? x.today : choice === "week" ? x.nextWeek : x.past}</button>)}</div>
       {error && <p className="admin-alert" role="alert">{error}</p>}{notice && <p className="admin-notice" role="status"><Check size={15} />{notice}</p>}
-      <div className="admin-layout"><section className="admin-list" aria-label={t.title}>{visible.length ? visible.map((item) => <button key={item.id} type="button" className={`admin-list-item${selected?.id === item.id ? " selected" : ""}`} onClick={() => setSelectedId(item.id)}><div><strong>{item.customerName}</strong><span className={`admin-status admin-status-${item.status}`}>{t[item.status as Status]}</span></div><p>{item.carName} · {item.carYear}</p><small>{item.fromDate} → {item.toDate} <b>${item.estimateUsd}</b></small><em>{bakuStamp(new Date(item.createdAt))}</em></button>) : <p className="admin-empty">{items.length ? t.emptySearch : t.empty}</p>}</section>
-      <section className="admin-detail" aria-label={t.details}>{selected ? <><div className="admin-detail-head"><div><span>{t.created} · {bakuStamp(new Date(selected.createdAt))}</span><h2>{selected.carName}</h2><p>{selected.carYear} · #{selected.id.slice(0, 8).toUpperCase()}</p></div><strong>${selected.estimateUsd}</strong></div>
+      <div className="admin-layout"><section className="admin-list" aria-label={t.title}>{visible.length ? visible.map((item) => <button key={item.id} type="button" className={`admin-list-item${selected?.id === item.id ? " selected" : ""}`} onClick={() => select(item.id)}><div><strong>{item.customerName}</strong><span className={`admin-status admin-status-${item.status}`}>{t[item.status as Status]}</span></div><p>{item.carName} · {item.carYear}</p><small>{item.fromDate} → {item.toDate} <b>${item.estimateUsd}</b></small><em>{bakuStamp(new Date(item.createdAt))} <b>{item.locale.toUpperCase()}</b></em></button>) : <p className="admin-empty">{items.length ? t.emptySearch : t.empty}</p>}</section>
+      <section className="admin-detail" ref={detailRef} aria-label={t.details}>{selected ? <><div className="admin-detail-head"><div><span>{t.created} · {bakuStamp(new Date(selected.createdAt))}</span><h2>{selected.carName}</h2><p>{selected.carYear} · #{selected.id.slice(0, 8).toUpperCase()}</p></div><strong>${selected.estimateUsd}</strong></div>
         {fleetImages[selected.carId as keyof typeof fleetImages] && <div className="admin-car-visual"><img src={fleetImages[selected.carId as keyof typeof fleetImages]} alt={`${selected.carName} ${selected.carYear}`} /><span>{selected.carName} · {selected.carYear}</span></div>}
-        <div className="admin-detail-grid"><div><small>{t.route}</small><strong>{selected.fromDate} {selected.fromTime}</strong><p>{place(selected.pickup, selected.pickupAddress, locale)}</p><span>↓</span><strong>{selected.toDate} {selected.toTime}</strong><p>{place(selected.dropoff, selected.returnAddress, locale)}</p><em>{dayCountLabel(locale, selected.days)} · {t.rate} ${selected.dailyRateUsd} {fleetUi[locale].perDay}</em></div><div><small>{t.contact}</small><strong>{selected.customerName}</strong><a href={`tel:${selected.phone}`}>{selected.phone}</a><a href={`mailto:${selected.email}`}>{selected.email}</a><p>{t.age}: {selected.age} · {t.experience}: {selected.experience} {t.years}</p><p>{t.second}: {selected.secondDriver ? t.yes : t.no}</p><p>{t.payment}: {bookingUi[locale][selected.payment] || selected.payment}</p>{selected.flight && <p>{t.flight}: {selected.flight}</p>}</div></div>
+        <div className="admin-detail-grid"><div><small>{t.route}</small><strong>{selected.fromDate} {selected.fromTime}</strong><p>{place(selected.pickup, selected.pickupAddress, locale)}</p><span>↓</span><strong>{selected.toDate} {selected.toTime}</strong><p>{place(selected.dropoff, selected.returnAddress, locale)}</p><em>{dayCountLabel(locale, selected.days)} · {t.rate} ${selected.dailyRateUsd} {fleetUi[locale].perDay}</em></div><div><small>{t.contact}</small><strong>{selected.customerName}</strong><a href={`tel:${selected.phone}`}>{selected.phone}</a><a href={`mailto:${selected.email}`}>{selected.email}</a><p>{ax.language}: <b>{isLocale(selected.locale) ? localeInfo[selected.locale].name : selected.locale}</b></p><p>{t.age}: {selected.age} · {t.experience}: {selected.experience} {t.years}</p><p>{t.second}: {selected.secondDriver ? t.yes : t.no}</p><p>{t.payment}: {bookingUi[locale][selected.payment] || selected.payment}</p>{selected.flight && <p>{t.flight}: {selected.flight}</p>}</div></div>
+        {conflicts.length > 0 && <div className="admin-conflict" role="status"><strong><TriangleAlert size={16} aria-hidden="true" />{ax.conflict}: {conflicts.length}</strong><p>{ax.conflictHint}</p><ul>{conflicts.slice(0, 5).map((item) => <li key={item.id}><button type="button" onClick={() => select(item.id)}>{item.customerName}, {item.fromDate} → {item.toDate}, {t[item.status as Status]}</button></li>)}</ul></div>}
         {selected.notes && <div className="admin-notes"><small>{t.notes}</small><p>{selected.notes}</p></div>}
-        <div className="admin-status-row"><span>{x.quickStatus}</span><div>{statuses.map((status) => <button type="button" key={status} className={selected.status === status ? "active" : ""} disabled={pendingId === selected.id} onClick={() => { if (selected.status !== status) void updateStatus(selected.id, status); }}>{t[status]}</button>)}</div>{pendingId === selected.id && <small>{t.loading}</small>}</div>
-        <div className="admin-contact-actions"><a target="_blank" rel="noopener noreferrer" href={`https://wa.me/${selected.phone.replace(/\D/g, "")}?text=${encodeURIComponent(`CarTime · ${selected.carName} · ${selected.fromDate}–${selected.toDate} · #${selected.id.slice(0, 8).toUpperCase()}`)}`}><MessageCircle size={17} />{t.send}</a><a href={`mailto:${selected.email}?subject=${encodeURIComponent(`CarTime · ${selected.carName} · ${selected.id.slice(0, 8)}`)}`}><Mail size={17} />{t.email}</a><button type="button" onClick={() => void copySummary(selected)}><Clipboard size={17} />{x.copy}</button><a href={googleCalendarUrl} target="_blank" rel="noopener noreferrer"><ExternalLink size={17} />{x.openCalendar}</a><button type="button" onClick={() => downloadCalendar(selected)}><CalendarDays size={17} />{x.downloadCalendar}</button><button type="button" onClick={() => window.print()}><Printer size={17} />{x.print}</button></div>
+        <div className="admin-status-row"><span>{x.quickStatus}</span><div>{statuses.map((status) => <button type="button" key={status} className={selected.status === status ? "active" : ""} disabled={pendingId === selected.id} onClick={() => { if (selected.status !== status && (status !== "cancelled" || window.confirm(ax.cancelConfirm))) void updateStatus(selected.id, status); }}>{t[status]}</button>)}</div>{pendingId === selected.id && <small>{t.loading}</small>}</div>
+        <div className="admin-contact-actions"><a target="_blank" rel="noopener noreferrer" href={`https://wa.me/${selected.phone.replace(/\D/g, "")}?text=${encodeURIComponent(greetingFor(selected))}`}><MessageCircle size={17} />{t.send}</a><a href={`mailto:${selected.email}?subject=${encodeURIComponent(`CarTime · ${selected.carName} · #${selected.id.slice(0, 8).toUpperCase()}`)}&body=${encodeURIComponent(greetingFor(selected))}`}><Mail size={17} />{t.email}</a><button type="button" onClick={() => void copySummary(selected)}><Clipboard size={17} />{x.copy}</button><a href={googleCalendarUrl} target="_blank" rel="noopener noreferrer"><ExternalLink size={17} />{x.openCalendar}</a><button type="button" onClick={() => downloadCalendar(selected)}><CalendarDays size={17} />{x.downloadCalendar}</button><button type="button" onClick={() => window.print()}><Printer size={17} />{x.print}</button><button type="button" className="admin-delete" disabled={pendingId === selected.id} onClick={() => void removeBooking(selected.id)}><Trash2 size={17} />{ax.remove}</button></div>
+        <AdminTimeline key={selected.id} locale={locale} bookingId={selected.id} createdAt={selected.createdAt} changedAt={selected.updatedAt} statusLabel={(status) => t[status as Status] ?? status} saving={t.loading} />
       </> : <p className="admin-empty">{items.length ? t.emptySearch : t.empty}</p>}</section></div>
     </div>
   </main>;

@@ -31,6 +31,14 @@ export const bookingRequests = sqliteTable("booking_requests", {
   notes: text("notes"),
 }, (table) => [index("booking_requests_status_created_idx").on(table.status, table.createdAt)]);
 
+export const adminBookingEvents = sqliteTable("admin_booking_events", {
+  id: text("id").primaryKey(),
+  bookingId: text("booking_id").notNull(),
+  type: text("type").notNull(),
+  value: text("value").notNull(),
+  createdAt: text("created_at").notNull(),
+}, (table) => [index("admin_booking_events_booking_idx").on(table.bookingId, table.createdAt)]);
+
 export const adminLoginAttempts = sqliteTable("admin_login_attempts", {
   fingerprint: text("fingerprint").primaryKey(),
   attempts: integer("attempts").notNull(),

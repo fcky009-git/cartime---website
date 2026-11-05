@@ -2,6 +2,7 @@ import { and, count, eq, gte, ne, or } from "drizzle-orm";
 import { bookingInput, validateBooking } from "@/lib/booking-request";
 import { bookingRequests } from "@/db/schema";
 import { getDb } from "@/db";
+import { notifyNewBooking } from "@/lib/booking-notify";
 
 export const dynamic = "force-dynamic";
 
@@ -55,7 +56,7 @@ export async function POST(request: Request) {
       ne(bookingRequests.id, id),
     ));
     if (recent.total >= MAX_PER_CONTACT_PER_HOUR) return tooMany();
-    await db.insert(bookingRequests).values({
+    const inserted = await db.insert(bookingRequests).values({
       id, createdAt: now, updatedAt: now, status: "new", locale: data.locale,
       carId: data.carId, carName: validated.car.name, carYear: validated.car.year,
       pickup: data.pickup, pickupAddress: data.pickup === "delivery" ? data.pickupAddress : null,
@@ -65,7 +66,13 @@ export async function POST(request: Request) {
       customerName: data.customerName, phone: data.phone, email,
       age: data.age, experience: data.experience, flight: data.flight || null,
       secondDriver: data.secondDriver, payment: data.payment, notes: data.notes || null,
-    }).onConflictDoNothing({ target: bookingRequests.id });
+    }).onConflictDoNothing({ target: bookingRequests.id }).returning({ id: bookingRequests.id });
+    if (inserted.length) {
+      await notifyNewBooking({
+        id, locale: data.locale, carName: validated.car.name, carYear: validated.car.year, fromDate: data.fromDate, fromTime: data.fromTime, toDate: data.toDate, toTime: data.toTime,
+        days: validated.days, estimateUsd: validated.estimateUsd, customerName: data.customerName, phone: data.phone, email, pickup: data.pickup === "delivery" ? `delivery: ${data.pickupAddress}` : data.pickup, flight: data.flight,
+      }, new URL(request.url).origin);
+    }
   } catch (error) {
     console.error("Booking persistence failed", error);
     return Response.json({ error: "Could not save the request. Please try again." }, { status: 503 });

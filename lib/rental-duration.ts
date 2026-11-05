@@ -1,5 +1,7 @@
 const DAY_MS = 86_400_000;
 
+export const rateTierIndex = (days: number) => days <= 3 ? 0 : days <= 7 ? 1 : days <= 14 ? 2 : days <= 21 ? 3 : days <= 31 ? 4 : 5;
+
 export function addDaysIso(date: string, days: number): string {
   const [year, month, day] = date.split("-").map(Number);
   if (!year || !month || !day) return "";

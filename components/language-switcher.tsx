@@ -10,7 +10,7 @@ export default function LanguageSwitcher({ locale, suffix = "", label }: {
 }) {
   const router = useRouter();
   return <details className="language-switcher">
-    <summary aria-label={label}><span aria-hidden="true">◎</span>{localeInfo[locale].name}<span aria-hidden="true">⌄</span></summary>
+    <summary aria-label={label}><span className="language-mark" aria-hidden="true">◎</span><span className="language-name">{localeInfo[locale].name}</span><span className="language-code" aria-hidden="true">{locale.toUpperCase()}</span><span aria-hidden="true">⌄</span></summary>
     <div className="language-switcher-panel" aria-label={label}>
       {switcherOrder.map((code) => <a
         key={code}

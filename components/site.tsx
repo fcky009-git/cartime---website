@@ -4,7 +4,7 @@ import { useEffect, useRef, useState, useSyncExternalStore } from "react";
 import { useRouter } from "next/navigation";
 import { switcherOrder } from "@/lib/locales";
 import LanguageSwitcher from "@/components/language-switcher";
-import { ArrowDown, ArrowDownRight, ArrowRight, ChevronDown, Menu, Search, X } from "lucide-react";
+import { ArrowDown, ArrowDownRight, ArrowRight, ChevronDown, Menu, Search, X, Scale, Share2, Check } from "lucide-react";
 import { dictionaries, type Locale } from "@/lib/i18n";
 import { fleetUi } from "@/lib/fleet-ui";
 import { guideSlugs, guides, guideUi } from "@/lib/guides";
@@ -16,8 +16,14 @@ import fleet from "@/lib/fleet.json";
 import fleetImages from "@/lib/fleet-images.json";
 import { bookingUi } from "@/lib/booking";
 import { carDetailUi } from "@/lib/car-detail-ui";
-import { addDaysIso, rentalDuration } from "@/lib/rental-duration";
+import { addDaysIso, rateTierIndex, rentalDuration } from "@/lib/rental-duration";
 import SiteDirectory from "@/components/site-directory";
+import { SearchButton } from "@/components/site-search";
+import CarFinder from "@/components/car-finder";
+import CarCompare from "@/components/car-compare";
+import { shareLink, useShortlist } from "@/lib/shortlist";
+import { upgradeUi } from "@/lib/upgrade-ui";
+import { dayCountLabel } from "@/lib/count-labels";
 import { carCountLabel } from "@/lib/count-labels";
 import { contactLocation } from "@/lib/service-info";
 
@@ -97,6 +103,10 @@ export default function CarTimeSite({ locale }: { locale: Locale }) {
   const [sort, setSort] = useState("priceAsc");
   const [visibleCount, setVisibleCount] = useState(8);
   const [detailCar, setDetailCar] = useState<string | null>(null);
+  const [calcDays, setCalcDays] = useState(3);
+  const [linkCopied, setLinkCopied] = useState(false);
+  const up = upgradeUi[locale];
+  const shortlist = useShortlist();
   const modalRef = useRef<HTMLDivElement>(null);
   const [pickup, setPickup] = useState("city");
   const [dropoff, setDropoff] = useState("city");
@@ -114,8 +124,10 @@ export default function CarTimeSite({ locale }: { locale: Locale }) {
 
   useEffect(() => {
     let active = true;
+    const linkedCar = new URLSearchParams(window.location.search).get("car");
     queueMicrotask(() => {
       if (!active) return;
+      if (fleet.some((car) => car.id === linkedCar)) setDetailCar(linkedCar);
       const current = bakuToday();
       const start = addDaysIso(current, 1);
       setToday(current);
@@ -128,6 +140,14 @@ export default function CarTimeSite({ locale }: { locale: Locale }) {
   useEffect(() => {
     document.documentElement.dataset.theme = theme;
   }, [theme]);
+
+  // The address follows the open car, so it can be shared or reopened.
+  useEffect(() => {
+    const url = new URL(window.location.href);
+    if ((url.searchParams.get("car") ?? null) === detailCar) return;
+    if (detailCar) url.searchParams.set("car", detailCar); else url.searchParams.delete("car");
+    window.history.replaceState(window.history.state, "", url);
+  }, [detailCar]);
 
   useEffect(() => {
     const header = document.querySelector<HTMLElement>(".home-site .site-header");
@@ -200,6 +220,11 @@ export default function CarTimeSite({ locale }: { locale: Locale }) {
     router.push(`/${locale}/booking?${params.toString()}`);
   }
 
+  async function shareCar() {
+    const result = await shareLink(window.location.href, selectedCar ? `${selectedCar.name} ${selectedCar.year}` : "CarTime");
+    if (result === "copied") { setLinkCopied(true); window.setTimeout(() => setLinkCopied(false), 2500); }
+  }
+
   function chooseAirport() {
     setPickup("airport");
     document.getElementById("search")?.scrollIntoView({ behavior: "smooth" });
@@ -222,6 +247,7 @@ export default function CarTimeSite({ locale }: { locale: Locale }) {
             <SiteDirectory locale={locale} />
           </nav>
           <div className="header-actions">
+            <SearchButton locale={locale} />
             <LanguageSwitcher locale={locale} label={t.languageLabel} />
             <div className="theme-picker" role="group" aria-label={e.styles}>
               {themeNames.map((name, index) => <button key={name} type="button" title={themeConcepts[name]} aria-label={`${t.themes[index]} — ${themeConcepts[name]}`} aria-pressed={theme === name} onClick={() => changeTheme(name)}><span>{t.themes[index]}</span></button>)}
@@ -262,6 +288,8 @@ export default function CarTimeSite({ locale }: { locale: Locale }) {
           </form>
         </div>
 
+        <CarFinder locale={locale} today={today} onOpenCar={setDetailCar} />
+
         <section className="section benefits-section home-reveal" id="benefits">
           <div className="container">
             <div className="section-head"><div><p className="section-kicker">CARTIME / 01</p><h2>{t.benefitTitle}</h2></div><p className="section-intro">{t.benefitLead}</p></div>
@@ -275,7 +303,7 @@ export default function CarTimeSite({ locale }: { locale: Locale }) {
             <div className="fleet-toolbar"><label className="fleet-query"><Search size={17} /><span className="sr-only">{f.searchLabel}</span><input type="search" value={modelQuery} placeholder={f.searchPlaceholder} onChange={(event) => { setModelQuery(event.target.value); setVisibleCount(8); }} /></label><label className="fleet-sort"><span>{f.sortLabel}</span><select value={sort} onChange={(event) => setSort(event.target.value)}><option value="priceAsc">{f.sortOptions[0]}</option><option value="priceDesc">{f.sortOptions[1]}</option><option value="yearDesc">{f.sortOptions[2]}</option></select></label></div>
             <div className="filter-row" role="group" aria-label={f.title}>{categories.map((item) => <button type="button" key={item} className={category === item ? "active" : ""} aria-pressed={category === item} onClick={() => { setCategory(item); setVisibleCount(8); }}>{f.categories[item]}</button>)}</div>
             <p className="fleet-count">{carCountLabel(locale, filteredCars.length)}</p>
-            <div className="fleet-showcase">{filteredCars.length ? <div className="car-grid">{filteredCars.slice(0, visibleCount).map((car, index) => <article className="car-card" key={car.id}><button className="car-card-open" type="button" onClick={() => setDetailCar(car.id)} aria-label={`${carInfo.details}: ${car.name} ${car.year}`}><div className="car-image"><span className="car-tag">{f.categories[car.category]}</span><img src={(fleetImages as Record<string, string>)[car.id]} alt={`${car.name} ${car.year}`} loading={index < 4 ? "eager" : "lazy"} decoding="async" onError={(event) => { event.currentTarget.src = car.category === "SUV" ? "/assets/suv.svg" : "/assets/sedan.svg"; }} /></div><div className="car-info"><div className="car-heading"><div><p className="car-year">{car.year} · {f.categories[car.category]}</p><h3>{car.name}</h3></div><span className="car-card-arrow"><ArrowRight size={18} /></span></div><p className="car-fit">{carInfo.fit[car.category]}</p><div className="car-features"><span>{carInfo.included[0]}</span><span>{carInfo.included[1]}</span></div><div className="car-bottom"><div className="car-price"><strong>${car.ratesUsd[0]}</strong><small>{f.durations[0]} · {f.perDay}</small></div><div className="car-price car-price-long"><strong>${car.ratesUsd[1]}</strong><small>{f.durations[1]} · {f.perDay}</small></div></div></div></button></article>)}</div> : <p className="fleet-empty">{f.empty}</p>}</div>
+            <div className="fleet-showcase">{filteredCars.length ? <div className="car-grid">{filteredCars.slice(0, visibleCount).map((car, index) => <article className="car-card" key={car.id}><button type="button" className="car-save" aria-pressed={shortlist.ids.includes(car.id)} aria-label={`${shortlist.ids.includes(car.id) ? up.shortlist.unsave : up.shortlist.save}: ${car.name} ${car.year}`} title={shortlist.ids.includes(car.id) ? up.shortlist.unsave : up.shortlist.save} onClick={() => shortlist.toggle(car.id)}><Scale size={18} aria-hidden="true" /></button><button className="car-card-open" type="button" onClick={() => setDetailCar(car.id)} aria-label={`${carInfo.details}: ${car.name} ${car.year}`}><div className="car-image"><span className="car-tag">{f.categories[car.category]}</span><img src={(fleetImages as Record<string, string>)[car.id]} alt={`${car.name} ${car.year}`} loading={index < 4 ? "eager" : "lazy"} decoding="async" onError={(event) => { event.currentTarget.src = car.category === "SUV" ? "/assets/suv.svg" : "/assets/sedan.svg"; }} /></div><div className="car-info"><div className="car-heading"><div><p className="car-year">{car.year} · {f.categories[car.category]}</p><h3>{car.name}</h3></div><span className="car-card-arrow"><ArrowRight size={18} /></span></div><p className="car-fit">{carInfo.fit[car.category]}</p><div className="car-features"><span>{carInfo.included[0]}</span><span>{carInfo.included[1]}</span></div><div className="car-bottom"><div className="car-price"><strong>${car.ratesUsd[0]}</strong><small>{f.durations[0]} · {f.perDay}</small></div><div className="car-price car-price-long"><strong>${car.ratesUsd[1]}</strong><small>{f.durations[1]} · {f.perDay}</small></div></div></div></button></article>)}</div> : <p className="fleet-empty">{f.empty}</p>}</div>
             {filteredCars.length > visibleCount && <button className="load-more" type="button" onClick={() => setVisibleCount((count) => count + 12)}>{f.more}<ArrowDownRight size={17} /></button>}
             <a className="fleet-all-link" href={`/${locale}/fleet`}>{g.allCars}<ArrowRight size={18} /></a>
           </div>
@@ -298,6 +326,8 @@ export default function CarTimeSite({ locale }: { locale: Locale }) {
 
       <footer className="site-footer"><div className="container footer-inner"><div className="footer-brand"><img className="dark-logo" src="/assets/logo-dark.png" alt="CarTime" /><img className="light-logo" src="/assets/logo-light.svg" alt="" aria-hidden="true" /><span className="brand-caption" aria-hidden="true">CAR RENTAL</span><p>{t.footerText}</p><ContactLinks locale={locale} /></div><div className="footer-right"><p>{t.footerDemo}</p><a href={`/${locale}/fleet`}>{g.allCars} ↗</a><a href={`/${locale}/booking`}>{bookingUi[locale].nav} ↗</a><a href="#top">{t.backTop} ↑</a></div></div><nav className="container footer-guides" aria-label={g.nav}><a href={`/${locale}/booking`}>{bookingUi[locale].nav}</a><a href={`/${locale}/about`}>{s.aboutNav}</a><a href={`/${locale}/faq`}>{s.faqNav}</a><a href={`/${locale}/rental`}>{rental.nav}</a><a href={`/${locale}/contact`}>{rental.contact}</a>{rentalSlugs.map((slug) => <a key={slug} href={`/${locale}/rental/${slug}`}>{rentalPages[locale][slug].title}</a>)}{guideSlugs.map((slug) => <a key={slug} href={`/${locale}/guide/${slug}`}>{guides[locale][slug].title}</a>)}</nav><div className="container footer-bottom"><span>© {new Date().getFullYear()} CarTime</span><span>{switcherOrder.map((code) => code.toUpperCase()).join(" / ")}</span></div></footer>
 
+      <CarCompare locale={locale} />
+
       <QuickHelp locale={locale} />
 
       {selectedCar && <div className="modal-backdrop" onMouseDown={() => setDetailCar(null)}><div className="detail-modal" ref={modalRef} role="dialog" aria-modal="true" aria-labelledby="car-modal-title" onMouseDown={(e) => e.stopPropagation()}>
@@ -305,7 +335,7 @@ export default function CarTimeSite({ locale }: { locale: Locale }) {
         <div className="modal-image"><img src={(fleetImages as Record<string, string>)[selectedCar.id]} alt={`${selectedCar.name} ${selectedCar.year}`} /><span>{selectedCar.year} · {f.categories[selectedCar.category]}</span></div>
         <div className="modal-content"><p className="section-kicker">CARTIME / {f.categories[selectedCar.category]}</p><h2 id="car-modal-title">{selectedCar.name}</h2><p className="modal-fit">{carInfo.fit[selectedCar.category]}</p>
           <div className="modal-fact-groups"><section><h3>{carInfo.highlights}</h3><ul>{carInfo.included.map((line) => <li key={line}>✓ {line}</li>)}</ul></section><section><h3>{carInfo.before}</h3><ul>{carInfo.terms.map((line) => <li key={line}>✓ {line}</li>)}</ul></section></div>
-          <h3>{carInfo.rates}</h3><div className="tariff-list">{selectedCar.ratesUsd.map((rate, index) => <div key={f.durations[index]}><span>{f.durations[index]}</span><strong>${rate} <small>{f.perDay}</small></strong></div>)}</div><p className="tariff-note">{carInfo.rateNote}</p><div className="modal-actions"><a className="booking-modal-link" href={`/${locale}/booking?car=${selectedCar.id}`}>{bookingUi[locale].nav}<ArrowRight size={18} /></a><a href={`/${locale}/fleet`}>{carInfo.compare} ↗</a></div>
+          <div className="car-calc"><div className="car-calc-head"><label htmlFor="car-calc-range">{up.calc.title}</label><output htmlFor="car-calc-range">{dayCountLabel(locale, calcDays)}</output></div><input id="car-calc-range" type="range" min={2} max={45} value={calcDays} aria-valuetext={dayCountLabel(locale, calcDays)} onChange={(event) => setCalcDays(Number(event.target.value))} /><div className="car-calc-total"><span>${selectedCar.ratesUsd[rateTierIndex(calcDays)]} {f.perDay} · {up.calc.total}</span><strong>${selectedCar.ratesUsd[rateTierIndex(calcDays)] * calcDays}</strong></div></div><h3>{carInfo.rates}</h3><div className="tariff-list">{selectedCar.ratesUsd.map((rate, index) => <div key={f.durations[index]} className={index === rateTierIndex(calcDays) ? "active" : ""}><span>{f.durations[index]}</span><strong>${rate} <small>{f.perDay}</small></strong></div>)}</div><p className="tariff-note">{carInfo.rateNote}</p><div className="modal-actions"><a className="booking-modal-link" href={`/${locale}/booking?car=${selectedCar.id}${today ? `&from=${addDaysIso(today, 1)}&to=${addDaysIso(addDaysIso(today, 1), calcDays)}` : ""}`}>{bookingUi[locale].nav}<ArrowRight size={18} /></a><button type="button" className="modal-share" onClick={() => void shareCar()}>{linkCopied ? <Check size={16} /> : <Share2 size={16} />}<span role="status">{linkCopied ? up.calc.copied : up.calc.share}</span></button><a href={`/${locale}/fleet`}>{carInfo.compare} ↗</a></div>
         </div></div></div>}
     </div>
   );

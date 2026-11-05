@@ -1,7 +1,7 @@
 import { z } from "zod";
 import { locales } from "./locales";
 import fleet from "@/lib/fleet.json";
-import { rentalDuration } from "@/lib/rental-duration";
+import { rateTierIndex, rentalDuration } from "@/lib/rental-duration";
 
 export const bookingInput = z.object({
   requestId: z.string().uuid(),
@@ -37,7 +37,6 @@ export function validateBooking(data: z.infer<typeof bookingInput>) {
   if (data.pickup === "delivery" && !data.pickupAddress) return null;
   if (data.dropoff === "delivery" && !data.returnAddress) return null;
   if (data.website) return null;
-  const rateIndex = duration.days <= 3 ? 0 : duration.days <= 7 ? 1 : duration.days <= 14 ? 2 : duration.days <= 21 ? 3 : duration.days <= 31 ? 4 : 5;
-  const dailyRateUsd = car.ratesUsd[rateIndex];
+  const dailyRateUsd = car.ratesUsd[rateTierIndex(duration.days)];
   return { car, days: duration.days, dailyRateUsd, estimateUsd: duration.days * dailyRateUsd };
 }

@@ -6,7 +6,7 @@ import fleet from "@/lib/fleet.json";
 import fleetImages from "@/lib/fleet-images.json";
 import { fleetUi } from "@/lib/fleet-ui";
 import { bookingUi } from "@/lib/booking";
-import { addDaysIso, rentalDuration } from "@/lib/rental-duration";
+import { addDaysIso, rateTierIndex as rateIndex, rentalDuration } from "@/lib/rental-duration";
 import { contact } from "@/lib/service-info";
 import type { Locale } from "@/lib/i18n";
 import { localeInfo } from "@/lib/locales";
@@ -23,7 +23,6 @@ const localToday = () => {
   const parts = Object.fromEntries(new Intl.DateTimeFormat("en-US", { timeZone: "Asia/Baku", year: "numeric", month: "2-digit", day: "2-digit" }).formatToParts(new Date()).map((part) => [part.type, part.value]));
   return `${parts.year}-${parts.month}-${parts.day}`;
 };
-const rateIndex = (days: number) => days <= 3 ? 0 : days <= 7 ? 1 : days <= 14 ? 2 : days <= 21 ? 3 : days <= 31 ? 4 : 5;
 const submissionUi: Record<Locale, { lead: string; submit: string; sending: string; success: string; reference: string; follow: string; failed: string; invalid: string; limited: string; mail: string }> = {
   ru: { invalid: "Проверьте данные заявки и попробуйте ещё раз.", limited: `Слишком много заявок за последний час. Позвоните нам: ${contact.phoneDisplay}`, lead: "Проверьте данные и отправьте заявку. Она сохранится в панели CarTime; менеджер подтвердит наличие и условия.", submit: "Отправить заявку", sending: "Отправляем…", success: "Заявка получена", reference: "Номер заявки", follow: "Хотите ускорить ответ? Поделитесь заявкой с менеджером в WhatsApp или отправьте копию по почте.", failed: "Не удалось сохранить заявку. Проверьте соединение и попробуйте ещё раз.", mail: "Отправить копию на info@cartime.az" },
   az: { invalid: "Sorğu məlumatlarını yoxlayın və yenidən cəhd edin.", limited: `Son bir saatda çox sorğu göndərilib. Bizə zəng edin: ${contact.phoneDisplay}`, lead: "Məlumatları yoxlayın və sorğunu göndərin. Sorğu CarTime panelində saxlanılacaq; menecer mövcudluğu və şərtləri təsdiqləyəcək.", submit: "Sorğunu göndər", sending: "Göndərilir…", success: "Sorğu qəbul edildi", reference: "Sorğu nömrəsi", follow: "Cavabı sürətləndirmək istəyirsiniz? Sorğunu WhatsApp-da paylaşın və ya e-poçtla surətini göndərin.", failed: "Sorğunu saxlamaq mümkün olmadı. Bağlantını yoxlayın və yenidən cəhd edin.", mail: "Surəti info@cartime.az-a göndər" },

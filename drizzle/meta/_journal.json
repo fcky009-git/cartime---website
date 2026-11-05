@@ -15,6 +15,13 @@
       "when": 1793919770470,
       "tag": "0001_tiresome_harrier",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "6",
+      "when": 1793921905981,
+      "tag": "0002_easy_magik",
+      "breakpoints": true
     }
   ]
 }
