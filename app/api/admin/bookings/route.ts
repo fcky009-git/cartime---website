@@ -21,7 +21,7 @@ export async function GET() {
 export async function PATCH(request: Request) {
   if (!await currentBookingAdmin()) return Response.json({ error: "Forbidden" }, { status: 403 });
   const origin = request.headers.get("origin");
-  if (origin && origin !== new URL(request.url).origin) return Response.json({ error: "Forbidden" }, { status: 403 });
+  if (!origin || origin !== new URL(request.url).origin) return Response.json({ error: "Forbidden" }, { status: 403 });
   let body: unknown;
   try { body = await request.json(); } catch { return Response.json({ error: "Invalid JSON" }, { status: 400 }); }
   const parsed = statusUpdate.safeParse(body);
