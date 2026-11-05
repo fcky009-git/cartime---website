@@ -3,11 +3,12 @@ import type { Metadata } from "next";
 import CarTimeSite from "@/components/site";
 import { dictionaries, type Locale } from "@/lib/i18n";
 import { pageMetadata, jsonLd, siteOrigin } from "@/lib/seo";
+import { fleetCount } from "@/lib/fleet-count";
 
 const homeMeta = {
-  ru: ["Аренда автомобилей в Баку — каталог и тарифы", "Сравните 55 автомобилей и дневные тарифы в USD для поездок по Баку и Азербайджану. Гиды по городу, аэропорту GYD и маршрутам."],
-  az: ["Bakıda avtomobil icarəsi — kataloq və tariflər", "Bakı və Azərbaycan səfərləri üçün 55 avtomobili və USD ilə gündəlik tarifləri müqayisə edin. Şəhər, GYD və marşrut bələdçiləri."],
-  en: ["Car rental in Baku — cars and daily rates", "Compare 55 cars and USD daily rates for trips around Baku and Azerbaijan. Guides to the city, GYD airport and road trips."],
+  ru: ["Аренда автомобилей в Баку — каталог и тарифы", `Сравните ${fleetCount} автомобилей и дневные тарифы в USD для поездок по Баку и Азербайджану. Гиды по городу, аэропорту GYD и маршрутам.`],
+  az: ["Bakıda avtomobil icarəsi — kataloq və tariflər", `Bakı və Azərbaycan səfərləri üçün ${fleetCount} avtomobili və USD ilə gündəlik tarifləri müqayisə edin. Şəhər, GYD və marşrut bələdçiləri.`],
+  en: ["Car rental in Baku — cars and daily rates", `Compare ${fleetCount} cars and USD daily rates for trips around Baku and Azerbaijan. Guides to the city, GYD airport and road trips.`],
 } as const;
 
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
@@ -25,6 +26,8 @@ export default async function LocalePage({ params }: { params: Promise<{ locale:
   const { locale } = await params;
   if (!(locale in dictionaries)) notFound();
   return <>
+    {/* The hero is a CSS background image, so the browser would find it late; hint it early. */}
+    <link rel="preload" as="image" href="/assets/hero-baku-editorial.jpg" fetchPriority="high" />
     <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLd({
       "@context": "https://schema.org",
       "@type": "WebSite",
