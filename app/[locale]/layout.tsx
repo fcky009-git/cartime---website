@@ -21,6 +21,11 @@ export const metadata: Metadata = {
 
 const themeScript = `try{var t=localStorage.getItem('cartime-theme');document.documentElement.dataset.theme=['hybrid','dark','light'].includes(t)?t:'hybrid'}catch(e){document.documentElement.dataset.theme='hybrid'}`;
 const fontsHref = "https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Inter:wght@400;500;600;700;800&family=Sora:wght@400;500;600;700;800&display=swap";
+const localeFonts: Partial<Record<import("@/lib/locales").Locale, string>> = {
+  zh: "https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;600;700;800&display=swap",
+  ko: "https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;600;700;800&display=swap",
+  ar: "https://fonts.googleapis.com/css2?family=Noto+Sans+Arabic:wght@400;500;600;700;800&display=swap",
+};
 
 // Root layout for every language page: <html lang> and dir come from the URL segment.
 export default async function LocaleLayout({ children, params }: Readonly<{ children: React.ReactNode; params: Promise<{ locale: string }> }>) {
@@ -34,6 +39,7 @@ export default async function LocaleLayout({ children, params }: Readonly<{ chil
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link rel="stylesheet" href={fontsHref} />
+        {localeFonts[code] && <link rel="stylesheet" href={localeFonts[code]} />}
         {gtmId && <script dangerouslySetInnerHTML={{ __html: gtmHeadScript(gtmId) + clickEventsScript }} />}
       </head>
       <body>

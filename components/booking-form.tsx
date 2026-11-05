@@ -9,6 +9,7 @@ import { bookingUi } from "@/lib/booking";
 import { addDaysIso, rentalDuration } from "@/lib/rental-duration";
 import { contact } from "@/lib/service-info";
 import type { Locale } from "@/lib/i18n";
+import { localeInfo } from "@/lib/locales";
 
 type Place = "office" | "airport" | "delivery";
 type Car = (typeof fleet)[number];
@@ -27,6 +28,11 @@ const submissionUi: Record<Locale, { lead: string; submit: string; sending: stri
   ru: { lead: "Проверьте данные и отправьте заявку. Она сохранится в панели CarTime; менеджер подтвердит наличие и условия.", submit: "Отправить заявку", sending: "Отправляем…", success: "Заявка получена", reference: "Номер заявки", follow: "Хотите ускорить ответ? Поделитесь заявкой с менеджером в WhatsApp или отправьте копию по почте.", failed: "Не удалось сохранить заявку. Проверьте соединение и попробуйте ещё раз.", mail: "Отправить копию на info@cartime.az" },
   az: { lead: "Məlumatları yoxlayın və sorğunu göndərin. Sorğu CarTime panelində saxlanılacaq; menecer mövcudluğu və şərtləri təsdiqləyəcək.", submit: "Sorğunu göndər", sending: "Göndərilir…", success: "Sorğu qəbul edildi", reference: "Sorğu nömrəsi", follow: "Cavabı sürətləndirmək istəyirsiniz? Sorğunu WhatsApp-da paylaşın və ya e-poçtla surətini göndərin.", failed: "Sorğunu saxlamaq mümkün olmadı. Bağlantını yoxlayın və yenidən cəhd edin.", mail: "Surəti info@cartime.az-a göndər" },
   en: { lead: "Review and send your request. It will be saved in CarTime's dashboard; a manager will confirm availability and terms.", submit: "Send request", sending: "Sending…", success: "Request received", reference: "Request ID", follow: "Want a faster reply? Share your request in WhatsApp or email a copy to the manager.", failed: "Could not save your request. Check your connection and try again.", mail: "Email a copy to info@cartime.az" },
+  de: { lead: "Überprüfen und senden Sie Ihre Anfrage. Es wird im Dashboard von CarTime gespeichert; Ein Manager bestätigt die Verfügbarkeit und die Bedingungen.", submit: "Anfrage senden", sending: "Wird gesendet…", success: "Anfrage erhalten", reference: "Anforderungs-ID", follow: "Möchten Sie eine schnellere Antwort? Teilen Sie Ihre Anfrage in WhatsApp oder senden Sie eine Kopie per E-Mail an den Manager.", failed: "Ihre Anfrage konnte nicht gespeichert werden. Überprüfen Sie Ihre Verbindung und versuchen Sie es erneut.", mail: "Senden Sie eine Kopie per E-Mail an info@cartime.az" },
+  zh: { lead: "查看并发送您的请求。它将保存在CarTime的仪表板中；经理将确认可用性和条款。", submit: "发送请求", sending: "正在发送...", success: "收到请求", reference: "请求 ID", follow: "想要更快的回复吗？在 WhatsApp 中分享您的请求或通过电子邮件将副本发送给经理。", failed: "无法保存您的请求。检查您的连接并重试。", mail: "通过电子邮件发送副本至 info@cartime.az" },
+  ko: { lead: "요청을 검토하고 보내주세요. CarTime의 대시보드에 저장됩니다. 관리자가 이용 가능 여부와 조건을 확인해 드릴 것입니다.", submit: "요청 보내기", sending: "보내는 중…", success: "요청 접수됨", reference: "요청 ID", follow: "더 빠른 답변을 원하시나요? WhatsApp에서 요청을 공유하거나 관리자에게 사본을 이메일로 보내세요.", failed: "요청을 저장할 수 없습니다. 연결을 확인하고 다시 시도하세요.", mail: "info@cartime.az로 사본을 이메일로 보내세요." },
+  fr: { lead: "Vérifiez et envoyez votre demande. Il sera enregistré dans le tableau de bord de CarTime ; un responsable confirmera la disponibilité et les conditions.", submit: "Envoyer la demande", sending: "Envoi…", success: "Demande reçue", reference: "ID de demande", follow: "Vous souhaitez une réponse plus rapide ? Partagez votre demande sur WhatsApp ou envoyez-en une copie par e-mail au responsable.", failed: "Impossible d'enregistrer votre demande. Vérifiez votre connexion et réessayez.", mail: "Envoyez une copie par e-mail à info@cartime.az" },
+  ar: { lead: "قم بمراجعة طلبك وإرساله. سيتم حفظه في لوحة معلومات CarTime؛ سيقوم المدير بتأكيد التوفر والشروط.", submit: "أرسل الطلب", sending: "جاري الإرسال…", success: "تم استلام الطلب", reference: "معرف الطلب", follow: "هل تريد الرد بشكل أسرع؟ شارك طلبك عبر تطبيق WhatsApp أو أرسل نسخة بالبريد الإلكتروني إلى المدير.", failed: "لا يمكن حفظ طلبك. تحقق من اتصالك وحاول مرة أخرى.", mail: "أرسل نسخة بالبريد الإلكتروني إلى info@cartime.az" },
 };
 
 export default function BookingForm({ locale }: { locale: Locale }) {
@@ -113,7 +119,7 @@ export default function BookingForm({ locale }: { locale: Locale }) {
   const convert = (usd: number) => currency === "USD" || !rates ? usd : usd * rates.aznPerUnit.USD / rates.aznPerUnit[currency];
   const formatPrice = (usd: number) => {
     const wholeCurrency = currency === "RUB" || currency === "KZT";
-    return `${new Intl.NumberFormat(locale === "az" ? "az-AZ" : locale === "ru" ? "ru-RU" : "en-US", { maximumFractionDigits: wholeCurrency ? 0 : 2, minimumFractionDigits: currency === "USD" || wholeCurrency ? 0 : 2 }).format(convert(usd))} ${currency}`;
+    return `${new Intl.NumberFormat(localeInfo[locale].hreflang, { maximumFractionDigits: wholeCurrency ? 0 : 2, minimumFractionDigits: currency === "USD" || wholeCurrency ? 0 : 2 }).format(convert(usd))} ${currency}`;
   };
 
   const locationText = (place: Place, address: string) => place === "delivery" ? `${ui.delivery}: ${address}` : ui[place];

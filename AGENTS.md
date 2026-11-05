@@ -4,7 +4,7 @@ Instructions for coding agents (Codex, Claude Code and similar). Read `README.md
 
 ## Project
 
-Car-rental site for Baku, Azerbaijan, in three languages (`/ru`, `/az`, `/en`); more languages are planned. Next.js App Router API run by `vinext` on Cloudflare Workers. Status: owner-private preview. The request form saves leads to D1 for the owner-only admin panel; availability and final terms still require a manager. There is no online payment or instant confirmed booking.
+Car-rental site for Baku, Azerbaijan, in eight languages (`/ru`, `/az`, `/en`, `/de`, `/zh`, `/ko`, `/fr`, `/ar`). The last five are machine-translation drafts for the private preview and require native-speaker review before public launch. Next.js App Router API run by `vinext` on Cloudflare Workers. Status: owner-private preview. The request form saves leads to D1 for the owner-only admin panel; availability and final terms still require a manager. There is no online payment or instant confirmed booking.
 
 ## Commands
 

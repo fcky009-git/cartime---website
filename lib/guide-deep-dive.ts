@@ -45,4 +45,74 @@ export const guideDeepDive: Record<Locale, Record<"baku" | "routes", Section[]>>
       { heading: "Plan the drive responsibly", paragraphs: ["Check weather, road updates, opening times and parking before leaving. Ask whether your chosen vehicle is suitable if a route involves an unpaved stretch.", "CarTime permits travel within Azerbaijan and offers unlimited mileage. Confirm the specific car, return point and insurance terms before a longer trip."] },
     ],
   },
+  de: {
+    baku: [
+      { heading: "Eine Rundwanderung am ersten Tag", paragraphs: ["Beginnen Sie an den Mauern von Icherisheher, besuchen Sie den Jungfrauenturm und den Palast der Schirwanschahs und lassen Sie dann Platz, um durch die Gassen zu schlendern. Häuser, Werkstätten, Galerien und Cafés machen die Altstadt zu einem lebendigen Viertel.", "Fahren Sie weiter zum Boulevard. Das Teppichmuseum befindet sich direkt am Ufer in einem Gebäude in Form eines gerollten Teppichs. Informieren Sie sich im Voraus über Ausstellungen und Tickets, wenn Sie hineingehen möchten."] },
+      { heading: "Boulevard, Kunst und Blick auf die Bucht", paragraphs: ["Der Baku Boulevard verbindet Grünflächen und Kulturstätten entlang des Kaspischen Meeres. Die Tourismusbehörde Aserbaidschans hebt das Teppichmuseum YARAT und das Surakhani-Schiffsmuseum entlang der breiteren Uferpromenade hervor.", "Geben Sie dem Highland Park eine eigene Haltestelle für ein Stadtpanorama. Wenn Sie ins Zentrum fahren, planen Sie zunächst einen Parkplatz ein und erkunden Sie den Kern zu Fuß."] },
+      { heading: "Vom Ölboom zum zeitgenössischen Design", paragraphs: ["Der Ölboom im späten 19. und frühen 20. Jahrhundert prägte viele zentrale Fassaden. Vergleichen Sie sie mit der fließenden Form des von Zaha Hadid entworfenen Heydar Aliyev Centre.", "Der mittelalterliche Kern, die Ölboom-Stadt und das moderne Baku lesen sich wie Kapitel einer Geschichte. Informieren Sie sich vor Ihrem Besuch über die aktuellen Ausstellungen und Öffnungszeiten des Zentrums."] },
+      { heading: "Gestalten Sie einen Tag rund um Ihre Interessen", paragraphs: ["Familien können einen kurzen Geschichtsspaziergang mit der Freifläche des Boulevards abwechseln. Museumsliebhaber möchten vielleicht mehr Zeit im Palast, im Teppichmuseum oder im Heydar-Aliyev-Zentrum verbringen.", "Die offizielle Tourismusbehörde listet Besucherinformationspunkte in der Nähe der Nizami-Straße und in der Altstadt auf, wo Sie nach Karten und aktuellen Besuchstipps fragen können."] },
+    ],
+    routes: [
+      { heading: "Wählen Sie nach Zeit, nicht nur nach Entfernung", paragraphs: ["Absheron funktioniert als kürzerer Ausflug; Qobustan verdient wegen seines Reservats und Museums einen ganzen Tag. Der längere Weg über Gabala nach Sheki ist über mehrere Tage bequemer.", "Nehmen Sie sich Zeit zum Spazierengehen, Essen und gewöhnen Sie sich an das Wetter. Eine Liste mit Pins auf einer Karte ist nicht dasselbe wie eine lohnende Reiseroute."] },
+      { heading: "Lahij und Handwerkstraditionen", paragraphs: ["Lahij im Bezirk Ismayilli ist bekannt für seine gepflasterten Gassen und seine Metallverarbeitung. Der offizielle Tourismusverband bezeichnet auch die Berganfahrt als Teil des Erlebnisses.", "Erkunden Sie die alte Siedlung zu Fuß. Überprüfen Sie die Straße, das Wetter und das Tageslicht, bevor Sie den Umweg zu einer Reise in den Nordwesten hinzufügen."] },
+      { heading: "Sheki hat seinen eigenen Tag verdient", paragraphs: ["Das historische Zentrum von Sheki und der Khan-Palast stehen auf der Liste des UNESCO-Weltkulturerbes. Halten Sie hinter dem Palast Ausschau nach Werkstätten, der Karawanserei und den komplizierten Shebeke-Fenstern.", "Eine Übernachtung oder ein ganzer Tag macht die Stadt zu einem Reiseziel und nicht zu einem kurzen Fotostopp."] },
+      { heading: "Planen Sie die Fahrt verantwortungsvoll", paragraphs: ["Informieren Sie sich vor Ihrer Abreise über das Wetter, aktuelle Straßeninformationen, Öffnungszeiten und Parkmöglichkeiten. Erkundigen Sie sich, ob das von Ihnen gewählte Fahrzeug geeignet ist, wenn die Strecke über eine unbefestigte Strecke führt.", "CarTime ermöglicht Reisen innerhalb Aserbaidschans und bietet unbegrenzte Kilometer. Bestätigen Sie vor einer längeren Reise das konkrete Fahrzeug, den Rückgabepunkt und die Versicherungsbedingungen."] },
+    ],
+  },
+  zh: {
+    baku: [
+      { heading: "第一天步行循环", paragraphs: ["从 Icherisheher 的城墙开始，参观少女塔和 Shirvanshahs 宫殿，然后留出空间在小巷中漫步。住宅、工作室、画廊和咖啡馆使老城成为一个生机勃勃的街区。", "继续前往林荫大道。地毯博物馆坐落在海滨一栋形状像卷地毯的建筑中。如果想进去的话请提前查好展览和门票。"] },
+      { heading: "林荫大道、艺术和海湾景观", paragraphs: ["巴库大道连接里海沿岸的绿地和文化场所。阿塞拜疆旅游局重点关注更广阔的海滨地区的地毯博物馆、YARAT 和 Surakhani 船舶博物馆。", "高地公园拥有自己的一站，可以欣赏城市全景。如果驾车前往市中心，请先计划停车，然后步行探索核心区。"] },
+      { heading: "从石油繁荣到当代设计", paragraphs: ["十九世纪末和二十世纪初的石油繁荣塑造了许多中央立面。将它们与扎哈·哈迪德设计的盖达尔·阿利耶夫中心的流动形式进行比较。", "中世纪的核心、石油繁荣的城市和现代巴库就像一个故事的章节。参观前请查看该中心当前的展览和开放时间。"] },
+      { heading: "围绕您的兴趣构建一天", paragraphs: ["家庭可以在林荫大道的开放空间中交替进行短暂的历史漫步。博物馆爱好者可能希望在宫殿、地毯博物馆或盖达尔阿利耶夫中心有更多时间参观。", "官方旅游局列出了尼扎米街附近和老城区的游客信息点，您可以在那里索取地图和当前的游览建议。"] },
+    ],
+    routes: [
+      { heading: "选择时间，而不仅仅是距离", paragraphs: ["阿布歇隆是一个较短的游览；戈布斯坦的保护区和博物馆值得花上一天的时间。从加巴拉到舍基的较长道路在几天内会更加舒适。", "留出时间散步、吃饭和适应天气。地图上的图钉列表与奖励行程不同。"] },
+      { heading: "Lahij 和工艺传统", paragraphs: ["Ismayilli 区的 Lahij 以鹅卵石小巷和金属加工而闻名。官方旅游局还将登山路线描述为体验的一部分。", "步行探索旧定居点。在绕道西北之旅之前，请检查道路、天气和日光。"] },
+      { heading: "舍基值得拥有自己的一天", paragraphs: ["舍基的历史中心和汗宫均被列入联合国教科文组织世界遗产名录。在宫殿之外，您可以寻找作坊、商队旅馆和复杂的谢贝克窗户。", "过夜或一整天让这座城市成为一个目的地，而不是短暂的拍照停留。"] },
+      { heading: "负责任地规划驾驶", paragraphs: ["出发前查看天气、道路更新、开放时间和停车位。如果路线涉及未铺砌的路段，请询问您选择的车辆是否合适。", "CarTime 允许在阿塞拜疆境内旅行并提供无限里程。长途旅行前请确认具体车辆、回程地点和保险条款。"] },
+    ],
+  },
+  ko: {
+    baku: [
+      { heading: "첫날 걷기 코스", paragraphs: ["Icherisheher의 성벽에서 시작하여 Maiden Tower와 Shirvanshahs' Palace를 방문한 후 골목을 돌아다닐 공간을 남겨두세요. 주택, 작업장, 갤러리, 카페는 올드 시티를 살아있는 동네로 만듭니다.", "대로를 따라 계속 가세요. 카펫 박물관은 두루마리 카펫처럼 생긴 건물의 해안가 옆에 자리잡고 있습니다. 안으로 들어가고 싶다면 전시와 티켓을 미리 확인하세요."] },
+      { heading: "대로, 예술, 만의 전망", paragraphs: ["바쿠 대로(Baku Boulevard)는 카스피해를 따라 녹지 공간과 문화 장소를 연결합니다. 아제르바이잔 관광청은 더 넓은 해안가를 따라 카펫 박물관, YARAT 및 수라카니 선박 박물관을 강조합니다.", "하이랜드 파크에 정차하여 도시 전경을 감상하세요. 차로 중심부로 진입하는 경우 먼저 주차를 계획하고 도보로 중심부를 탐험하세요."] },
+      { heading: "석유붐부터 현대적 디자인까지", paragraphs: ["19세기 말과 20세기 초 석유 붐으로 인해 많은 중앙 외관이 형성되었습니다. 자하 하디드(Zaha Hadid)가 디자인한 흐르는 듯한 형태의 헤이다르 알리예프 센터(Heydar Aliyev Centre)와 비교해 보세요.", "중세 핵심, 석유 붐 도시와 현대 바쿠는 하나의 이야기의 장으로 읽혀집니다. 방문하기 전에 센터의 현재 전시회와 개장 시간을 확인하세요."] },
+      { heading: "관심 분야를 중심으로 하루를 보내세요", paragraphs: ["가족들은 대로의 열린 공간에서 짧은 역사 산책을 번갈아 할 수 있습니다. 박물관을 좋아하는 분들은 궁전, 카펫 박물관, 헤이다르 알리예프 센터에서 더 많은 시간을 보내고 싶을 수도 있습니다.", "공식 관광청에는 지도와 현재 방문 조언을 요청할 수 있는 니자미 거리와 구시가지 근처의 방문자 정보 지점이 나열되어 있습니다."] },
+    ],
+    routes: [
+      { heading: "거리가 아닌 시간으로 선택하세요", paragraphs: ["Absheron은 더 짧은 여행으로 작동합니다. 고부스탄은 보호구역과 박물관으로 하루를 보낼 가치가 충분히 있습니다. 가발라를 거쳐 셰키까지 이어지는 더 긴 도로는 며칠 동안 더 편안합니다.", "걷고, 먹고, 날씨에 적응할 시간을 주세요. 지도에 있는 핀 목록은 보람 있는 여행 일정과 동일하지 않습니다."] },
+      { heading: "라히즈와 공예 전통", paragraphs: ["이스마일리 지역의 라히즈는 자갈길과 금속 가공으로 유명합니다. 공식 관광청에서는 산악 접근을 경험의 일부로 설명합니다.", "옛 정착지를 도보로 탐험해보세요. 북서부 여행에 우회로를 추가하기 전에 도로, 날씨, 일광을 확인하세요."] },
+      { heading: "셰키는 그 자체로 좋은 하루를 보낼 자격이 있습니다", paragraphs: ["셰키의 역사 중심지와 칸의 궁전은 유네스코 세계문화유산 목록에 등재되어 있습니다. 궁전 너머에는 작업장, 캐러밴세라이, 복잡한 셰베케 창문이 있습니다.", "하룻밤이나 하루 종일 머무르면 도시가 잠시 사진을 찍는 곳이 아닌 목적지가 됩니다."] },
+      { heading: "책임감 있게 운전을 계획하세요", paragraphs: ["떠나기 전에 날씨, 도로 업데이트, 개장 시간, 주차 공간을 확인하세요. 경로에 비포장 구간이 포함된 경우 선택한 차량이 적합한지 물어보세요.", "CarTime은 아제르바이잔 내 여행을 허용하며 무제한 마일리지를 제공합니다. 장거리 여행을 떠나기 전에 특정 차량, 반납 장소, 보험 약관을 확인하세요."] },
+    ],
+  },
+  fr: {
+    baku: [
+      { heading: "Une boucle pédestre du premier jour", paragraphs: ["Commencez par les murs d'Icherisheher, visitez la tour de la Vierge et le palais des Shirvanshahs, puis laissez de la place pour flâner dans ses ruelles. Maisons, ateliers, galeries et cafés font de la vieille ville un quartier vivant.", "Continuez jusqu'au Boulevard. Le Musée du Tapis se trouve au bord de l'eau, dans un bâtiment en forme de tapis roulé. Vérifiez les expositions et les billets à l'avance si vous souhaitez entrer."] },
+      { heading: "Boulevard, art et vue sur la baie", paragraphs: ["Le boulevard Bakou relie les espaces verts et les lieux culturels le long de la Caspienne. L'office du tourisme d'Azerbaïdjan met en valeur le musée du tapis, YARAT et le musée des navires Surakhani le long du front de mer plus large.", "Donnez à Highland Park son propre arrêt pour un panorama de la ville. Si vous conduisez vers le centre, prévoyez d'abord de vous garer et explorez le centre à pied."] },
+      { heading: "Du boom pétrolier au design contemporain", paragraphs: ["Le boom pétrolier de la fin du XIXe et du début du XXe siècle a façonné de nombreuses façades centrales. Comparez-les avec la forme fluide du Centre Heydar Aliyev, conçu par Zaha Hadid.", "Le noyau médiéval, la ville en plein boom pétrolier et Bakou moderne se lisent comme les chapitres d’une même histoire. Vérifiez les expositions actuelles et les heures d'ouverture du centre avant de vous y rendre."] },
+      { heading: "Construisez une journée autour de vos intérêts", paragraphs: ["Les familles peuvent alterner une petite promenade historique avec l'espace ouvert du Boulevard. Les amateurs de musées voudront peut-être passer plus de temps au palais, au musée du tapis ou au centre Heydar Aliyev.", "L'office officiel du tourisme répertorie les points d'information touristiques près de la rue Nizami et dans la vieille ville, où vous pouvez demander des cartes et des conseils de visite actuels."] },
+    ],
+    routes: [
+      { heading: "Choisissez en fonction du temps, pas seulement de la distance", paragraphs: ["Absheron fonctionne comme une excursion plus courte ; Gobustan mérite bien une journée pour sa réserve et son musée. La route plus longue passant par Gabala jusqu'à Sheki est plus confortable sur plusieurs jours.", "Prévoyez du temps pour marcher, manger et vous adapter aux conditions météorologiques. Une liste de repères sur une carte n’est pas la même chose qu’un itinéraire enrichissant."] },
+      { heading: "Lahij et traditions artisanales", paragraphs: ["Lahij, dans le quartier d'Ismayilli, est connue pour ses ruelles pavées et son travail du métal. L'office officiel du tourisme décrit également l'approche montagne comme faisant partie de l'expérience.", "Explorez l'ancienne colonie à pied. Vérifiez la route, la météo et la lumière du jour avant d'ajouter le détour à un voyage vers le nord-ouest."] },
+      { heading: "Sheki mérite son propre jour", paragraphs: ["Le centre historique de Sheki et le palais du Khan sont inscrits sur la liste du patrimoine mondial de l'UNESCO. Au-delà du palais, cherchez les ateliers, le caravansérail et les fenêtres shebeke complexes.", "Une nuitée ou une journée complète permet à la ville de devenir une destination plutôt qu'un bref arrêt photo."] },
+      { heading: "Planifiez le trajet de manière responsable", paragraphs: ["Vérifiez la météo, l'état des routes, les horaires d'ouverture et le stationnement avant de partir. Demandez si le véhicule que vous avez choisi convient si un itinéraire implique un tronçon non pavé.", "CarTime permet de voyager en Azerbaïdjan et offre un kilométrage illimité. Confirmez les conditions spécifiques de la voiture, du point de retour et de l'assurance avant un voyage plus long."] },
+    ],
+  },
+  ar: {
+    baku: [
+      { heading: "حلقة مشي في اليوم الأول", paragraphs: ["ابدأ من أسوار إيشيريشهر، وقم بزيارة برج العذراء وقصر شيرفانشاه، ثم اترك مجالًا للتجول في ممراته. المنازل وورش العمل والمعارض والمقاهي تجعل من المدينة القديمة حيًا حيويًا.", "الاستمرار في البوليفارد. يقع متحف السجاد بجانب الواجهة البحرية في مبنى على شكل سجادة ملفوفة. تحقق من المعارض والتذاكر مسبقًا إذا كنت تريد الذهاب إلى الداخل."] },
+      { heading: "إطلالات على البوليفارد والفن والخليج", paragraphs: ["يربط باكو بوليفارد المساحات الخضراء والأماكن الثقافية على طول بحر قزوين. يسلط مجلس السياحة الأذربيجاني الضوء على متحف السجاد ويارات ومتحف سفينة سوراخاني على طول الواجهة البحرية الأوسع.", "امنح Highland Park محطتها الخاصة للاستمتاع بإطلالة بانورامية على المدينة. إذا كنت تقود سيارتك إلى المركز، فخطط لوقوف السيارات أولاً واستكشف قلب المدينة سيرًا على الأقدام."] },
+      { heading: "من الطفرة النفطية إلى التصميم المعاصر", paragraphs: ["شكلت الطفرة النفطية في أواخر القرن التاسع عشر وأوائل القرن العشرين العديد من الواجهات المركزية. قارنها بالشكل الانسيابي لمركز حيدر علييف الذي صممته زها حديد.", "قلب العصور الوسطى ومدينة الازدهار النفطي وباكو الحديثة تُقرأ كفصول من قصة واحدة. تحقق من المعارض الحالية للمركز وساعات العمل قبل الزيارة."] },
+      { heading: "ابنِ يومًا حول اهتماماتك", paragraphs: ["يمكن للعائلات التناوب في جولة تاريخية قصيرة مع المساحة المفتوحة في البوليفارد. قد يرغب عشاق المتحف في قضاء المزيد من الوقت في القصر أو متحف السجاد أو مركز حيدر علييف.", "يدرج مجلس السياحة الرسمي نقاط معلومات الزوار بالقرب من شارع نظامي وفي المدينة القديمة، حيث يمكنك طلب الخرائط ونصائح الزيارة الحالية."] },
+    ],
+    routes: [
+      { heading: "اختر بالوقت وليس بالمسافة فقط", paragraphs: ["أبشيرون يعمل بمثابة رحلة أقصر؛ تستحق جوبستان الكثير من اليوم بسبب محميةها ومتحفها. يعد الطريق الأطول عبر غابالا إلى شيكي أكثر راحة على مدى عدة أيام.", "إتاحة الوقت للمشي وتناول الطعام والتكيف مع الطقس. قائمة الدبابيس الموجودة على الخريطة ليست مثل خط سير الرحلة المجزي."] },
+      { heading: "لحج والتقاليد الحرفية", paragraphs: ["لحج في منطقة الإسماعيلي معروفة بالممرات المرصوفة بالحصى وأشغال المعادن. يصف مجلس السياحة الرسمي أيضًا النهج الجبلي كجزء من التجربة.", "اكتشف المستوطنة القديمة سيراً على الأقدام. تحقق من الطريق والطقس وضوء النهار قبل إضافة المنعطف إلى الرحلة الشمالية الغربية."] },
+      { heading: "شيكي يستحق يومه الخاص", paragraphs: ["مركز شيكي التاريخي وقصر خان مدرجان في قائمة التراث العالمي لليونسكو. خارج القصر، ابحث عن ورش العمل والخانات ونوافذ الشبك المعقدة.", "الإقامة لليلة واحدة أو يوم كامل تجعل المدينة وجهة وليس محطة قصيرة لالتقاط الصور."] },
+      { heading: "خطط للقيادة بمسؤولية", paragraphs: ["التحقق من الطقس وتحديثات الطريق ومواعيد العمل ومواقف السيارات قبل المغادرة. اسأل ما إذا كانت السيارة التي اخترتها مناسبة إذا كان الطريق يتضمن امتدادًا غير ممهد.", "يسمح CarTime بالسفر داخل أذربيجان ويقدم عدد غير محدود من الأميال. تأكد من السيارة المحددة ونقطة العودة وشروط التأمين قبل رحلة أطول."] },
+    ],
+  },
 };
