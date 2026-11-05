@@ -3,6 +3,7 @@ import { siteOrigin } from "@/lib/seo";
 import "./globals.css";
 import "./home-design.css";
 import "./admin.css";
+import "./navigation-polish.css";
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteOrigin),
