@@ -24,9 +24,9 @@ const localToday = () => {
 };
 const rateIndex = (days: number) => days <= 3 ? 0 : days <= 7 ? 1 : days <= 14 ? 2 : days <= 21 ? 3 : days <= 31 ? 4 : 5;
 const submissionUi: Record<Locale, { lead: string; submit: string; sending: string; success: string; reference: string; follow: string; failed: string; mail: string }> = {
-  ru: { lead: "Проверьте данные и отправьте заявку. Она сохранится в панели CarTime; менеджер подтвердит наличие и условия.", submit: "Отправить заявку", sending: "Отправляем…", success: "Заявка получена", reference: "Номер заявки", follow: "Хотите ускорить ответ? Поделитесь заявкой с менеджером в WhatsApp или отправьте копию по почте.", failed: "Не удалось сохранить заявку. Проверьте соединение и попробуйте ещё раз.", mail: "Отправить копию на info@9fleet.com" },
-  az: { lead: "Məlumatları yoxlayın və sorğunu göndərin. Sorğu CarTime panelində saxlanılacaq; menecer mövcudluğu və şərtləri təsdiqləyəcək.", submit: "Sorğunu göndər", sending: "Göndərilir…", success: "Sorğu qəbul edildi", reference: "Sorğu nömrəsi", follow: "Cavabı sürətləndirmək istəyirsiniz? Sorğunu WhatsApp-da paylaşın və ya e-poçtla surətini göndərin.", failed: "Sorğunu saxlamaq mümkün olmadı. Bağlantını yoxlayın və yenidən cəhd edin.", mail: "Surəti info@9fleet.com-a göndər" },
-  en: { lead: "Review and send your request. It will be saved in CarTime's dashboard; a manager will confirm availability and terms.", submit: "Send request", sending: "Sending…", success: "Request received", reference: "Request ID", follow: "Want a faster reply? Share your request in WhatsApp or email a copy to the manager.", failed: "Could not save your request. Check your connection and try again.", mail: "Email a copy to info@9fleet.com" },
+  ru: { lead: "Проверьте данные и отправьте заявку. Она сохранится в панели CarTime; менеджер подтвердит наличие и условия.", submit: "Отправить заявку", sending: "Отправляем…", success: "Заявка получена", reference: "Номер заявки", follow: "Хотите ускорить ответ? Поделитесь заявкой с менеджером в WhatsApp или отправьте копию по почте.", failed: "Не удалось сохранить заявку. Проверьте соединение и попробуйте ещё раз.", mail: "Отправить копию на info@cartime.az" },
+  az: { lead: "Məlumatları yoxlayın və sorğunu göndərin. Sorğu CarTime panelində saxlanılacaq; menecer mövcudluğu və şərtləri təsdiqləyəcək.", submit: "Sorğunu göndər", sending: "Göndərilir…", success: "Sorğu qəbul edildi", reference: "Sorğu nömrəsi", follow: "Cavabı sürətləndirmək istəyirsiniz? Sorğunu WhatsApp-da paylaşın və ya e-poçtla surətini göndərin.", failed: "Sorğunu saxlamaq mümkün olmadı. Bağlantını yoxlayın və yenidən cəhd edin.", mail: "Surəti info@cartime.az-a göndər" },
+  en: { lead: "Review and send your request. It will be saved in CarTime's dashboard; a manager will confirm availability and terms.", submit: "Send request", sending: "Sending…", success: "Request received", reference: "Request ID", follow: "Want a faster reply? Share your request in WhatsApp or email a copy to the manager.", failed: "Could not save your request. Check your connection and try again.", mail: "Email a copy to info@cartime.az" },
 };
 
 export default function BookingForm({ locale }: { locale: Locale }) {
@@ -136,7 +136,7 @@ export default function BookingForm({ locale }: { locale: Locale }) {
     ui.requestOpen,
   ].join("\n");
   const whatsappHref = `https://wa.me/${contact.phone.replace(/\D/g, "")}?text=${encodeURIComponent(message)}`;
-  const emailHref = `mailto:info@9fleet.com?subject=${encodeURIComponent(ui.request)}&body=${encodeURIComponent(message)}`;
+  const emailHref = `mailto:${contact.email}?subject=${encodeURIComponent(ui.request)}&body=${encodeURIComponent(message)}`;
 
   function goTo(next: number) {
     setError("");
