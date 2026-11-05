@@ -6,7 +6,7 @@ CarTime is a car rental project in Baku. The site is an owner-private preview in
 
 - Responsive Hybrid, Dark and Light designs; the explicit choice is stored as `cartime-theme`.
 - Searchable car catalogue, published USD daily rates by rental length, illustrations and model detail panels.
-- Date, time, location and car selection with a preliminary estimate in the booking request flow. Requests are saved through `/api/bookings` to D1, and the owner-only `/[locale]/admin` panel shows them. Customers can also share a request by WhatsApp or email. Availability, deposit, delivery and final price are confirmed by a manager; there is no online payment or instant confirmed booking.
+- Date, time, location and car selection with a preliminary estimate in the booking request flow. Requests are saved through `/api/bookings` to D1. The owner-only `/admin` route opens the localized admin workspace. It requires a username and password, and provides live request updates, status management, search, date filters, activity and upcoming pickup views, CSV export, calendar export, print, and contact shortcuts. Customers can also share a request by WhatsApp or email. Availability, deposit, delivery and final price are confirmed by a manager; there is no online payment or instant confirmed booking.
 - Localized About, FAQ, contact, rental service and travel guide pages. Contact includes the owner-provided Google Maps location.
 - One site-wide AutoRental entity, per-page breadcrumbs, localized canonical and hreflang links, Open Graph and Twitter cards, sitemap and robots handling.
 
@@ -19,3 +19,5 @@ Vehicle images and editorial scenes are illustrative. The published rates are a 
 ## Development
 
 Use Node.js 22.13+ and run `npm run install:ci`, `npm run lint`, `npx tsc --noEmit` and `npm run build`. The Sites deployment has its own source repository; the GitHub repository is used for collaboration and must be synchronized deliberately.
+
+Admin login uses the Sites runtime secrets `CARTIME_ADMIN_PASSWORD_HASH` and `CARTIME_ADMIN_SESSION_SECRET`. The password hash format is `pbkdf2:<iterations>:<base64url salt>:<base64url derived key>` (PBKDF2-SHA256, 32-byte key, at least 100,000 iterations). Generate a fresh random session secret of at least 32 characters. Neither value belongs in Git or client code. Sessions expire after eight hours; five failed login attempts from one IP block further attempts for 15 minutes. Keep the Site owner-private while it is a preview.

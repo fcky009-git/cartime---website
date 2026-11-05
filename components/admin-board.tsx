@@ -1,10 +1,12 @@
 "use client";
 
-import { useMemo, useState } from "react";
-import { ArrowRight, Check, Download, Mail, MessageCircle, RefreshCw, Search } from "lucide-react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { ArrowRight, CalendarDays, Check, Clipboard, Download, ExternalLink, LogOut, Mail, MessageCircle, Printer, RefreshCw, Search, Sparkles } from "lucide-react";
 import type { bookingRequests } from "@/db/schema";
 import type { Locale } from "@/lib/i18n";
 import { localeInfo } from "@/lib/locales";
+import fleetImages from "@/lib/fleet-images.json";
+import { adminAccessCopy } from "@/components/admin-login";
 
 type Booking = typeof bookingRequests.$inferSelect;
 type Status = "new" | "contacted" | "confirmed" | "cancelled";
@@ -20,36 +22,90 @@ const labels = {
   ar: { title: "طلبات كار تايم", subtitle: "استفسارات الإيجار الجديدة وتاريخ الاستجابة", all: "الكل", new: "جديد", contacted: "قيد التقدم", confirmed: "تم التأكيد", cancelled: "ملغى", search: "الاسم أو الهاتف أو السيارة أو رقم الطلب", refresh: "تحديث", export: "تنزيل ملف CSV", empty: "لا يوجد طلبات بعد", emptySearch: "لا توجد طلبات مطابقة", details: "تفاصيل الطلب", contact: "إتصل", route: "رحلة", driver: "سائق", payment: "الدفع", notes: "ملاحظات", flight: "طيران", second: "السائق الثاني", yes: "نعم", no: "لا", status: "الحالة", saved: "تم الحفظ", fail: "تعذر تحديث الطلبات. يرجى المحاولة مرة أخرى.", created: "تم الإنشاء", days: "يوم", estimate: "تقدير", rate: "معدل", send: "عميل الواتساب", email: "ايميل العميل", site: "العودة للموقع", loading: "جاري الحفظ…", address: "العنوان", age: "العمر", experience: "خبرة", years: "سنة", visible: "جاري العرض" },
 } as const;
 
+const extra: Record<Locale, { live: string; paused: string; logout: string; calendar: string; copy: string; copied: string; print: string; sort: string; newest: string; oldest: string; pickup: string; highest: string; allDates: string; today: string; nextWeek: string; past: string; upcoming: string; estimate: string; lastWeek: string; quickStatus: string; openCalendar: string; downloadCalendar: string; activity: string; todayPickup: string; todayReturn: string; activeTrips: string; autoRefresh: string; manualRefresh: string }> = {
+  ru: { live: "Автообновление", paused: "Пауза", logout: "Выйти", calendar: "Календарь", copy: "Скопировать", copied: "Скопировано", print: "Печать", sort: "Порядок", newest: "Сначала новые", oldest: "Сначала старые", pickup: "По дате выдачи", highest: "По сумме", allDates: "Все даты", today: "Сегодня", nextWeek: "Ближайшие 7 дней", past: "Прошедшие", upcoming: "Скоро выдача", estimate: "Сумма заявок", lastWeek: "За 7 дней", quickStatus: "Быстрый статус", openCalendar: "Google Календарь", downloadCalendar: "Скачать .ics", activity: "Поток заявок", todayPickup: "Выдачи сегодня", todayReturn: "Возвраты сегодня", activeTrips: "В работе", autoRefresh: "Автоматически каждые 30 секунд", manualRefresh: "Обновляется вручную" },
+  az: { live: "Avtomatik yenilə", paused: "Fasilə", logout: "Çıxış", calendar: "Təqvim", copy: "Kopyala", copied: "Kopyalandı", print: "Çap et", sort: "Sıralama", newest: "Ən yenilər", oldest: "Ən köhnələr", pickup: "Götürmə tarixi", highest: "Məbləğə görə", allDates: "Bütün tarixlər", today: "Bu gün", nextWeek: "Növbəti 7 gün", past: "Keçmiş", upcoming: "Yaxın götürmələr", estimate: "Sorğuların cəmi", lastWeek: "7 gündə", quickStatus: "Sürətli status", openCalendar: "Google Təqvim", downloadCalendar: ".ics yüklə", activity: "Sorğu axını", todayPickup: "Bugünkü götürmələr", todayReturn: "Bugünkü qaytarmalar", activeTrips: "İşdə", autoRefresh: "Hər 30 saniyədən bir", manualRefresh: "Əl ilə yenilənir" },
+  en: { live: "Live updates", paused: "Paused", logout: "Sign out", calendar: "Calendar", copy: "Copy summary", copied: "Copied", print: "Print", sort: "Sort", newest: "Newest first", oldest: "Oldest first", pickup: "Pickup date", highest: "Highest estimate", allDates: "All dates", today: "Today", nextWeek: "Next 7 days", past: "Past", upcoming: "Upcoming pickup", estimate: "Request estimates", lastWeek: "Last 7 days", quickStatus: "Quick status", openCalendar: "Google Calendar", downloadCalendar: "Download .ics", activity: "Request activity", todayPickup: "Pickups today", todayReturn: "Returns today", activeTrips: "In progress", autoRefresh: "Every 30 seconds", manualRefresh: "Manual refresh" },
+  de: { live: "Live-Updates", paused: "Pausiert", logout: "Abmelden", calendar: "Kalender", copy: "Zusammenfassung kopieren", copied: "Kopiert", print: "Drucken", sort: "Sortieren", newest: "Neueste zuerst", oldest: "Älteste zuerst", pickup: "Abholdatum", highest: "Höchster Schätzwert", allDates: "Alle Daten", today: "Heute", nextWeek: "Nächste 7 Tage", past: "Vergangen", upcoming: "Nächste Abholung", estimate: "Anfragesummen", lastWeek: "Letzte 7 Tage", quickStatus: "Schnellstatus", openCalendar: "Google Kalender", downloadCalendar: ".ics laden", activity: "Anfrageverlauf", todayPickup: "Abholungen heute", todayReturn: "Rückgaben heute", activeTrips: "In Bearbeitung", autoRefresh: "Alle 30 Sekunden", manualRefresh: "Manuelle Aktualisierung" },
+  zh: { live: "自动更新", paused: "已暂停", logout: "退出登录", calendar: "日历", copy: "复制摘要", copied: "已复制", print: "打印", sort: "排序", newest: "最新优先", oldest: "最早优先", pickup: "取车日期", highest: "金额最高", allDates: "所有日期", today: "今天", nextWeek: "未来 7 天", past: "过去", upcoming: "即将取车", estimate: "请求预估总额", lastWeek: "过去 7 天", quickStatus: "快速状态", openCalendar: "Google 日历", downloadCalendar: "下载 .ics", activity: "请求动态", todayPickup: "今天取车", todayReturn: "今天还车", activeTrips: "处理中", autoRefresh: "每 30 秒", manualRefresh: "手动刷新" },
+  ko: { live: "자동 새로고침", paused: "일시 중지", logout: "로그아웃", calendar: "캘린더", copy: "요약 복사", copied: "복사됨", print: "인쇄", sort: "정렬", newest: "최신순", oldest: "오래된순", pickup: "인수 날짜", highest: "예상 금액순", allDates: "모든 날짜", today: "오늘", nextWeek: "향후 7일", past: "지난 날짜", upcoming: "예정 인수", estimate: "요청 예상액", lastWeek: "최근 7일", quickStatus: "빠른 상태 변경", openCalendar: "Google 캘린더", downloadCalendar: ".ics 다운로드", activity: "요청 현황", todayPickup: "오늘 인수", todayReturn: "오늘 반납", activeTrips: "진행 중", autoRefresh: "30초마다", manualRefresh: "수동 새로고침" },
+  fr: { live: "Actualisation auto", paused: "En pause", logout: "Déconnexion", calendar: "Calendrier", copy: "Copier le résumé", copied: "Copié", print: "Imprimer", sort: "Trier", newest: "Plus récentes", oldest: "Plus anciennes", pickup: "Date de retrait", highest: "Estimation la plus haute", allDates: "Toutes les dates", today: "Aujourd'hui", nextWeek: "7 prochains jours", past: "Passées", upcoming: "Retrait prochain", estimate: "Total estimé", lastWeek: "7 derniers jours", quickStatus: "Statut rapide", openCalendar: "Google Agenda", downloadCalendar: "Télécharger .ics", activity: "Activité des demandes", todayPickup: "Retraits aujourd'hui", todayReturn: "Retours aujourd'hui", activeTrips: "En cours", autoRefresh: "Toutes les 30 secondes", manualRefresh: "Actualisation manuelle" },
+  ar: { live: "تحديث تلقائي", paused: "متوقف", logout: "تسجيل الخروج", calendar: "التقويم", copy: "نسخ الملخص", copied: "تم النسخ", print: "طباعة", sort: "ترتيب", newest: "الأحدث أولاً", oldest: "الأقدم أولاً", pickup: "تاريخ الاستلام", highest: "أعلى تقدير", allDates: "كل التواريخ", today: "اليوم", nextWeek: "الأيام السبعة القادمة", past: "الماضية", upcoming: "الاستلام القادم", estimate: "إجمالي التقديرات", lastWeek: "آخر 7 أيام", quickStatus: "حالة سريعة", openCalendar: "تقويم Google", downloadCalendar: "تنزيل .ics", activity: "نشاط الطلبات", todayPickup: "استلام اليوم", todayReturn: "إرجاع اليوم", activeTrips: "قيد العمل", autoRefresh: "كل 30 ثانية", manualRefresh: "تحديث يدوي" },
+};
+
+type DateFilter = "all" | "today" | "week" | "past";
+type Sort = "newest" | "oldest" | "pickup" | "highest";
+const bakuDate = (date: Date) => {
+  const parts = Object.fromEntries(new Intl.DateTimeFormat("en-US", { timeZone: "Asia/Baku", year: "numeric", month: "2-digit", day: "2-digit" }).formatToParts(date).map((part) => [part.type, part.value]));
+  return `${parts.year}-${parts.month}-${parts.day}`;
+};
+const calendarStamp = (date: string, time: string) => `${date.replaceAll("-", "")}T${time.replace(":", "")}00`;
+const escapeIcs = (value: string) => value.replaceAll("\\", "\\\\").replaceAll("\n", "\\n").replaceAll(",", "\\,").replaceAll(";", "\\;");
+
 const place = (value: string, address: string | null, locale: Locale) => {
   const names = { ru: { office: "Офис, Баку", airport: "Аэропорт GYD", delivery: "Доставка" }, az: { office: "Bakı ofisi", airport: "GYD hava limanı", delivery: "Çatdırılma" }, en: { office: "Baku office", airport: "GYD airport", delivery: "Delivery" }, de: { office: "Büro Baku", airport: "Flughafen GYD", delivery: "Lieferung" }, zh: { office: "巴库办公室", airport: "GYD 机场", delivery: "送车上门" }, ko: { office: "바쿠 사무실", airport: "GYD 공항", delivery: "차량 배송" }, fr: { office: "Bureau de Bakou", airport: "Aéroport GYD", delivery: "Livraison" }, ar: { office: "مكتب باكو", airport: "مطار GYD", delivery: "التوصيل" } };
   return `${names[locale][value as "office" | "airport" | "delivery"] || value}${address ? ` · ${address}` : ""}`;
 };
 
-export default function AdminBoard({ locale, accountEmail, initialItems, loadError }: { locale: Locale; accountEmail: string; initialItems: Booking[]; loadError: boolean }) {
+export default function AdminBoard({ locale, initialItems, loadError, initialNow }: { locale: Locale; initialItems: Booking[]; loadError: boolean; initialNow: number }) {
   const t = labels[locale];
+  const x = extra[locale];
   const [items, setItems] = useState(initialItems);
   const [filter, setFilter] = useState<Status | "all">("all");
+  const [dateFilter, setDateFilter] = useState<DateFilter>("all");
+  const [sort, setSort] = useState<Sort>("newest");
+  const [live, setLive] = useState(true);
   const [query, setQuery] = useState("");
   const [selectedId, setSelectedId] = useState<string | null>(initialItems[0]?.id || null);
   const [pendingId, setPendingId] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState(loadError ? t.fail : "");
   const [notice, setNotice] = useState("");
+  const [lastRefresh, setLastRefresh] = useState(initialNow);
+  const searchRef = useRef<HTMLInputElement>(null);
   const dateLocale = localeInfo[locale].hreflang;
+  const today = bakuDate(new Date(lastRefresh));
+  const weekEnd = bakuDate(new Date(lastRefresh + 7 * 86400000));
   const counts = Object.fromEntries(statuses.map((status) => [status, items.filter((item) => item.status === status).length])) as Record<Status, number>;
-  const visible = useMemo(() => items.filter((item) => (filter === "all" || item.status === filter) && `${item.customerName} ${item.phone} ${item.email} ${item.carName} ${item.id}`.toLocaleLowerCase().includes(query.trim().toLocaleLowerCase())), [items, filter, query]);
+  const visible = useMemo(() => items.filter((item) => {
+    const matchesDate = dateFilter === "all" || (dateFilter === "today" ? item.fromDate === today || item.toDate === today : dateFilter === "week" ? item.fromDate >= today && item.fromDate <= weekEnd : item.toDate < today);
+    return (filter === "all" || item.status === filter) && matchesDate && `${item.customerName} ${item.phone} ${item.email} ${item.carName} ${item.id} ${item.flight || ""} ${item.notes || ""}`.toLocaleLowerCase().includes(query.trim().toLocaleLowerCase());
+  }).sort((a, b) => sort === "oldest" ? a.createdAt.localeCompare(b.createdAt) : sort === "pickup" ? `${a.fromDate}${a.fromTime}`.localeCompare(`${b.fromDate}${b.fromTime}`) : sort === "highest" ? b.estimateUsd - a.estimateUsd : b.createdAt.localeCompare(a.createdAt)), [items, filter, dateFilter, sort, query, today, weekEnd]);
   const selected = visible.find((item) => item.id === selectedId) || visible[0];
+  const confirmedEstimate = items.filter((item) => item.status === "confirmed").reduce((sum, item) => sum + item.estimateUsd, 0);
+  const weekItems = items.filter((item) => bakuDate(new Date(item.createdAt)) >= bakuDate(new Date(lastRefresh - 6 * 86400000)));
+  const chart = Array.from({ length: 7 }, (_, index) => {
+    const date = bakuDate(new Date(lastRefresh - (6 - index) * 86400000));
+    return { date, count: items.filter((item) => bakuDate(new Date(item.createdAt)) === date).length };
+  });
+  const chartMax = Math.max(1, ...chart.map((day) => day.count));
+  const upcoming = items.filter((item) => item.status !== "cancelled" && item.fromDate >= today && item.fromDate <= weekEnd).sort((a, b) => `${a.fromDate}${a.fromTime}`.localeCompare(`${b.fromDate}${b.fromTime}`)).slice(0, 4);
 
-  async function refresh() {
+  const refresh = useCallback(async () => {
     setBusy(true); setError("");
     try {
       const response = await fetch("/api/admin/bookings", { cache: "no-store" });
       if (!response.ok) throw new Error("reload failed");
       const data = await response.json() as { items: Booking[] };
       setItems(data.items);
+      setLastRefresh(Date.now());
     } catch { setError(t.fail); }
     finally { setBusy(false); }
-  }
+  }, [t.fail]);
+
+  useEffect(() => {
+    if (!live) return;
+    const interval = window.setInterval(() => { if (document.visibilityState === "visible") void refresh(); }, 30_000);
+    return () => window.clearInterval(interval);
+  }, [live, refresh]);
+
+  useEffect(() => {
+    const onKey = (event: KeyboardEvent) => {
+      if (event.key === "/" && !(event.target instanceof HTMLInputElement) && !(event.target instanceof HTMLTextAreaElement)) { event.preventDefault(); searchRef.current?.focus(); }
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, []);
 
   async function updateStatus(id: string, status: Status) {
     setPendingId(id); setError(""); setNotice("");
@@ -76,19 +132,43 @@ export default function AdminBoard({ locale, accountEmail, initialItems, loadErr
     setTimeout(() => URL.revokeObjectURL(url), 1000);
   }
 
+  async function copySummary(item: Booking) {
+    const summary = [`CarTime #${item.id.slice(0, 8).toUpperCase()}`, `${item.carName} · ${item.carYear}`, `${item.fromDate} ${item.fromTime} → ${item.toDate} ${item.toTime}`, `${item.days} ${t.days} · $${item.estimateUsd} USD`, `${item.customerName} · ${item.phone} · ${item.email}`].join("\n");
+    try { await navigator.clipboard.writeText(summary); setNotice(x.copied); }
+    catch { setError(t.fail); }
+  }
+
+  function downloadCalendar(item: Booking) {
+    const lines = ["BEGIN:VCALENDAR", "VERSION:2.0", "PRODID:-//CarTime//Booking Admin//EN", "BEGIN:VEVENT", `UID:${item.id}@cartime.az`, `DTSTAMP:${new Date().toISOString().replace(/[-:]/g, "").replace(/\.\d{3}/, "")}`, `DTSTART;TZID=Asia/Baku:${calendarStamp(item.fromDate, item.fromTime)}`, `DTEND;TZID=Asia/Baku:${calendarStamp(item.toDate, item.toTime)}`, `SUMMARY:${escapeIcs(`CarTime · ${item.carName}`)}`, `DESCRIPTION:${escapeIcs(`Request #${item.id.slice(0, 8).toUpperCase()}`)}`, "END:VEVENT", "END:VCALENDAR"].join("\r\n") + "\r\n";
+    const url = URL.createObjectURL(new Blob([lines], { type: "text/calendar;charset=utf-8" }));
+    const anchor = document.createElement("a"); anchor.href = url; anchor.download = `cartime-${item.id.slice(0, 8)}.ics`; anchor.click();
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
+  }
+
+  async function signOut() {
+    try { await fetch("/api/admin/logout", { method: "POST", credentials: "same-origin" }); }
+    finally { window.location.reload(); }
+  }
+
+  const googleCalendarUrl = selected ? `https://calendar.google.com/calendar/render?${new URLSearchParams({ action: "TEMPLATE", text: `CarTime · ${selected.carName}`, dates: `${calendarStamp(selected.fromDate, selected.fromTime)}/${calendarStamp(selected.toDate, selected.toTime)}`, ctz: "Asia/Baku", details: `Request #${selected.id.slice(0, 8).toUpperCase()}` })}` : "";
+
   return <main className="admin-shell">
-    <header className="admin-top"><a className="admin-logo" href={`/${locale}`}><img src="/assets/logo-dark.png" alt="CarTime" /></a><span>{accountEmail}</span><a href={`/${locale}`}>{t.site} <ArrowRight size={16} /></a></header>
+    <header className="admin-top"><a className="admin-logo" href={`/${locale}`}><img src="/assets/logo-dark.png" alt="CarTime" /></a><span className="admin-top-label"><span className="admin-live-dot" />CARTIME / OPERATIONS</span><div className="admin-top-actions"><a href={`/${locale}`}>{t.site} <ArrowRight size={16} /></a><button type="button" onClick={signOut}><LogOut size={16} />{adminAccessCopy[locale].signout}</button></div></header>
     <div className="admin-wrap">
-      <div className="admin-heading"><div><p>CARTIME / OPERATIONS</p><h1>{t.title}</h1><span>{t.subtitle}</span></div><div className="admin-tools"><button type="button" onClick={refresh} disabled={busy}><RefreshCw size={16} className={busy ? "admin-spin" : ""} />{t.refresh}</button><button type="button" onClick={exportCsv} disabled={!visible.length}><Download size={16} />{t.export}</button></div></div>
+      <div className="admin-heading"><div><p><Sparkles size={14} /> CARTIME / CONTROL ROOM</p><h1>{t.title}</h1><span>{t.subtitle}</span></div><div className="admin-tools"><button type="button" className={live ? "admin-live-toggle active" : "admin-live-toggle"} onClick={() => setLive(!live)} aria-pressed={live}><span className="admin-live-dot" />{live ? x.live : x.paused}</button><button type="button" onClick={() => void refresh()} disabled={busy}><RefreshCw size={16} className={busy ? "admin-spin" : ""} />{t.refresh}</button><button type="button" onClick={exportCsv} disabled={!visible.length}><Download size={16} />{t.export}</button></div></div>
       <div className="admin-stats"><button type="button" className={filter === "all" ? "active" : ""} onClick={() => setFilter("all")}><span>{t.all}</span><strong>{items.length}</strong></button>{statuses.map((status) => <button type="button" key={status} className={filter === status ? "active" : ""} onClick={() => setFilter(status)}><span>{t[status]}</span><strong>{counts[status]}</strong></button>)}</div>
-      <div className="admin-search"><Search size={18} /><input type="search" value={query} onChange={(event) => setQuery(event.target.value)} placeholder={t.search} aria-label={t.search} /><small>{t.visible}: {visible.length}</small></div>
+      <div className="admin-overview"><section className="admin-activity"><div className="admin-panel-heading"><div><small>{x.activity}</small><strong>{weekItems.length} · {x.lastWeek}</strong></div><span>{live ? x.autoRefresh : x.manualRefresh} · {new Date(lastRefresh).toLocaleTimeString(dateLocale, { hour: "2-digit", minute: "2-digit" })}</span></div><div className="admin-chart" role="img" aria-label={`${x.activity}: ${chart.map((day) => `${day.date} ${day.count}`).join(", ")}`}>{chart.map((day) => <div key={day.date}><span style={{ height: `${Math.max(8, day.count / chartMax * 100)}%` }} data-count={day.count} /><small>{day.date.slice(5)}</small></div>)}</div></section><section className="admin-upcoming"><div className="admin-panel-heading"><div><small>{x.upcoming}</small><strong>{upcoming.length} · {x.nextWeek}</strong></div><CalendarDays size={19} /></div><div className="admin-upcoming-list">{upcoming.length ? upcoming.map((item) => <button type="button" key={item.id} onClick={() => { setFilter("all"); setDateFilter("all"); setQuery(""); setSelectedId(item.id); }}><time>{item.fromDate.slice(5)}<small>{item.fromTime}</small></time><span><strong>{item.carName}</strong><small>{item.customerName}</small></span><ArrowRight size={15} /></button>) : <p>{t.empty}</p>}</div></section></div>
+      <div className="admin-quickfacts"><span>{x.todayPickup}: <strong>{items.filter((item) => item.status !== "cancelled" && item.fromDate === today).length}</strong></span><span>{x.todayReturn}: <strong>{items.filter((item) => item.status !== "cancelled" && item.toDate === today).length}</strong></span><span>{x.activeTrips}: <strong>{counts.contacted}</strong></span><span>{x.estimate}: <strong>${confirmedEstimate} USD</strong></span></div>
+      <div className="admin-workbar"><div className="admin-search"><Search size={18} /><input ref={searchRef} type="search" value={query} onChange={(event) => setQuery(event.target.value)} placeholder={t.search} aria-label={t.search} /><small>{t.visible}: {visible.length}</small></div><label>{x.sort}<select value={sort} onChange={(event) => setSort(event.target.value as Sort)}><option value="newest">{x.newest}</option><option value="oldest">{x.oldest}</option><option value="pickup">{x.pickup}</option><option value="highest">{x.highest}</option></select></label></div>
+      <div className="admin-date-filters" role="group" aria-label={x.calendar}>{(["all", "today", "week", "past"] as DateFilter[]).map((choice) => <button key={choice} type="button" className={dateFilter === choice ? "active" : ""} onClick={() => setDateFilter(choice)}>{choice === "all" ? x.allDates : choice === "today" ? x.today : choice === "week" ? x.nextWeek : x.past}</button>)}</div>
       {error && <p className="admin-alert" role="alert">{error}</p>}{notice && <p className="admin-notice" role="status"><Check size={15} />{notice}</p>}
       <div className="admin-layout"><section className="admin-list" aria-label={t.title}>{visible.length ? visible.map((item) => <button key={item.id} type="button" className={`admin-list-item${selected?.id === item.id ? " selected" : ""}`} onClick={() => setSelectedId(item.id)}><div><strong>{item.customerName}</strong><span className={`admin-status admin-status-${item.status}`}>{t[item.status as Status]}</span></div><p>{item.carName} · {item.carYear}</p><small>{item.fromDate} → {item.toDate} <b>${item.estimateUsd}</b></small><em>{new Date(item.createdAt).toLocaleString(dateLocale)}</em></button>) : <p className="admin-empty">{items.length ? t.emptySearch : t.empty}</p>}</section>
       <section className="admin-detail" aria-label={t.details}>{selected ? <><div className="admin-detail-head"><div><span>{t.created} · {new Date(selected.createdAt).toLocaleString(dateLocale)}</span><h2>{selected.carName}</h2><p>{selected.carYear} · #{selected.id.slice(0, 8).toUpperCase()}</p></div><strong>${selected.estimateUsd}</strong></div>
+        {fleetImages[selected.carId as keyof typeof fleetImages] && <div className="admin-car-visual"><img src={fleetImages[selected.carId as keyof typeof fleetImages]} alt={`${selected.carName} ${selected.carYear}`} /><span>{selected.carName} · {selected.carYear}</span></div>}
         <div className="admin-detail-grid"><div><small>{t.route}</small><strong>{selected.fromDate} {selected.fromTime}</strong><p>{place(selected.pickup, selected.pickupAddress, locale)}</p><span>↓</span><strong>{selected.toDate} {selected.toTime}</strong><p>{place(selected.dropoff, selected.returnAddress, locale)}</p><em>{selected.days} {t.days} · {t.rate} ${selected.dailyRateUsd}/day</em></div><div><small>{t.contact}</small><strong>{selected.customerName}</strong><a href={`tel:${selected.phone}`}>{selected.phone}</a><a href={`mailto:${selected.email}`}>{selected.email}</a><p>{t.age}: {selected.age} · {t.experience}: {selected.experience} {t.years}</p><p>{t.second}: {selected.secondDriver ? t.yes : t.no}</p><p>{t.payment}: {selected.payment}</p>{selected.flight && <p>{t.flight}: {selected.flight}</p>}</div></div>
         {selected.notes && <div className="admin-notes"><small>{t.notes}</small><p>{selected.notes}</p></div>}
-        <div className="admin-status-row"><label>{t.status}<select value={selected.status} disabled={pendingId === selected.id} onChange={(event) => updateStatus(selected.id, event.target.value as Status)}>{statuses.map((status) => <option key={status} value={status}>{t[status]}</option>)}</select></label>{pendingId === selected.id && <small>{t.loading}</small>}</div>
-        <div className="admin-contact-actions"><a target="_blank" rel="noopener noreferrer" href={`https://wa.me/${selected.phone.replace(/\D/g, "")}?text=${encodeURIComponent(`Здравствуйте, ${selected.customerName}! Пишем по вашей заявке CarTime на ${selected.carName} (${selected.fromDate}–${selected.toDate}).`)}`}><MessageCircle size={17} />{t.send}</a><a href={`mailto:${selected.email}?subject=${encodeURIComponent(`CarTime · ${selected.carName} · ${selected.id.slice(0, 8)}`)}`}><Mail size={17} />{t.email}</a></div>
+        <div className="admin-status-row"><span>{x.quickStatus}</span><div>{statuses.map((status) => <button type="button" key={status} className={selected.status === status ? "active" : ""} disabled={pendingId === selected.id} onClick={() => { if (selected.status !== status) void updateStatus(selected.id, status); }}>{t[status]}</button>)}</div>{pendingId === selected.id && <small>{t.loading}</small>}</div>
+        <div className="admin-contact-actions"><a target="_blank" rel="noopener noreferrer" href={`https://wa.me/${selected.phone.replace(/\D/g, "")}?text=${encodeURIComponent(`CarTime · ${selected.carName} · ${selected.fromDate}–${selected.toDate} · #${selected.id.slice(0, 8).toUpperCase()}`)}`}><MessageCircle size={17} />{t.send}</a><a href={`mailto:${selected.email}?subject=${encodeURIComponent(`CarTime · ${selected.carName} · ${selected.id.slice(0, 8)}`)}`}><Mail size={17} />{t.email}</a><button type="button" onClick={() => void copySummary(selected)}><Clipboard size={17} />{x.copy}</button><a href={googleCalendarUrl} target="_blank" rel="noopener noreferrer"><ExternalLink size={17} />{x.openCalendar}</a><button type="button" onClick={() => downloadCalendar(selected)}><CalendarDays size={17} />{x.downloadCalendar}</button><button type="button" onClick={() => window.print()}><Printer size={17} />{x.print}</button></div>
       </> : <p className="admin-empty">{items.length ? t.emptySearch : t.empty}</p>}</section></div>
     </div>
   </main>;

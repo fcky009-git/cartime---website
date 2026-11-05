@@ -7,7 +7,7 @@ export default function robots(): MetadataRoute.Robots {
   // and no sitemap is advertised.
   if (!indexingEnabled) return { rules: { userAgent: "*", allow: "/" } };
   return {
-    rules: { userAgent: "*", allow: "/", disallow: ["/api/", ...locales.map((locale) => `/${locale}/admin`)] },
+    rules: { userAgent: "*", allow: "/", disallow: ["/api/", "/admin", ...locales.map((locale) => `/${locale}/admin`)] },
     sitemap: `${siteOrigin}/sitemap.xml`,
   };
 }
