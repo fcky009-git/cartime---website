@@ -5,6 +5,7 @@ import fleet from "@/lib/fleet.json";
 import { dictionaries, type Locale } from "@/lib/i18n";
 import { fleetUi } from "@/lib/fleet-ui";
 import { guideSlugs, guides, guideUi } from "@/lib/guides";
+import { fleetCount } from "@/lib/fleet-count";
 import { pageMetadata } from "@/lib/seo";
 
 export function generateStaticParams() {
@@ -29,7 +30,7 @@ export default async function FleetPage({ params }: { params: Promise<{ locale: 
       <header className="info-hero info-hero--fleet">
         <div className="container info-hero-inner">
           <a className="info-back" href={`/${language}`}>← {ui.back}</a>
-          <p className="section-kicker">CARTIME / 55 CARS</p>
+          <p className="section-kicker">CARTIME / {fleetCount} CARS</p>
           <h1>{ui.fleetTitle}</h1>
           <p>{ui.fleetIntro}</p>
           <span className="info-date">{ui.updated}</span>
@@ -47,7 +48,7 @@ export default async function FleetPage({ params }: { params: Promise<{ locale: 
             <div className="fleet-page-group-head"><h2>{name}</h2><span>{cars.length}</span></div>
             <div className="fleet-table-scroll"><table className="fleet-table">
               <thead><tr><th scope="col">{language === "ru" ? "Модель / год" : language === "az" ? "Model / il" : "Model / year"}</th>{ui.fleetDuration.map((duration) => <th scope="col" key={duration}>{duration}<small>{ui.perDay}</small></th>)}</tr></thead>
-              <tbody>{cars.map((car) => <tr key={car.id}><th scope="row">{car.name}<small>{car.year}</small></th>{car.ratesUsd.map((rate, index) => <td key={index}>$${rate}</td>)}</tr>)}</tbody>
+              <tbody>{cars.map((car) => <tr key={car.id}><th scope="row">{car.name}<small>{car.year}</small></th>{car.ratesUsd.map((rate, index) => <td key={index}>${rate}</td>)}</tr>)}</tbody>
             </table></div>
           </section>;
         })}

@@ -1,4 +1,5 @@
 import type { Locale } from "./i18n";
+import { fleetCount } from "./fleet-count";
 
 export type FaqGroup = "prices" | "fleet" | "pickup" | "terms";
 export type FaqItem = { id: string; group: FaqGroup; question: string; answer: string; href?: string };
@@ -21,7 +22,7 @@ export const serviceUi = {
     aboutIntro: "CarTime — новый бренд той же команды, которая работает под именем 9fleet. Мы собрали выбор автомобиля, дневные тарифы и полезную информацию для поездки в одном месте.",
     aboutMissionTitle: "Что мы хотим сделать удобнее",
     aboutMission: "Путешествие начинается с ясного выбора: сколько места нужно, на какой срок брать машину и куда поехать после Баку. CarTime показывает модели и цены по срокам и помогает продумать маршрут без спешки.",
-    aboutFacts: [["55", "моделей и комплектаций в каталоге"], ["7", "классов автомобилей"], ["6", "диапазонов дневного тарифа"]],
+    aboutFacts: [[String(fleetCount), "моделей и комплектаций в каталоге"], ["7", "классов автомобилей"], ["6", "диапазонов дневного тарифа"]],
     aboutWhatTitle: "Что уже есть на сайте",
     aboutWhat: [
       ["Выбор автомобиля", "Поиск, фильтры по классу и сортировка по цене или году выпуска."],
@@ -62,7 +63,7 @@ export const serviceUi = {
     aboutIntro: "CarTime, 9fleet adı ilə də fəaliyyət göstərən komandanın yeni brendidir. Avtomobil seçimini, gündəlik tarifləri və səfər üçün faydalı məlumatları bir yerdə toplayırıq.",
     aboutMissionTitle: "Nəyi daha rahat etmək istəyirik",
     aboutMission: "Səfər aydın seçimdən başlayır: neçə yer lazımdır, avtomobil neçə gün götürüləcək və Bakıdan sonra hara gediləcək. CarTime model və müddətə görə qiymətləri göstərir, marşrutunuzu planlaşdırmağa kömək edir.",
-    aboutFacts: [["55", "kataloqdakı model və komplektasiya"], ["7", "avtomobil sinfi"], ["6", "gündəlik tarif dövrü"]],
+    aboutFacts: [[String(fleetCount), "kataloqdakı model və komplektasiya"], ["7", "avtomobil sinfi"], ["6", "gündəlik tarif dövrü"]],
     aboutWhatTitle: "Saytda artıq nə var",
     aboutWhat: [
       ["Avtomobil seçimi", "Axtarış, sinif filtrləri, qiymət və buraxılış ilinə görə sıralama."],
@@ -103,7 +104,7 @@ export const serviceUi = {
     aboutIntro: "CarTime is a new brand from the same team behind 9fleet. We bring car choices, daily rates and practical trip information together in one place.",
     aboutMissionTitle: "What we want to make easier",
     aboutMission: "A journey starts with a clear choice: how much space you need, how long to rent and where to go beyond Baku. CarTime shows models and rates by period and helps you plan without rushing.",
-    aboutFacts: [["55", "models and specifications in the catalogue"], ["7", "vehicle classes"], ["6", "daily rate periods"]],
+    aboutFacts: [[String(fleetCount), "models and specifications in the catalogue"], ["7", "vehicle classes"], ["6", "daily rate periods"]],
     aboutWhatTitle: "What you can use today",
     aboutWhat: [
       ["Find a vehicle", "Search, filter by class and sort by price or model year."],
@@ -144,7 +145,7 @@ export const faqItems: Record<Locale, FaqItem[]> = {
     { id: "currency", group: "prices", question: "Почему цены указаны в долларах США?", answer: "Дневные тарифы каталога опубликованы в USD. Валюту фактического расчёта и курс при оплате нужно подтвердить до аренды." },
     { id: "longer", group: "prices", question: "Меняется ли ставка при долгой аренде?", answer: "Да, в каталоге для каждой модели приведены шесть ставок по длительности. Сравнивайте нужный период: ставка для 2–3 дней не равна автоматически ставке для месяца.", href: "/fleet" },
     { id: "one-day", group: "prices", question: "Есть ли тариф на один день?", answer: "Минимальный срок аренды — 2 дня. Ставки в каталоге начинаются с диапазона 2–3 дня." },
-    { id: "cars", group: "fleet", question: "Сколько автомобилей в каталоге?", answer: "На сайте представлены 55 моделей и комплектаций с годом выпуска и тарифами. Это каталог для выбора, а не проверка наличия на выбранные даты.", href: "/fleet" },
+    { id: "cars", group: "fleet", question: "Сколько автомобилей в каталоге?", answer: `На сайте представлены ${fleetCount} моделей и комплектаций с годом выпуска и тарифами. Это каталог для выбора, а не проверка наличия на выбранные даты.`, href: "/fleet" },
     { id: "classes", group: "fleet", question: "Какие классы автомобилей есть?", answer: "В каталоге есть Mini, Economy, Comfort, SUV, Business, VAN и Luxury. Фильтры на главной помогут быстро сузить выбор.", href: "/fleet" },
     { id: "model", group: "fleet", question: "Можно ли выбрать конкретную модель?", answer: "Найти и сравнить модель на сайте можно уже сейчас. Подтверждение конкретного автомобиля на нужные даты станет доступно после подключения бронирования." },
     { id: "photos", group: "fleet", question: "Фотографии в карточках показывают конкретную машину?", answer: "Пока в каталоге стоят подписанные иллюстрации классов, а не фотографии конкретных машин. До публичного бронирования нужны чистые фото автопарка." },
@@ -176,7 +177,7 @@ export const faqItems: Record<Locale, FaqItem[]> = {
     { id: "currency", group: "prices", question: "Qiymətlər niyə ABŞ dolları ilədir?", answer: "Kataloqdakı gündəlik tariflər USD ilə dərc edilib. Faktiki ödəniş valyutası və məzənnə icarədən əvvəl təsdiqlənməlidir." },
     { id: "longer", group: "prices", question: "Uzunmüddətli icarədə tarif dəyişirmi?", answer: "Bəli, kataloqda hər model üçün müddətə görə altı tarif var. Uyğun dövrü müqayisə edin: 2–3 günlük qiymət avtomatik olaraq aylıq qiymət deyil.", href: "/fleet" },
     { id: "one-day", group: "prices", question: "Bir günlük tarif varmı?", answer: "Minimum icarə müddəti 2 gündür. Kataloqdakı tariflər 2–3 günlük dövrdən başlayır." },
-    { id: "cars", group: "fleet", question: "Kataloqda neçə avtomobil var?", answer: "Saytda buraxılış ili və tarifləri ilə 55 model və komplektasiya göstərilir. Bu, seçmək üçün kataloqdur; seçilən tarixlərdə mövcudluğu yoxlamır.", href: "/fleet" },
+    { id: "cars", group: "fleet", question: "Kataloqda neçə avtomobil var?", answer: `Saytda buraxılış ili və tarifləri ilə ${fleetCount} model və komplektasiya göstərilir. Bu, seçmək üçün kataloqdur; seçilən tarixlərdə mövcudluğu yoxlamır.`, href: "/fleet" },
     { id: "classes", group: "fleet", question: "Hansı avtomobil sinifləri var?", answer: "Kataloqda Mini, Economy, Comfort, SUV, Business, VAN və Luxury sinifləri var. Əsas səhifədəki filtrlər seçimi daraldır.", href: "/fleet" },
     { id: "model", group: "fleet", question: "Konkret model seçmək olar?", answer: "Modeli saytda tapıb müqayisə etmək artıq mümkündür. Lazım olan tarixlər üçün konkret avtomobilin təsdiqi rezervasiya sistemi qoşulduqdan sonra mümkün olacaq." },
     { id: "photos", group: "fleet", question: "Kartlardakı şəkillər konkret avtomobilə aiddir?", answer: "Hələlik kataloqda konkret maşınların fotosu deyil, sinifləri göstərən işarələnmiş illüstrasiyalar var. İctimai rezervasiyadan əvvəl təmiz avtopark fotoları lazımdır." },
@@ -208,7 +209,7 @@ export const faqItems: Record<Locale, FaqItem[]> = {
     { id: "currency", group: "prices", question: "Why are prices shown in US dollars?", answer: "The catalogue publishes daily rates in USD. Confirm the actual payment currency and any exchange rate before renting." },
     { id: "longer", group: "prices", question: "Does the rate change for longer rentals?", answer: "Yes. The catalogue has six duration tiers for every model. Compare the correct period: the 2–3 day rate is not automatically the monthly rate.", href: "/fleet" },
     { id: "one-day", group: "prices", question: "Is there a one-day rate?", answer: "The minimum rental period is 2 days. Published rates start with the 2–3 day tier." },
-    { id: "cars", group: "fleet", question: "How many cars are in the catalogue?", answer: "The site lists 55 models and specifications with years and rates. It is a choice catalogue, not a live availability check for your dates.", href: "/fleet" },
+    { id: "cars", group: "fleet", question: "How many cars are in the catalogue?", answer: `The site lists ${fleetCount} models and specifications with years and rates. It is a choice catalogue, not a live availability check for your dates.`, href: "/fleet" },
     { id: "classes", group: "fleet", question: "Which vehicle classes are listed?", answer: "The catalogue includes Mini, Economy, Comfort, SUV, Business, VAN and Luxury. Filters on the home page help narrow the choice.", href: "/fleet" },
     { id: "model", group: "fleet", question: "Can I choose a specific model?", answer: "You can find and compare a model now. Confirmation of a specific vehicle for your dates will require the booking system." },
     { id: "photos", group: "fleet", question: "Do the card images show the exact vehicles?", answer: "Not yet. The catalogue uses labelled class illustrations rather than photos of specific cars. Clean fleet photos are needed before public booking." },
