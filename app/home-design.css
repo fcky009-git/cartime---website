@@ -205,7 +205,7 @@
 /* Obsidian Motion: cooler, high-contrast and typographically geometric. */
 html[data-theme='dark'] .home-site { --editorial-page: #09111a; --editorial-paper: #0d1925; --editorial-ink: #edf3f4; --editorial-muted: #9cabb5; --editorial-line: #354653; --editorial-button: #8dc9ee; --editorial-button-ink: #0a1e30; }
 html[data-theme='dark'] .home-site .header-inner { background: #07111ae8; border-color: #88c1e646; }
-html[data-theme='dark'] .home-site .hero-photo { background-image: url('/assets/cartime-baku-night.jpg'); filter: saturate(.78) contrast(1.1); }
+html[data-theme='dark'] .home-site .hero-photo { background-image: url('/assets/cartime-baku-night-bmw-xm.jpg'); filter: saturate(.78) contrast(1.1); }
 html[data-theme='dark'] .home-site .hero-sheen { background: linear-gradient(0deg,#050a11f7,transparent 61%),linear-gradient(90deg,#050a11b3,transparent 62%); }
 html[data-theme='dark'] .home-site .hero h1 { max-width: 960px; font: 600 clamp(52px,5.7vw,82px)/1.04 'Sora',Inter,sans-serif; letter-spacing: -.07em; text-transform: none; }
 html[data-theme='dark'] .home-site .hero h1 em { margin-left: 0; font-style: normal; }

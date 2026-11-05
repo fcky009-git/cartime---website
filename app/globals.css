@@ -213,7 +213,7 @@ html[data-theme="light"] .info-language-links { border-left-color: #0b254244; }
 .info-hero--baku { background: linear-gradient(90deg, #080f1ae6, #080f1ac0 44%, #080f1a35 100%), url('/assets/cartime-baku-sunrise.jpg') center 54% / cover; }
 .info-hero--airport { background: linear-gradient(90deg, #080f1ae6, #080f1ac0 44%, #080f1a35 100%), url('/assets/cartime-airport-daylight.jpg') center 54% / cover; }
 .info-hero--fleet { background: radial-gradient(circle at 77% 23%, #245d9e 0%, #102c4c 34%, #080f1a 74%); }
-.info-hero--about { background: linear-gradient(90deg, #080f1ae6, #080f1ac0 50%, #080f1a35), url('/assets/cartime-baku-night.jpg') center 53% / cover; }
+.info-hero--about { background: linear-gradient(90deg, #080f1ae6, #080f1ac0 50%, #080f1a35), url('/assets/cartime-baku-night-bmw-xm.jpg') center 53% / cover; }
 .info-hero--faq { background: radial-gradient(circle at 84% 12%, #275d9c 0%, #15365e 34%, #080f1a 77%); }
 .info-hero-inner { padding: 56px 0 66px; }
 .info-back { display: inline-block; margin-bottom: 36px; color: #b8d8f9; font-size: 12px; font-weight: 700; }
@@ -298,7 +298,7 @@ html[data-theme="light"] .info-language-links { border-left-color: #0b254244; }
 .about-actions .contact-links { margin-bottom: 15px; }
 .about-actions .contact-links a { color: #2d73d3; }
 .info-hero--absheron { background: linear-gradient(90deg, #091829f2, #0c2948bd 58%, #204a7655), url('/assets/cartime-baku-sunrise.jpg') center / cover; }
-.info-hero--gobustan { background: linear-gradient(100deg, #071221f5, #123659d4 56%, #30577c81), url('/assets/cartime-baku-night.jpg') center / cover; }
+.info-hero--gobustan { background: linear-gradient(100deg, #071221f5, #123659d4 56%, #30577c81), url('/assets/cartime-baku-night-bmw-xm.jpg') center / cover; }
 .info-hero--sheki { background: linear-gradient(100deg, #071221f2, #123d58c9 60%, #276a7c77), url('/assets/cartime-baku-sunrise.jpg') center / cover; }
 .about-hero-scroll { display: inline-flex; align-items: center; gap: 10px; margin-top: 34px; padding: 13px 19px; border: 1px solid #d6e6fc88; border-radius: 100px; color: #fff; background: #ffffff19; backdrop-filter: blur(14px); font-size: 12px; font-weight: 750; transition: transform .25s, background .25s; }
 .about-hero-scroll:hover { transform: translateY(-3px); background: #ffffff32; }
