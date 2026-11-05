@@ -1,3 +1,4 @@
+import { fleetCount } from "./fleet-count";
 import type { Locale } from "./i18n";
 
 export const fleetUi: Record<Locale, {
@@ -24,7 +25,7 @@ export const fleetUi: Record<Locale, {
   ru: {
     kicker: "АВТОПАРК",
     title: "Найдите автомобиль для своей поездки",
-    lead: "55 моделей и комплектаций с опубликованными тарифами в USD. Выберите класс, сравните сроки аренды и уточните наличие перед оформлением.",
+    lead: `${fleetCount} моделей и комплектаций с опубликованными тарифами в USD. Выберите класс, сравните сроки аренды и уточните наличие перед оформлением.`,
     count: "автомобилей",
     categories: { all: "Все", Mini: "Мини", Economy: "Эконом", Comfort: "Комфорт", SUV: "SUV", Business: "Бизнес", VAN: "Минивэны", Luxury: "Люкс" },
     searchPlaceholder: "Поиск по модели",
@@ -45,7 +46,7 @@ export const fleetUi: Record<Locale, {
   az: {
     kicker: "AVTOPARK",
     title: "Səyahətiniz üçün avtomobil tapın",
-    lead: "USD ilə dərc olunmuş tarifləri olan 55 model və komplektasiya. Sinifləri və icarə müddətlərini müqayisə edin, sonra mövcudluğu təsdiqləyin.",
+    lead: `USD ilə dərc olunmuş tarifləri olan ${fleetCount} model və komplektasiya. Sinifləri və icarə müddətlərini müqayisə edin, sonra mövcudluğu təsdiqləyin.`,
     count: "avtomobil",
     categories: { all: "Hamısı", Mini: "Mini", Economy: "Ekonom", Comfort: "Komfort", SUV: "SUV", Business: "Biznes", VAN: "Miniven", Luxury: "Lüks" },
     searchPlaceholder: "Modelə görə axtarış",
@@ -66,7 +67,7 @@ export const fleetUi: Record<Locale, {
   en: {
     kicker: "THE FLEET",
     title: "Find a car for your journey",
-    lead: "55 models and specifications with published rates in USD. Compare classes and rental periods, then confirm availability before booking.",
+    lead: `${fleetCount} models and specifications with published rates in USD. Compare classes and rental periods, then confirm availability before booking.`,
     count: "cars",
     categories: { all: "All", Mini: "Mini", Economy: "Economy", Comfort: "Comfort", SUV: "SUV", Business: "Business", VAN: "Vans", Luxury: "Luxury" },
     searchPlaceholder: "Search by model",

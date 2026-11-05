@@ -1,15 +1,19 @@
+import { fleetCount } from "@/lib/fleet-count";
+import { localeParams } from "@/lib/locales";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import InfoShell from "@/components/info-shell";
+import JsonLd from "@/components/json-ld";
 import fleet from "@/lib/fleet.json";
 import { dictionaries, type Locale } from "@/lib/i18n";
 import { fleetUi } from "@/lib/fleet-ui";
 import { guideSlugs, guides, guideUi } from "@/lib/guides";
 import { pageMetadata } from "@/lib/seo";
+import { breadcrumbJsonLd } from "@/lib/structured-data";
 import { bookingUi } from "@/lib/booking";
 
 export function generateStaticParams() {
-  return [{ locale: "ru" }, { locale: "az" }, { locale: "en" }];
+  return localeParams();
 }
 
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
@@ -26,11 +30,12 @@ export default async function FleetPage({ params }: { params: Promise<{ locale: 
   const ui = guideUi[language];
   const categories = fleetUi[language].categories;
   return <InfoShell locale={language} current="fleet">
+    <JsonLd data={breadcrumbJsonLd(language, [{ name: ui.fleetTitle, path: "fleet" }])} />
     <main>
       <header className="info-hero info-hero--fleet">
         <div className="container info-hero-inner">
           <a className="info-back" href={`/${language}`}>← {ui.back}</a>
-          <p className="section-kicker">CARTIME / 55 CARS</p>
+          <p className="section-kicker">CARTIME / {fleetCount} CARS</p>
           <h1>{ui.fleetTitle}</h1>
           <p>{ui.fleetIntro}</p>
           <span className="info-date">{ui.updated}</span>
@@ -48,7 +53,7 @@ export default async function FleetPage({ params }: { params: Promise<{ locale: 
             <div className="fleet-page-group-head"><h2>{name}</h2><span>{cars.length}</span></div>
             <div className="fleet-table-scroll"><table className="fleet-table">
               <thead><tr><th scope="col">{language === "ru" ? "Модель / год" : language === "az" ? "Model / il" : "Model / year"}</th>{ui.fleetDuration.map((duration) => <th scope="col" key={duration}>{duration}<small>{ui.perDay}</small></th>)}<th scope="col">{bookingUi[language].nav}</th></tr></thead>
-              <tbody>{cars.map((car) => <tr key={car.id}><th scope="row">{car.name}<small>{car.year}</small></th>{car.ratesUsd.map((rate, index) => <td key={index}>$${rate}</td>)}</tr>)}</tbody>
+              <tbody>{cars.map((car) => <tr key={car.id}><th scope="row">{car.name}<small>{car.year}</small></th>{car.ratesUsd.map((rate, index) => <td key={index}>${rate}</td>)}</tr>)}</tbody>
             </table></div>
           </section>;
         })}

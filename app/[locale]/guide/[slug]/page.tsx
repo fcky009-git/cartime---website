@@ -1,15 +1,18 @@
+import { locales } from "@/lib/locales";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import InfoShell from "@/components/info-shell";
+import JsonLd from "@/components/json-ld";
 import { dictionaries, type Locale } from "@/lib/i18n";
 import { guideSlugs, guides, guideSources, guideUi, type GuideSlug } from "@/lib/guides";
 import { guideDeepDive } from "@/lib/guide-deep-dive";
-import { jsonLd, pageMetadata, siteOrigin } from "@/lib/seo";
+import { pageMetadata } from "@/lib/seo";
+import { breadcrumbJsonLd } from "@/lib/structured-data";
 
 type RouteParams = { params: Promise<{ locale: string; slug: string }> };
 
 export function generateStaticParams() {
-  return (["ru", "az", "en"] as Locale[]).flatMap((locale) => guideSlugs.map((slug) => ({ locale, slug })));
+  return locales.flatMap((locale) => guideSlugs.map((slug) => ({ locale, slug })));
 }
 
 export async function generateMetadata({ params }: RouteParams): Promise<Metadata> {
@@ -71,13 +74,6 @@ export default async function GuidePage({ params }: RouteParams) {
         </div>
       </section>
     </main>
-    <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLd({
-      "@context": "https://schema.org",
-      "@type": "BreadcrumbList",
-      itemListElement: [
-        { "@type": "ListItem", position: 1, name: "CarTime", item: `${siteOrigin}/${language}` },
-        { "@type": "ListItem", position: 2, name: guide.title, item: `${siteOrigin}/${language}/guide/${key}` },
-      ],
-    }) }} />
+    <JsonLd data={breadcrumbJsonLd(language, [{ name: guide.title, path: `guide/${key}` }])} />
   </InfoShell>;
 }

@@ -1,3 +1,4 @@
+import { fleetCount } from "./fleet-count";
 import type { Locale } from "./i18n";
 
 type Story = {
@@ -30,12 +31,12 @@ export const aboutStory: Record<Locale, Story> = {
       { year: "2012", title: "Начало CarTime", body: "С этого года CarTime работает в сфере аренды автомобилей. Наш путь начался с простого принципа: автомобиль должен подходить человеку и его планам, а условия поездки должны быть понятны заранее." },
       { year: "ГОДЫ", title: "Рост без остановки", body: "Мы расширялись год за годом. Вместе с автопарком рос выбор для клиентов: от компактных машин для города до просторных семейных автомобилей, кроссоверов и представительских моделей." },
       { year: "24/7", title: "Сервис в ритме клиента", body: "Сегодня мы предлагаем получение автомобиля в аэропорту Баку, доставку по адресу и поддержку 24/7. Эти возможности помогают начать поездку там и тогда, где это удобно клиенту." },
-      { year: "122", title: "Автопарк сегодняшнего дня", body: "В действующем парке CarTime 122 автомобиля. На сайте представлены 55 разных позиций: часть машин одной модели и года повторяется. Такой масштаб позволяет обсуждать выбор под разные маршруты и задачи." },
+      { year: "122", title: "Автопарк сегодняшнего дня", body: `В действующем парке CarTime 122 автомобиля. На сайте представлены ${fleetCount} разных позиций: часть машин одной модели и года повторяется. Такой масштаб позволяет обсуждать выбор под разные маршруты и задачи.` },
       { year: "2026", title: "Новая цифровая глава", body: "Мы собрали в одном месте каталог, тарифы по срокам, ответы на вопросы и путеводитель по Азербайджану. Сайт помогает подготовиться к аренде; конкретную машину и окончательные условия подтверждает менеджер." },
       { year: "ЦЕЛЬ", title: "Продолжать поднимать планку", body: "Мы не рассматриваем нынешний масштаб как финиш. Следующая глава CarTime — ещё более удобный выбор, более ясный процесс бронирования и сервис, к которому хочется вернуться." },
     ],
-    fleetTitle: "122 автомобиля в парке. 55 позиций в каталоге.",
-    fleetLead: "Цифры описывают разные вещи. В действующем парке 122 автомобиля; часть машин одной модели и года повторяется. Поэтому на сайте опубликовано 55 разных позиций для выбора и сравнения. Каталог показывает тип автомобиля, а наличие конкретного экземпляра на ваши даты мы подтверждаем отдельно.",
+    fleetTitle: `122 автомобиля в парке. ${fleetCount} позиций в каталоге.`,
+    fleetLead: `Цифры описывают разные вещи. В действующем парке 122 автомобиля; часть машин одной модели и года повторяется. Поэтому на сайте опубликовано ${fleetCount} разных позиций для выбора и сравнения. Каталог показывает тип автомобиля, а наличие конкретного экземпляра на ваши даты мы подтверждаем отдельно.`,
     fleetCards: [
       { title: "Выбор по поездке", body: "Компактный автомобиль для города, седан для рабочих встреч, кроссовер для семьи или просторный автомобиль для компании — начните с задачи, а затем сравните модели." },
       { title: "Цена по сроку", body: "Дневная ставка зависит от длительности аренды. Для каждой позиции показаны тарифы по шести периодам, чтобы сравнение было честнее и понятнее." },
@@ -69,12 +70,12 @@ export const aboutStory: Record<Locale, Story> = {
       { year: "2012", title: "CarTime-ın başlanğıcı", body: "CarTime avtomobil icarəsi sahəsində fəaliyyətə başladı. Əsas prinsipimiz avtomobili insanın planına uyğun seçmək və səfər şərtlərini əvvəlcədən aydınlaşdırmaqdır." },
       { year: "ARTIŞ", title: "İldən-ilə böyümə", body: "Avtomobil parkını davamlı genişləndirdik. Şəhər üçün kompakt modellərdən ailə avtomobillərinə, krossoverlərə və yüksək sinif modellərə qədər seçim artdı." },
       { year: "24/7", title: "Müştərinin ritminə uyğun xidmət", body: "Bu gün Bakı hava limanında təhvil, ünvana çatdırılma və 24/7 dəstək təklif edirik. Səfərin başlanğıcını müştəri üçün daha rahat etmək istəyirik." },
-      { year: "122", title: "Bugünkü avtomobil parkı", body: "CarTime parkında 122 avtomobil var. Saytda eyni model və ilin təkrarlanan maşınları bir mövqe kimi göstərildiyi üçün 55 fərqli kataloq mövqeyi yer alır." },
+      { year: "122", title: "Bugünkü avtomobil parkı", body: `CarTime parkında 122 avtomobil var. Saytda eyni model və ilin təkrarlanan maşınları bir mövqe kimi göstərildiyi üçün ${fleetCount} fərqli kataloq mövqeyi yer alır.` },
       { year: "2026", title: "Rəqəmsal mərhələ", body: "Kataloq, müddətə görə tariflər, suallar və Azərbaycan marşrutları bir yerdədir. Konkret avtomobilin mövcudluğunu və yekun şərtləri menecer təsdiqləyir." },
       { year: "HƏDƏF", title: "Daha yüksək səviyyəyə", body: "Bugünkü miqyas bizim üçün son nöqtə deyil. Seçimi, rezervasiya prosesini və xidmət təcrübəsini daha da yaxşılaşdırmaq istəyirik." },
     ],
-    fleetTitle: "Parkda 122 avtomobil. Kataloqda 55 mövqe.",
-    fleetLead: "Bu rəqəmlər fərqli şeyləri göstərir. Parkda 122 avtomobil var; eyni model və ilin bir neçə avtomobili təkrarlanır. Buna görə saytda müqayisə üçün 55 fərqli mövqe göstərilir. Konkret avtomobilin tarixlərinizdə mövcudluğunu ayrıca təsdiqləyirik.",
+    fleetTitle: `Parkda 122 avtomobil. Kataloqda ${fleetCount} mövqe.`,
+    fleetLead: `Bu rəqəmlər fərqli şeyləri göstərir. Parkda 122 avtomobil var; eyni model və ilin bir neçə avtomobili təkrarlanır. Buna görə saytda müqayisə üçün ${fleetCount} fərqli mövqe göstərilir. Konkret avtomobilin tarixlərinizdə mövcudluğunu ayrıca təsdiqləyirik.`,
     fleetCards: [
       { title: "Səfərə uyğun seçim", body: "Şəhər üçün kiçik avtomobil, iş görüşləri üçün sedan, ailə üçün krossover və ya geniş minivan: əvvəlcə səfərin ehtiyacını müəyyən edin." },
       { title: "Müddətə görə qiymət", body: "Gündəlik tarif icarə müddətindən asılıdır. Hər mövqe üçün altı müddət üzrə qiymət göstərilir." },
@@ -108,12 +109,12 @@ export const aboutStory: Record<Locale, Story> = {
       { year: "2012", title: "CarTime begins", body: "CarTime started working in car rental. Our guiding idea is to match the car to the traveller's plans and make the terms clear before the journey begins." },
       { year: "GROW", title: "Progress year after year", body: "We kept expanding the fleet. The choice grew from compact city cars to family vehicles, crossovers and executive models for different journeys." },
       { year: "24/7", title: "Service around the customer", body: "Today we offer Baku airport collection, address delivery and 24/7 support, helping customers start their trips where it suits them." },
-      { year: "122", title: "The fleet today", body: "CarTime's working fleet has 122 vehicles. The website displays 55 distinct entries because multiple cars can share the same model and year." },
+      { year: "122", title: "The fleet today", body: `CarTime's working fleet has 122 vehicles. The website displays ${fleetCount} distinct entries because multiple cars can share the same model and year.` },
       { year: "2026", title: "A digital chapter", body: "The catalogue, rate periods, answers and Azerbaijan guides now live in one place. A manager confirms the specific car and final terms after a request." },
       { year: "NEXT", title: "Keep raising the standard", body: "Today's scale is not a finish line. We want to keep improving vehicle choice, the booking journey and the service customers return to." },
     ],
-    fleetTitle: "122 cars in the fleet. 55 entries online.",
-    fleetLead: "The figures describe different things. The actual fleet has 122 vehicles, including multiple cars of the same model and year. The website therefore lists 55 distinct entries to browse and compare. We confirm the availability of a specific vehicle for your dates separately.",
+    fleetTitle: `122 cars in the fleet. ${fleetCount} entries online.`,
+    fleetLead: `The figures describe different things. The actual fleet has 122 vehicles, including multiple cars of the same model and year. The website therefore lists ${fleetCount} distinct entries to browse and compare. We confirm the availability of a specific vehicle for your dates separately.`,
     fleetCards: [
       { title: "Choose for the journey", body: "Start with your needs: a compact city car, a sedan for meetings, a family crossover or a spacious vehicle for a group." },
       { title: "Rates by duration", body: "The daily rate depends on rental length. Every catalogue entry shows six periods for a more meaningful comparison." },

@@ -1,10 +1,11 @@
 import { z } from "zod";
+import { locales } from "./locales";
 import fleet from "@/lib/fleet.json";
 import { rentalDuration } from "@/lib/rental-duration";
 
 export const bookingInput = z.object({
   requestId: z.string().uuid(),
-  locale: z.enum(["ru", "az", "en"]),
+  locale: z.enum(locales),
   carId: z.string().min(1).max(90),
   pickup: z.enum(["office", "airport", "delivery"]),
   pickupAddress: z.string().trim().max(250),

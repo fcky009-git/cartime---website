@@ -1,36 +1,21 @@
-# CarTime website — first frontend version
+# CarTime website
 
-This is the first frontend implementation of the supplied CarTime brand kit. The visual master and exact dark wordmark came from the handoff folder. The public interface does not mention the internal 9fleet project.
+CarTime is a car rental project in Baku. The site is an owner-private preview in Russian, Azerbaijani and English. The public copy presents CarTime as its own project. The owner confirmed that its history began in 2012 and that its operating fleet has 122 vehicles; the online catalogue lists distinct model and year entries, with repeat vehicles grouped together.
 
-## Stack
+## Current experience
 
-- Next.js App Router, React, TypeScript, Tailwind CSS
-- Localized routes: `/ru`, `/az`, `/en`
-- Hybrid, Dark, Light themes; explicit choice is saved in `localStorage` under `cartime-theme`
+- Responsive Hybrid, Dark and Light designs; the explicit choice is stored as `cartime-theme`.
+- Searchable car catalogue, published USD daily rates by rental length, illustrations and model detail panels.
+- Date, time, location and car selection with a preliminary estimate in the booking request flow. Requests are saved through `/api/bookings` to D1, and the owner-only `/[locale]/admin` panel shows them. Customers can also share a request by WhatsApp or email. Availability, deposit, delivery and final price are confirmed by a manager; there is no online payment or instant confirmed booking.
+- Localized About, FAQ, contact, rental service and travel guide pages. Contact includes the owner-provided Google Maps location.
+- One site-wide AutoRental entity, per-page breadcrumbs, localized canonical and hreflang links, Open Graph and Twitter cards, sitemap and robots handling.
 
-## What works
+## Preview and launch
 
-- Responsive homepage, navigation, theme and language controls
-- Date and pickup/return form with client-side validation and clear demo feedback
-- Searchable 55-vehicle catalog with category filters, sorting, and published USD daily rates for six rental lengths
-- Airport shortcut, 30 searchable FAQ answers in each language, category filters and quick help panel
-- Full crawlable fleet table and four practical guides (Baku, road trips, GYD airport, rental planning) in RU/AZ/EN
-- Dedicated About and FAQ pages in RU/AZ/EN, with links from the homepage, navigation and sitemap
-- Clickable CarTime phone and email in About, footer and quick help; FAQPage and Organization structured data
-- Rental topic hub plus eight separate service and vehicle-class pages in RU/AZ/EN: terms, airport collection, address delivery, longer rentals, insurance/deposit, unlimited mileage, Economy cars and SUVs
-- Contact page with the CarTime Google Maps listing and the address supplied by the owner: 221F Nizami Gəncəvi, Bakı 1000
-- Per-page titles and descriptions, canonical and hreflang links, a sitemap, robots.txt, and conservative WebSite/Breadcrumb structured data
+The domain `cartime.az` is not live. Without `NEXT_PUBLIC_SITE_URL`, all pages carry `noindex, nofollow`; robots.txt does not advertise a sitemap. Keep this guard in place until the owner configures and verifies the real domain. Do not enable `NEXT_PUBLIC_GTM_ID` before the owner decides on analytics and consent.
 
-## Demo limits
-
-Vehicle names, model years, categories, and six daily rates were captured from the owner's 9fleet.com catalog on 4 November 2026 after the owner chose that source over the conflicting 56-car list. The source snapshot and reconciliation are in `data/`. Rates are shown in USD per day; they may change and are not an availability or total-price quote. The images in the CarTime catalog are explicitly labelled category illustrations: the photos on 9fleet.com visibly carry that brand on number plates, so clean CarTime photos are still needed. The hero and airport backgrounds are AI-generated editorial scenes, not documentary photos of actual fleet cars or locations. This version sends no booking request and accepts no payment. Real booking needs a separate backend and server-side availability and price checks.
-
-The guide pages contain original planning copy based on official Azerbaijan Tourism Board and Heydar Aliyev International Airport sources linked at the bottom of each relevant guide. They do not promise CarTime services or current attraction opening hours. The Site is currently owner-private, so Google cannot crawl it yet. Before public launch, verify business details and rental terms, set the public domain, set `NEXT_PUBLIC_SITE_URL` to that domain for canonical links and the sitemap, then make the Site public. Search indexing and rankings are never guaranteed.
-
-The expanded FAQ follows the topic coverage of the owner's 9fleet site and uses EasyRent as an information-architecture reference. Its copy is original. The owner confirmed that CarTime is a new brand of the same business and that the 9fleet driver age, experience, two-day minimum, Azerbaijan-only travel, deposit and basic insurance conditions also apply. The owner supplied CarTime's phone and email and confirmed airport collection, address delivery, 24/7 support, car-dependent deposits, card/cash/bank-transfer payments, unlimited mileage, same-level fuel return and permission for a second driver. The exact deposit amount, insurance coverage, delivery charges and other unconfirmed details remain open; update `lib/service-info.ts` when confirmed.
+Vehicle images and editorial scenes are illustrative. The published rates are a snapshot, not a real-time availability or final-price quote. Real vehicle photos, current rates, deposit and insurance details, social URLs, WhatsApp details and privacy/terms copy require owner confirmation before public launch. See `docs/claude-seo-handoff.md` for the SEO handoff and remaining decisions.
 
 ## Development
 
-Install dependencies and run `npm run dev` in an environment with Node.js 22.13+ and npm. Run `npm run build` for a production build.
-
-The Site deployment has its own source repository. The owner also has a GitHub repository at `fcky009-git/cartime---website` for independent code history and collaboration.
+Use Node.js 22.13+ and run `npm run install:ci`, `npm run lint`, `npx tsc --noEmit` and `npm run build`. The Sites deployment has its own source repository; the GitHub repository is used for collaboration and must be synchronized deliberately.

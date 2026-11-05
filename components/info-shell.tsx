@@ -1,4 +1,6 @@
+import { switcherOrder } from "@/lib/locales";
 import type { ReactNode } from "react";
+import Image from "next/image";
 import type { Locale } from "@/lib/i18n";
 import { guideSlugs, guides, guideUi } from "@/lib/guides";
 import { serviceUi } from "@/lib/service-info";
@@ -16,8 +18,8 @@ export default function InfoShell({ locale, current, children }: { locale: Local
     <header className="site-header">
       <div className="container info-header-inner">
         <a className="brand" href={`/${locale}`} aria-label="CarTime">
-          <img className="dark-logo" src="/assets/logo-dark.png" alt="CarTime" />
-          <img className="light-logo" src="/assets/logo-light.svg" alt="" aria-hidden="true" />
+          <Image unoptimized width={894} height={242} className="dark-logo" src="/assets/logo-dark.png" alt="CarTime" />
+          <Image unoptimized width={748} height={216} className="light-logo" src="/assets/logo-light.svg" alt="" aria-hidden="true" />
             <span className="brand-caption" aria-hidden="true">CAR RENTAL</span>
         </a>
         <nav className="info-header-nav" aria-label={ui.nav}>
@@ -27,7 +29,7 @@ export default function InfoShell({ locale, current, children }: { locale: Local
           <SiteDirectory locale={locale} />
         </nav>
         <div className="info-language-links" aria-label="Language">
-          {(["az", "en", "ru"] as Locale[]).map((code) =>
+          {switcherOrder.map((code) =>
             <a key={code} href={`/${code}${suffix}`} lang={code} aria-current={code === locale ? "page" : undefined}>{code.toUpperCase()}</a>,
           )}
         </div>
@@ -36,7 +38,7 @@ export default function InfoShell({ locale, current, children }: { locale: Local
     {children}
     <footer className="site-footer">
       <div className="container info-footer-inner">
-        <div><img className="dark-logo" src="/assets/logo-dark.png" alt="CarTime" /><img className="light-logo" src="/assets/logo-light.svg" alt="" aria-hidden="true" /><span className="brand-caption" aria-hidden="true">CAR RENTAL</span><p>{ui.homeLead}</p><ContactLinks locale={locale} /></div>
+        <div><Image unoptimized width={894} height={242} className="dark-logo" src="/assets/logo-dark.png" alt="CarTime" /><Image unoptimized width={748} height={216} className="light-logo" src="/assets/logo-light.svg" alt="" aria-hidden="true" /><span className="brand-caption" aria-hidden="true">CAR RENTAL</span><p>{ui.homeLead}</p><ContactLinks locale={locale} /></div>
         <nav aria-label={ui.next}>
           <a href={`/${locale}`}>{ui.back}</a>
           <a href={`/${locale}/fleet`}>{ui.allCars}</a>

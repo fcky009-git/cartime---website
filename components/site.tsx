@@ -1,6 +1,8 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useSyncExternalStore } from "react";
+import { useRouter } from "next/navigation";
+import { switcherOrder } from "@/lib/locales";
 import { ArrowDown, ArrowDownRight, ArrowRight, ChevronDown, Menu, Search, X } from "lucide-react";
 import { dictionaries, type Locale } from "@/lib/i18n";
 import { fleetUi } from "@/lib/fleet-ui";
@@ -19,6 +21,35 @@ import { contactLocation } from "@/lib/service-info";
 
 type Theme = "hybrid" | "dark" | "light";
 const themeNames: Theme[] = ["hybrid", "dark", "light"];
+const themeStorageKey = "cartime-theme";
+const themeChangeEvent = "cartime-theme-change";
+function subscribeToTheme(onChange: () => void) {
+  window.addEventListener("storage", onChange);
+  window.addEventListener(themeChangeEvent, onChange);
+  return () => {
+    window.removeEventListener("storage", onChange);
+    window.removeEventListener(themeChangeEvent, onChange);
+  };
+}
+let sessionTheme: Theme | null = null;
+function readStoredTheme(): Theme {
+  if (sessionTheme) return sessionTheme;
+  try {
+    const stored = localStorage.getItem(themeStorageKey);
+    return themeNames.includes(stored as Theme) ? stored as Theme : "hybrid";
+  } catch {
+    return "hybrid";
+  }
+}
+function saveTheme(next: Theme) {
+  try {
+    localStorage.setItem(themeStorageKey, next);
+    sessionTheme = null;
+  } catch {
+    sessionTheme = next;
+  }
+  window.dispatchEvent(new Event(themeChangeEvent));
+}
 const themeConcepts: Record<Theme, string> = { hybrid: "Vision Glass", dark: "Obsidian Motion", light: "Aero Liquid" };
 const editorialUi: Record<Locale, { lineOne: string; lineTwo: string; lead: string; select: string; explore: string; scroll: string; pickup: string; collection: string; styles: string }> = {
   ru: { lineOne: "Баку ближе.", lineTwo: "Когда вы за рулём.", lead: "Выберите автомобиль для поездок по Баку и всему Азербайджану. Маршрут задаёте вы.", select: "Выбрать автомобиль", explore: "Смотреть автопарк", scroll: "Листайте вниз", pickup: "Начните поездку", collection: "Выберите место и даты — покажем автомобили и тарифы.", styles: "Стиль сайта" },
@@ -38,6 +69,7 @@ const mapUi: Record<Locale, { kicker: string; title: string; lead: string; open:
 };
 
 export default function CarTimeSite({ locale }: { locale: Locale }) {
+  const router = useRouter();
   const t = dictionaries[locale];
   const f = fleetUi[locale];
   const g = guideUi[locale];
@@ -45,7 +77,7 @@ export default function CarTimeSite({ locale }: { locale: Locale }) {
   const rental = rentalUi[locale];
   const carInfo = carDetailUi[locale];
   const e = editorialUi[locale];
-  const [theme, setTheme] = useState<Theme>("hybrid");
+  const theme = useSyncExternalStore(subscribeToTheme, readStoredTheme, (): Theme => "hybrid");
   const [menuOpen, setMenuOpen] = useState(false);
   const [category, setCategory] = useState<string>("all");
   const [modelQuery, setModelQuery] = useState("");
@@ -68,22 +100,21 @@ export default function CarTimeSite({ locale }: { locale: Locale }) {
   ).sort((a, b) => sort === "priceDesc" ? b.ratesUsd[0] - a.ratesUsd[0] : sort === "yearDesc" ? b.year - a.year || a.ratesUsd[0] - b.ratesUsd[0] : a.ratesUsd[0] - b.ratesUsd[0]);
 
   useEffect(() => {
-    const stored = localStorage.getItem("cartime-theme");
-    if (themeNames.includes(stored as Theme)) setTheme(stored as Theme);
-    const current = bakuToday();
-    const start = addDaysIso(current, 1);
-    setToday(current);
-    setFromDate(start);
-    setToDate(addDaysIso(start, 3));
+    let active = true;
+    queueMicrotask(() => {
+      if (!active) return;
+      const current = bakuToday();
+      const start = addDaysIso(current, 1);
+      setToday(current);
+      setFromDate(start);
+      setToDate(addDaysIso(start, 3));
+    });
+    return () => { active = false; };
   }, []);
 
   useEffect(() => {
     document.documentElement.dataset.theme = theme;
   }, [theme]);
-
-  useEffect(() => {
-    document.documentElement.lang = locale;
-  }, [locale]);
 
   useEffect(() => {
     const header = document.querySelector<HTMLElement>(".home-site .site-header");
@@ -143,8 +174,7 @@ export default function CarTimeSite({ locale }: { locale: Locale }) {
   }, [detailCar]);
 
   function changeTheme(next: Theme) {
-    setTheme(next);
-    localStorage.setItem("cartime-theme", next);
+    saveTheme(next);
   }
 
   function submitSearch(event: React.FormEvent<HTMLFormElement>) {
@@ -154,7 +184,7 @@ export default function CarTimeSite({ locale }: { locale: Locale }) {
       from: String(formData.get("from") || fromDate), to: String(formData.get("to") || toDate),
       fromTime: String(formData.get("fromTime") || fromTime), toTime: String(formData.get("toTime") || toTime),
     });
-    window.location.href = `/${locale}/booking?${params.toString()}`;
+    router.push(`/${locale}/booking?${params.toString()}`);
   }
 
   function chooseAirport() {
@@ -180,7 +210,7 @@ export default function CarTimeSite({ locale }: { locale: Locale }) {
           </nav>
           <div className="header-actions">
             <div className="language-links" aria-label={t.languageLabel}>
-              {(["az", "en", "ru"] as Locale[]).map((code) => <a key={code} href={`/${code}`} lang={code} aria-current={code === locale ? "page" : undefined}>{code.toUpperCase()}</a>)}
+              {switcherOrder.map((code) => <a key={code} href={`/${code}`} lang={code} aria-current={code === locale ? "page" : undefined}>{code.toUpperCase()}</a>)}
             </div>
             <div className="theme-picker" role="group" aria-label={e.styles}>
               {themeNames.map((name, index) => <button key={name} type="button" title={themeConcepts[name]} aria-label={`${t.themes[index]} — ${themeConcepts[name]}`} aria-pressed={theme === name} onClick={() => changeTheme(name)}><span>{t.themes[index]}</span></button>)}

@@ -1,17 +1,37 @@
 import type { Metadata } from "next";
-import type { Locale } from "./i18n";
+import { defaultLocale, localeInfo, locales, type Locale } from "./locales";
 
+export { defaultLocale, locales };
+
+// Preview domain until cartime.az is purchased; then set NEXT_PUBLIC_SITE_URL (or change this default).
 export const siteOrigin = (process.env.NEXT_PUBLIC_SITE_URL || "https://cartime-baku-demo.brawnydill256.chatgpt.site").replace(/\/$/, "");
-export const locales: Locale[] = ["ru", "az", "en"];
+
+/**
+ * Search engines may index the site only after a real domain is configured through
+ * NEXT_PUBLIC_SITE_URL. Without it (preview, local) every page is sent with noindex.
+ */
+export const indexingEnabled = Boolean(process.env.NEXT_PUBLIC_SITE_URL);
+
+export const ogImage = { url: "/assets/og-cartime.jpg", width: 1200, height: 630, alt: "CarTime — car rental in Baku" } as const;
+
+export function languageAlternates(path: string, origin = ""): Record<string, string> {
+  const href = (language: Locale) => `${origin}/${language}${path ? `/${path}` : ""}`;
+  return {
+    ...Object.fromEntries(locales.map((language) => [localeInfo[language].hreflang, href(language)])),
+    "x-default": href(defaultLocale),
+  };
+}
 
 export function pageMetadata(locale: Locale, path: string, title: string, description: string): Metadata {
   const localPath = path ? `/${locale}/${path}` : `/${locale}`;
+  const withBrand = `${title} | CarTime`;
   return {
-    title: `${title} | CarTime`,
+    // Long titles are cut in search results, so drop the brand suffix when it would pass 60 characters.
+    title: withBrand.length > 60 ? { absolute: title } : withBrand,
     description,
     alternates: {
       canonical: localPath,
-      languages: Object.fromEntries(locales.map((language) => [language, path ? `/${language}/${path}` : `/${language}`])),
+      languages: languageAlternates(path),
     },
     openGraph: {
       type: "website",
@@ -19,8 +39,15 @@ export function pageMetadata(locale: Locale, path: string, title: string, descri
       title,
       description,
       url: `${siteOrigin}${localPath}`,
-      locale: locale === "az" ? "az_AZ" : locale === "ru" ? "ru_RU" : "en_US",
-      images: ["/assets/cartime-baku-sunrise.jpg"],
+      locale: localeInfo[locale].ogLocale,
+      alternateLocale: locales.filter((code) => code !== locale).map((code) => localeInfo[code].ogLocale),
+      images: [ogImage],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title,
+      description,
+      images: [ogImage.url],
     },
   };
 }

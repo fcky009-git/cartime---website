@@ -70,6 +70,9 @@ export default function BookingForm({ locale }: { locale: Locale }) {
   const [website, setWebsite] = useState("");
 
   useEffect(() => {
+    let active = true;
+    queueMicrotask(() => {
+    if (!active) return;
     const current = localToday();
     setToday(current);
     const search = new URLSearchParams(window.location.search);
@@ -89,6 +92,8 @@ export default function BookingForm({ locale }: { locale: Locale }) {
     if (endTime && /^([01]\d|2[0-3]):[0-5]\d$/.test(endTime)) setToTime(endTime);
     const selected = search.get("car");
     if (fleet.some((car) => car.id === selected)) setCarId(selected || "");
+    });
+    return () => { active = false; };
   }, []);
 
   useEffect(() => {
