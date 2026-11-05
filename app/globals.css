@@ -319,7 +319,7 @@ html[data-theme="light"] .info-language-links { border-left-color: #0b254244; }
 .about-fleet-copy p:not(.section-kicker) { max-width: 620px; color: #cbdaeb; font-size: 15px; line-height: 1.85; }
 .about-fleet-copy a { display: inline-flex; gap: 30px; align-items: center; margin-top: 25px; padding: 15px 21px; border: 1px solid #c8e1ffad; border-radius: 100px; background: #ffffff1a; backdrop-filter: blur(14px); color: #fff; font-size: 12px; font-weight: 800; transition: transform .25s, background .25s; }
 .about-fleet-copy a:hover { transform: translateY(-3px); background: #ffffff32; }
-.about-fleet-visual { position: relative; min-height: 390px; background: linear-gradient(0deg, #071629aa, transparent 50%), url('/assets/cartime-cinematic-v2.jpg') center / cover; }
+.about-fleet-visual { position: relative; min-height: 390px; background: linear-gradient(0deg, #071629aa, transparent 50%), url('/assets/cartime-cinematic-bmw-m5-v3.jpg') center / cover; }
 .about-fleet-visual span { position: absolute; right: 30px; bottom: 24px; color: #fff; font: 800 clamp(40px, 5vw, 82px)/1 Sora, Inter, sans-serif; letter-spacing: -.07em; text-shadow: 0 8px 30px #03101fcc; }
 .about-fleet-story + .about-feature-grid { margin-top: 20px; }
 .about-section-head { margin-bottom: 30px; }

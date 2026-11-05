@@ -47,7 +47,7 @@
 /* Full-bleed automotive opening, with the copy anchored to the lower edge. */
 .home-site .hero { position: relative; min-height: 100svh; overflow: hidden; isolation: isolate; color: #f8f5f0; background: #101722; }
 .home-site .hero::after { display: none; }
-.home-site .hero-photo { position: absolute; inset: 0; z-index: -2; background: url('/assets/cartime-cinematic-v2.jpg') 60% center / cover no-repeat; transform: translate3d(0,var(--hero-parallax,0px),0) scale(1.06); animation: none; will-change: transform; }
+.home-site .hero-photo { position: absolute; inset: 0; z-index: -2; background: url('/assets/cartime-cinematic-bmw-m5-v3.jpg') 60% center / cover no-repeat; transform: translate3d(0,var(--hero-parallax,0px),0) scale(1.06); animation: none; will-change: transform; }
 .home-site .hero-sheen { position: absolute; inset: 0; z-index: -1; background: linear-gradient(0deg,#080d15f7 0%,#080d15ad 25%,transparent 70%),linear-gradient(90deg,#080e17a6,transparent 56%),linear-gradient(180deg,#0b11196b,transparent 24%); }
 .home-site .hero-inner { position: relative; display: grid; grid-template-columns: minmax(0,1fr) minmax(270px,340px); align-items: end; column-gap: clamp(45px,8vw,140px); min-height: 100svh; padding-top: 170px; padding-bottom: 120px; }
 .home-site .hero-copy { max-width: 920px; padding: 0; animation: editorial-rise 1s cubic-bezier(.2,.75,.25,1) both; }
@@ -410,7 +410,7 @@ html[data-theme='light'] .info-shell .info-footer-inner .brand-caption { color: 
 .info-booking-shell .info-header-nav .site-directory summary { border: 1px solid #ffffff25; border-radius: 100px; background: #ffffff12; color: #f0f3f5; box-shadow: none; }
 .info-booking-shell .info-language-links { border-color: #ffffff40 !important; }
 .info-booking-shell .info-language-links a { color: #d9e4ed; }
-.info-booking-shell .booking-hero { min-height: 560px; background: linear-gradient(90deg,#08111ef2 0%,#08111ed0 40%,#08111e54 100%),url('/assets/cartime-cinematic-v2.jpg') 68% center / cover; }
+.info-booking-shell .booking-hero { min-height: 560px; background: linear-gradient(90deg,#08111ef2 0%,#08111ed0 40%,#08111e54 100%),url('/assets/cartime-cinematic-bmw-m5-v3.jpg') 68% center / cover; }
 .info-booking-shell .booking-hero::before { display: none; }
 .info-booking-shell .booking-hero .info-hero-inner { padding-top: 165px; padding-bottom: 85px; }
 .info-booking-shell .booking-hero .info-back { margin-bottom: 42px; }

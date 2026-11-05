@@ -31,7 +31,7 @@
 2. `app/home-design.css` — визуальная система и адаптивная верстка.
 3. `app/layout.tsx` — подключение стилей и ранняя установка сохранённой темы.
 4. `components/info-shell.tsx` и `lib/booking.ts` — подпись бренда и новый текст навигации на внутренних страницах.
-5. `public/assets/cartime-cinematic-v2.jpg` и `public/assets/cartime-aero-v2.jpg` — изображения Hybrid и Light. Dark использует уже существующий `cartime-baku-night.jpg`.
+5. `public/assets/cartime-cinematic-bmw-m5-v3.jpg` и `public/assets/cartime-aero-v2.jpg` — изображения Hybrid и Light. Dark использует `cartime-baku-night-bmw-xm.jpg`.
 
 Восемь актуальных кадров находятся в `design-previews/`: три темы первого экрана в размерах desktop/mobile (`01`, `02`, `03`) и обновлённый мастер бронирования (`04-booking-desktop/mobile`). Остальные секции и взаимодействия доступны в приложении.
 
