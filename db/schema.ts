@@ -30,3 +30,15 @@ export const bookingRequests = sqliteTable("booking_requests", {
   payment: text("payment").notNull(),
   notes: text("notes"),
 }, (table) => [index("booking_requests_status_created_idx").on(table.status, table.createdAt)]);
+
+export const adminLoginAttempts = sqliteTable("admin_login_attempts", {
+  fingerprint: text("fingerprint").primaryKey(),
+  attempts: integer("attempts").notNull(),
+  windowStart: integer("window_start").notNull(),
+  lockedUntil: integer("locked_until").notNull().default(0),
+});
+
+export const adminSessionState = sqliteTable("admin_session_state", {
+  id: integer("id").primaryKey(),
+  notBefore: integer("not_before").notNull(),
+});

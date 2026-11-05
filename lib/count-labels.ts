@@ -25,6 +25,17 @@ const answerForms: Record<Locale, Forms> = {
   ar: { zero: "{n} إجابة", one: "إجابة واحدة", two: "إجابتان", few: "{n} إجابات", many: "{n} إجابة", other: "{n} إجابة" },
 };
 
+const dayForms: Record<Locale, Forms> = {
+  ru: { one: "{n} день", few: "{n} дня", many: "{n} дней", other: "{n} дня" },
+  az: { other: "{n} gün" },
+  en: { one: "{n} day", other: "{n} days" },
+  de: { one: "{n} Tag", other: "{n} Tage" },
+  zh: { other: "{n} 天" },
+  ko: { other: "{n}일" },
+  fr: { one: "{n} jour", other: "{n} jours" },
+  ar: { zero: "{n} يوم", one: "يوم واحد", two: "يومان", few: "{n} أيام", many: "{n} يومًا", other: "{n} يوم" },
+};
+
 function countLabel(forms: Record<Locale, Forms>, locale: Locale, count: number) {
   const form = forms[locale];
   const rule = new Intl.PluralRules(localeInfo[locale].hreflang).select(count);
@@ -33,3 +44,4 @@ function countLabel(forms: Record<Locale, Forms>, locale: Locale, count: number)
 
 export const carCountLabel = (locale: Locale, count: number) => countLabel(carForms, locale, count);
 export const answerCountLabel = (locale: Locale, count: number) => countLabel(answerForms, locale, count);
+export const dayCountLabel = (locale: Locale, count: number) => countLabel(dayForms, locale, count);

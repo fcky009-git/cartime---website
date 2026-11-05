@@ -1,4 +1,5 @@
 import { env } from "cloudflare:workers";
+import { ensureAdminTables } from "@/lib/admin-auth";
 
 const WINDOW_MS = 15 * 60 * 1000;
 const MAX_ATTEMPTS = 5;
@@ -10,20 +11,26 @@ async function fingerprint(request: Request) {
   return Array.from(new Uint8Array(digest)).map((byte) => byte.toString(16).padStart(2, "0")).join("");
 }
 
+/**
+ * Counts the attempt before the password is checked, in one atomic statement,
+ * so simultaneous requests cannot all pass on the same reading of the counter.
+ */
 export async function adminLoginLimiter(request: Request) {
   if (!env.DB || !env.CARTIME_ADMIN_SESSION_SECRET) throw new Error("Admin login is not configured");
-  await env.DB.prepare("CREATE TABLE IF NOT EXISTS admin_login_attempts (fingerprint TEXT PRIMARY KEY, attempts INTEGER NOT NULL, window_start INTEGER NOT NULL, locked_until INTEGER NOT NULL)").run();
+  await ensureAdminTables();
   const key = await fingerprint(request);
   const now = Date.now();
-  const row = await env.DB.prepare("SELECT attempts, window_start, locked_until FROM admin_login_attempts WHERE fingerprint = ?").bind(key).first<{ attempts: number; window_start: number; locked_until: number }>();
+  const row = await env.DB.prepare(
+    `INSERT INTO admin_login_attempts (fingerprint, attempts, window_start, locked_until) VALUES (?1, 1, ?2, 0)
+     ON CONFLICT(fingerprint) DO UPDATE SET
+       attempts = CASE WHEN ?2 - window_start >= ?3 THEN 1 ELSE attempts + 1 END,
+       window_start = CASE WHEN ?2 - window_start >= ?3 THEN ?2 ELSE window_start END
+     RETURNING attempts`,
+  ).bind(key, now, WINDOW_MS).first<{ attempts: number }>();
   return {
-    blocked: Boolean(row && row.locked_until > now),
-    async fail() {
-      const attempts = row && now - row.window_start < WINDOW_MS ? row.attempts + 1 : 1;
-      const windowStart = row && now - row.window_start < WINDOW_MS ? row.window_start : now;
-      const lockedUntil = attempts >= MAX_ATTEMPTS ? now + WINDOW_MS : 0;
-      await env.DB!.prepare("INSERT INTO admin_login_attempts (fingerprint, attempts, window_start, locked_until) VALUES (?, ?, ?, ?) ON CONFLICT(fingerprint) DO UPDATE SET attempts = excluded.attempts, window_start = excluded.window_start, locked_until = excluded.locked_until").bind(key, attempts, windowStart, lockedUntil).run();
+    blocked: (row?.attempts ?? 1) > MAX_ATTEMPTS,
+    async clear() {
+      await env.DB!.prepare("DELETE FROM admin_login_attempts WHERE fingerprint = ?1 OR window_start < ?2").bind(key, now - 24 * 60 * 60 * 1000).run();
     },
-    async clear() { await env.DB!.prepare("DELETE FROM admin_login_attempts WHERE fingerprint = ?").bind(key).run(); },
   };
 }
