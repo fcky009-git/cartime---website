@@ -65,5 +65,7 @@ All languages are configured in `lib/locales.ts` (codes, hreflang, og:locale, te
 
 ## Git workflow
 
-- One branch per task, small commits, open a pull request instead of pushing to `main`.
-- The Site deployment has its own source repository (see README). This GitHub repository is for history and collaboration, so keep the two in sync when merging.
+- GitHub (`github/main` in the Codex checkout) is the shared source of truth for Codex and Claude Code. Before starting a task, fetch and pull the latest `github/main`; if a task is already in progress, integrate upstream changes before delivery.
+- Use one branch per task, make small commits, and send completed work to GitHub. Use a pull request for review before merging to `main`, unless the owner explicitly directs a different workflow for that task. Never force-push `main`.
+- Coordinate ownership of files and avoid editing the same files as another agent at the same time.
+- The Site deployment has its own source repository (see README). Sync it from GitHub `main` before publishing and keep the deployed source aligned with the shared repository.
