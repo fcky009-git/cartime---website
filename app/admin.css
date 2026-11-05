@@ -77,10 +77,6 @@
 .admin-contact-actions a { display: inline-flex; align-items: center; gap: 8px; min-height: 43px; padding: 10px 14px; border: 1px solid #cedde6; border-radius: 11px; color: #16405b; font-size: 12px; font-weight: 700; }
 .admin-contact-actions a:first-child { border-color: #198f63; background: #198f63; color: #fff; }
 .admin-empty { padding: 36px; color: #6d8190; text-align: center; font-size: 14px; }
-.admin-denied { display: grid; place-content: center; min-height: 80vh; padding: 30px; text-align: center; }
-.admin-denied h1 { margin: 0 0 10px; font: 600 34px Sora,Inter,sans-serif; }
-.admin-denied p { color: #6d8190; }
-.admin-denied a { margin-top: 16px; color: #2170a2; }
 @media (max-width:900px) { .admin-wrap { width: min(100% - 32px,1424px); } .admin-layout { grid-template-columns: 1fr; } .admin-list { display: flex; overflow: auto; max-height: none; padding-bottom: 8px; } .admin-list-item { flex: 0 0 260px; } }
 @media (max-width:640px) { .admin-top { height: 68px; padding: 0 16px; } .admin-logo { width: 118px; } .admin-top > span { display: none; } .admin-wrap { padding-top: 26px; } .admin-heading { display: block; } .admin-tools { margin-top: 20px; } .admin-stats { display: flex; overflow-x: auto; padding-bottom: 7px; } .admin-stats button { flex: 0 0 122px; min-height: 88px; } .admin-detail { padding: 18px; } .admin-detail-grid { grid-template-columns: 1fr; } .admin-detail-head > strong { font-size: 19px; } }
 
@@ -179,3 +175,10 @@
 @media (max-width:640px) { .admin-top-label { display:none; } .admin-top-actions a { display:none; } .admin-top-actions button { font-size:11px; } .admin-tools { display:flex; overflow-x:auto; flex-wrap:nowrap; padding-bottom:5px; } .admin-tools button { flex:none; } .admin-quickfacts { display:grid; grid-template-columns:1fr 1fr; } .admin-quickfacts span { justify-content:space-between; } .admin-workbar { display:block; } .admin-workbar label { justify-content:space-between; margin-top:8px; } .admin-workbar select { flex:1; } .admin-chart { gap:5px; } .admin-login-card { padding:24px; } .admin-login-brand span { max-width:145px; } }
 @media (prefers-reduced-motion:reduce) { .admin-shell button,.admin-chart > div > span,.admin-list-item { animation:none!important; transition:none!important; } }
 @media print { .admin-top,.admin-tools,.admin-stats,.admin-overview,.admin-quickfacts,.admin-workbar,.admin-date-filters,.admin-list,.admin-status-row,.admin-contact-actions { display:none!important; } .admin-shell,.admin-wrap,.admin-detail { width:100%; min-height:0; padding:0; margin:0; border:0; box-shadow:none; background:#fff; color:#111; } .admin-layout { display:block; } }
+
+/* Long names, addresses and links must wrap instead of stretching the page. */
+.admin-layout > *,.admin-detail-grid > div,.admin-list-item strong,.admin-notes { min-width:0; }
+.admin-detail-grid { grid-template-columns:repeat(2,minmax(0,1fr)); }
+.admin-list-item strong,.admin-detail-grid :is(strong,p,a,em),.admin-notes p { overflow-wrap:anywhere; }
+@media (max-width:900px) { .admin-layout { grid-template-columns:minmax(0,1fr); } }
+@media (max-width:640px) { .admin-detail-grid { grid-template-columns:minmax(0,1fr); } }

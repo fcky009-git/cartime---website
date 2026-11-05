@@ -1,16 +1,21 @@
-import { desc, eq } from "drizzle-orm";
+import { desc, eq, lte } from "drizzle-orm";
 import { z } from "zod";
 import { bookingRequests } from "@/db/schema";
 import { getDb } from "@/db";
 import { currentBookingAdmin } from "@/lib/admin-auth";
+import { ADMIN_PAGE_SIZE } from "@/lib/admin-bookings";
 
 export const dynamic = "force-dynamic";
 const statusUpdate = z.object({ id: z.string().uuid(), status: z.enum(["new", "contacted", "confirmed", "cancelled"]) });
 
-export async function GET() {
+export async function GET(request: Request) {
   if (!await currentBookingAdmin()) return Response.json({ error: "Forbidden" }, { status: 403 });
+  const before = new URL(request.url).searchParams.get("before");
+  if (before && Number.isNaN(Date.parse(before))) return Response.json({ error: "Invalid date" }, { status: 400 });
   try {
-    const items = await getDb().select().from(bookingRequests).orderBy(desc(bookingRequests.createdAt)).limit(250);
+    const items = await getDb().select().from(bookingRequests)
+      .where(before ? lte(bookingRequests.createdAt, before) : undefined)
+      .orderBy(desc(bookingRequests.createdAt)).limit(ADMIN_PAGE_SIZE);
     return Response.json({ items }, { headers: { "Cache-Control": "no-store" } });
   } catch (error) {
     console.error("Admin booking read failed", error);
@@ -28,7 +33,8 @@ export async function PATCH(request: Request) {
   if (!parsed.success) return Response.json({ error: "Invalid status" }, { status: 400 });
   try {
     const updatedAt = new Date().toISOString();
-    await getDb().update(bookingRequests).set({ status: parsed.data.status, updatedAt }).where(eq(bookingRequests.id, parsed.data.id));
+    const updated = await getDb().update(bookingRequests).set({ status: parsed.data.status, updatedAt }).where(eq(bookingRequests.id, parsed.data.id)).returning({ id: bookingRequests.id });
+    if (!updated.length) return Response.json({ error: "Request not found" }, { status: 404 });
     return Response.json({ id: parsed.data.id, status: parsed.data.status, updatedAt }, { headers: { "Cache-Control": "no-store" } });
   } catch (error) {
     console.error("Admin booking update failed", error);
