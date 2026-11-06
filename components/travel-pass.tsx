@@ -12,22 +12,24 @@ import fleetImages from "@/lib/fleet-images.json";
 import { contact } from "@/lib/service-info";
 
 export default function TravelPass({locale}:{locale:Locale}){
-  const t=travelUi[locale];const [reference,setReference]=useState("");const [code,setCode]=useState("");const [pass,setPass]=useState<PublicTravelPass|null>(null);const [busy,setBusy]=useState(false);const [error,setError]=useState("");const [notice,setNotice]=useState("");const [qr,setQr]=useState("");const [walletHelp,setWalletHelp]=useState(false);const formRef=useRef<HTMLFormElement>(null);const pending=useRef(false);
+  const t=travelUi[locale];const [reference,setReference]=useState("");const [code,setCode]=useState("");const [pass,setPass]=useState<PublicTravelPass|null>(null);const [busy,setBusy]=useState(false);const [error,setError]=useState("");const [notice,setNotice]=useState("");const [qr,setQr]=useState("");const [walletHelp,setWalletHelp]=useState(false);const formRef=useRef<HTMLFormElement>(null);const pending=useRef(false);const loadController=useRef<AbortController|null>(null);
   const load=useCallback(async(ref:string,key:string,quiet=false)=>{
-    if(pending.current)return;pending.current=true;if(!quiet)setBusy(true);setError("");
-    try{const response=await fetch("/api/travel-pass",{method:"POST",headers:{"Content-Type":"application/json"},cache:"no-store",body:JSON.stringify({reference:ref,accessCode:key})});
+    if(pending.current)return;pending.current=true;const controller=new AbortController();loadController.current=controller;if(!quiet)setBusy(true);setError("");
+    try{const response=await fetch("/api/travel-pass",{method:"POST",headers:{"Content-Type":"application/json"},cache:"no-store",signal:controller.signal,body:JSON.stringify({reference:ref,accessCode:key})});
+      if(controller.signal.aborted)return;
       if(!response.ok){setError(response.status===404?t.invalid:response.status===429?t.limited:t.unavailable);if(response.status===404)setPass(null);return;}
-      const data=await response.json() as {pass:PublicTravelPass};setPass(data.pass);const credentials={reference:data.pass.reference,accessCode:key.toUpperCase().replace(/[\s-]/g,"")};
+      const data=await response.json() as {pass:PublicTravelPass};if(controller.signal.aborted)return;setPass(data.pass);const credentials={reference:data.pass.reference,accessCode:key.toUpperCase().replace(/[\s-]/g,"")};
       window.history.replaceState(null,"",travelLink(locale,credentials));
-    }catch{setError(t.unavailable);}finally{pending.current=false;setBusy(false);}
+    }catch{if(!controller.signal.aborted)setError(t.unavailable);}finally{if(loadController.current===controller){pending.current=false;setBusy(false);}}
   },[locale,t]);
   useEffect(()=>{let active=true;queueMicrotask(()=>{if(!active)return;const values=new URLSearchParams(window.location.hash.slice(1));const ref=values.get("reference"),key=values.get("code");if(ref&&key){setReference(ref);setCode(key);void load(ref,key);}});return()=>{active=false;};},[load]);
+  useEffect(()=>()=>{loadController.current?.abort();},[]);
   useEffect(()=>{if(!pass)return;const interval=window.setInterval(()=>{if(document.visibilityState==="visible")void load(reference,code,true);},90000);return()=>clearInterval(interval);},[pass,reference,code,load]);
   useEffect(()=>{if(!pass)return;let active=true;QRCode.toDataURL(window.location.origin+travelLink(locale,{reference:pass.reference,accessCode:code}),{width:240,margin:2,errorCorrectionLevel:"M",color:{dark:"#0a1d2f",light:"#ffffff"}}).then(url=>{if(active)setQr(url);}).catch(()=>{});return()=>{active=false;};},[pass?.reference,code,locale,pass]);
   const date=(value:string)=>new Intl.DateTimeFormat(localeInfo[locale].hreflang,{day:"2-digit",month:"short",year:"numeric",timeZone:"Asia/Baku"}).format(new Date(`${value}T12:00:00+04:00`));
   const stamp=(value:string)=>new Intl.DateTimeFormat(localeInfo[locale].hreflang,{day:"2-digit",month:"short",hour:"2-digit",minute:"2-digit",timeZone:"Asia/Baku"}).format(new Date(value));
   const place=(value:string,address:string|null)=>value==="airport"?t.airport:value==="delivery"?`${t.delivery}${address?` · ${address}`:""}`:t.office;
-  const close=()=>{setPass(null);setCode("");setError("");setNotice("");window.history.replaceState(null,"",`/${locale}/travel-pass`);};
+  const close=()=>{loadController.current?.abort();pending.current=false;setBusy(false);setQr("");setWalletHelp(false);setPass(null);setCode("");setError("");setNotice("");window.history.replaceState(null,"",`/${locale}/travel-pass`);};
   const copy=async()=>{if(!pass)return;try{await navigator.clipboard.writeText(window.location.origin+travelLink(locale,{reference:pass.reference,accessCode:code}));setNotice(t.copied);}catch{setError(t.unavailable);}};
   const calendar=()=>{if(!pass)return;const escape=(s:string)=>s.replaceAll("\\","\\\\").replaceAll("\n","\\n").replaceAll(",","\\,").replaceAll(";","\\;");const dt=(d:string,h:string)=>`${d.replaceAll("-","")}T${h.replace(":","")}00`;
     const lines=["BEGIN:VCALENDAR","VERSION:2.0","PRODID:-//CarTime//Travel Pass//EN","BEGIN:VEVENT",`UID:${pass.reference}@cartime.az`,`DTSTAMP:${new Date().toISOString().replace(/[-:]/g,"").replace(/\.\d{3}/,"")}`,`DTSTART;TZID=Asia/Baku:${dt(pass.fromDate,pass.fromTime)}`,`DTEND;TZID=Asia/Baku:${dt(pass.toDate,pass.toTime)}`,`SUMMARY:${escape(`CarTime · ${pass.carName} · ${t[pass.status as "new"]||pass.status}`)}`,`LOCATION:${escape(place(pass.pickup,pass.pickupAddress))}`,`DESCRIPTION:${escape(`${pass.reference}. ${t.estimateHint}`)}`,...(pass.status==="cancelled"?["STATUS:CANCELLED"]:[]),"END:VEVENT","END:VCALENDAR",""];

@@ -8,10 +8,12 @@ export const dynamic = "force-dynamic";
 const input = z.object({ reference:z.string().trim().max(32), accessCode:z.string().max(40), wallet:z.boolean().optional() });
 export async function POST(request:Request) {
   if (request.headers.get("origin") !== new URL(request.url).origin) return Response.json({error:"Forbidden"},{status:403,headers:passHeaders});
+  if(!request.headers.get("content-type")?.includes("application/json")) return Response.json({error:"JSON required"},{status:415,headers:passHeaders});
   try {
     const raw = await request.text();
     if(raw.length>512) return Response.json({error:"Invalid request"},{status:400,headers:passHeaders});
-    const parsed=input.safeParse(JSON.parse(raw));
+    let body:unknown;try{body=JSON.parse(raw);}catch{return Response.json({error:"Invalid JSON"},{status:400,headers:passHeaders});}
+    const parsed=input.safeParse(body);
     if(!parsed.success) return Response.json({error:"Invalid request"},{status:400,headers:passHeaders});
     if(!await travelAccessAllowed(request)) return Response.json({error:"Try later"},{status:429,headers:{...passHeaders,"Retry-After":"900"}});
     const row=await findTravelPass(parsed.data.reference,parsed.data.accessCode);
