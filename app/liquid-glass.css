@@ -364,3 +364,30 @@ html .travel-actions :is(a,button) { border-radius: 999px; }
 .travel-toast-error { border-radius: 22px; background: #8f1f33; }
 @keyframes sheet-fade { from { opacity: 0; } }
 @media print { .travel-sheet-backdrop, .travel-toast { display: none !important; } }
+
+/* ---------- WhatsApp: both numbers, the customer chooses ---------- */
+.whatsapp-trigger { display: inline-flex; align-items: center; justify-content: center; gap: 9px; min-height: 56px; padding: 10px 20px; border: 0; border-radius: 999px; background: linear-gradient(180deg, #2bc86c, #128c4a); box-shadow: inset 0 1px 1px rgb(255 255 255 / .55), 0 14px 30px -10px rgb(18 140 74 / .8); color: #fff; cursor: pointer; font-size: 14px; font-weight: 600; transition: transform .3s var(--spring); }
+.whatsapp-trigger:hover { transform: scale(1.06); }
+.whatsapp-trigger:focus-visible { outline: 2px solid #fff; outline-offset: 2px; }
+.whatsapp-panel { box-sizing: border-box; display: grid; gap: 14px; width: min(340px, calc(100vw - 30px)); padding: 18px; border-radius: 26px; background: rgb(10 22 48 / .92); box-shadow: inset 0 1px 1px rgb(255 255 255 / .26), 0 30px 70px -24px rgb(4 10 26 / .8); color: #fff; -webkit-backdrop-filter: blur(24px) saturate(180%); backdrop-filter: blur(24px) saturate(180%); animation: glass-pop .45s var(--spring) backwards; }
+.whatsapp-panel-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 10px; }
+.whatsapp-panel-head strong { font-size: 16px; font-weight: 600; }
+.whatsapp-panel-head p { margin: 3px 0 0; color: #c6d5ea; font-size: 14px; }
+.whatsapp-panel-head button { display: grid; flex: none; place-items: center; width: 44px; height: 44px; margin: -6px; border: 0; border-radius: 50%; background: none; color: #fff; cursor: pointer; }
+.whatsapp-choice { display: grid; gap: 10px; }
+.whatsapp-choice a { display: flex; align-items: center; justify-content: center; gap: 10px; min-height: 52px; padding: 10px 16px; border-radius: 999px; background: linear-gradient(180deg, #1f9d58, #137a43); box-shadow: inset 0 1px 1px rgb(255 255 255 / .35); color: #fff !important; font-size: 16px; font-weight: 600; text-decoration: none; transition: filter .2s; }
+.whatsapp-choice a:hover { filter: brightness(1.12); }
+.contact-phone { display: inline-flex; align-items: center; gap: 6px; }
+html .contact-links .contact-whatsapp { display: grid; place-items: center; width: 34px; height: 34px; border-radius: 50%; background: #137a43; color: #fff; }
+html .contact-links .contact-whatsapp:hover { background: #1f9d58; text-decoration: none; }
+.hero-live-phones { display: inline-flex; flex-wrap: wrap; align-items: center; gap: 4px 12px; font-weight: 600; }
+.bf-whatsapp-choice { display: grid; gap: 6px; }
+.bf-whatsapp-choice strong { color: #fff; font-size: 15px; font-weight: 600; }
+.bf-whatsapp-choice > span { margin-bottom: 4px; color: #c9d8ec; font-size: 14px; }
+.bf-whatsapp-choice .whatsapp-choice { grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); }
+@media (max-width: 640px) {
+  .whatsapp-trigger { width: 52px; min-height: 52px; padding: 0; }
+  .whatsapp-trigger span { display: none; }
+  html .contact-links .contact-whatsapp { width: 40px; height: 40px; }
+}
+@media print { .whatsapp-trigger, .whatsapp-panel { display: none !important; } }

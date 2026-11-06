@@ -1,5 +1,5 @@
 import { localeInfo, locales, type Locale } from "./locales";
-import { contact, contactLocation } from "./service-info";
+import { contact, phones, contactLocation } from "./service-info";
 import { ogImage, siteOrigin } from "./seo";
 
 export const organizationId = `${siteOrigin}/#organization`;
@@ -31,14 +31,14 @@ export function organizationJsonLd() {
     geo: { "@type": "GeoCoordinates", latitude: contactLocation.latitude, longitude: contactLocation.longitude },
     hasMap: contactLocation.mapsUrl,
     areaServed: [{ "@type": "City", name: "Baku" }, { "@type": "Country", name: "Azerbaijan" }],
-    contactPoint: [{
+    contactPoint: phones.map((item) => ({
       "@type": "ContactPoint",
       contactType: "customer support",
-      telephone: contact.phone,
+      telephone: item.phone,
       email: contact.email,
       availableLanguage: supportLanguages,
       hoursAvailable: { "@type": "OpeningHoursSpecification", dayOfWeek: everyDay, opens: "00:00", closes: "23:59" },
-    }],
+    })),
   };
 }
 

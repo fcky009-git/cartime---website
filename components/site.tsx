@@ -24,7 +24,7 @@ import { shareLink, useShortlist } from "@/lib/shortlist";
 import { upgradeUi } from "@/lib/upgrade-ui";
 import { dayCountLabel } from "@/lib/count-labels";
 import { carCountLabel } from "@/lib/count-labels";
-import { contact, contactLocation } from "@/lib/service-info";
+import { contact, phones, contactLocation } from "@/lib/service-info";
 
 // Real numbers only: the saving is the gap between the shortest and the longest published rate.
 const longTermSaving = (rates: readonly number[]) => Math.round((1 - rates[rates.length - 1] / rates[0]) * 100);
@@ -43,7 +43,7 @@ function HeroLive({ label }: { label: string }) {
   }, []);
   return <div className="hero-live">
     <span className="hero-live-clock"><small>{label}</small><time dir="ltr" suppressHydrationWarning>{now || "--:--:--"}</time></span>
-    <a href={`tel:${contact.phone}`} dir="ltr"><span className="live-dot" aria-hidden="true" />24/7 · {contact.phoneDisplay}</a>
+    <span className="hero-live-phones" dir="ltr"><span className="live-dot" aria-hidden="true" />24/7{phones.map((item) => <a key={item.phone} href={`tel:${item.phone}`}>{item.display}</a>)}</span>
   </div>;
 }
 
