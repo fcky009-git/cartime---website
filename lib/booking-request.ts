@@ -5,6 +5,7 @@ import { rateTierIndex, rentalDuration } from "@/lib/rental-duration";
 
 export const bookingInput = z.object({
   requestId: z.string().uuid(),
+  accessCode: z.string().regex(/^[A-HJ-NP-Z2-9]{12}$/).optional(),
   locale: z.enum(locales),
   carId: z.string().min(1).max(90),
   pickup: z.enum(["office", "airport", "delivery"]),

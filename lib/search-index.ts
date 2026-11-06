@@ -6,6 +6,7 @@ import type { Locale } from "@/lib/locales";
 import { rentalPages, rentalSlugs, rentalUi } from "@/lib/rental-pages";
 import { faqItems, serviceUi } from "@/lib/service-info";
 import { upgradeUi } from "@/lib/upgrade-ui";
+import { travelUi } from "@/lib/travel-ui";
 
 export type SearchGroup = "pages" | "cars" | "rental" | "guides" | "faq";
 export type SearchItem = { group: SearchGroup; title: string; hint?: string; href: string };
@@ -18,6 +19,7 @@ export function buildSearchIndex(locale: Locale): SearchItem[] {
     { group: "pages", title: upgradeUi[locale].finder.title, href: `${base}#finder` },
     { group: "pages", title: guideUi[locale].allCars, href: `${base}/fleet` },
     { group: "pages", title: bookingUi[locale].title, href: `${base}/booking` },
+    { group: "pages", title: travelUi[locale].lookup, href: `${base}/travel-pass` },
     { group: "pages", title: rentalUi[locale].nav, href: `${base}/rental` },
     { group: "pages", title: serviceUi[locale].faqNav, href: `${base}/faq` },
     { group: "pages", title: serviceUi[locale].aboutNav, href: `${base}/about` },

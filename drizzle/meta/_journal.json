@@ -22,6 +22,13 @@
       "when": 1793921905981,
       "tag": "0002_easy_magik",
       "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "6",
+      "when": 1793931873612,
+      "tag": "0003_even_pestilence",
+      "breakpoints": true
     }
   ]
 }

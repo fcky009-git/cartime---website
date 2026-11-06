@@ -12,6 +12,7 @@ import { ADMIN_PAGE_SIZE, bakuClock, bakuDate, bakuStamp } from "@/lib/admin-boo
 import { adminExtraUi, customerGreeting } from "@/lib/admin-extra-ui";
 import { isLocale, localeInfo } from "@/lib/locales";
 import AdminTimeline from "@/components/admin-timeline";
+import AdminTravelPass from "@/components/admin-travel-pass";
 import { adminAccessCopy } from "@/components/admin-login";
 
 type Booking = typeof bookingRequests.$inferSelect;
@@ -89,7 +90,7 @@ export default function AdminBoard({ locale, initialItems, loadError, initialNow
     const queryDigits = query.replace(/\D/g, "").replace(/^0+/, "");
     return items.filter((item) => {
     const matchesDate = dateFilter === "all" || (dateFilter === "today" ? item.fromDate === today || item.toDate === today : dateFilter === "week" ? item.fromDate >= today && item.fromDate <= weekEnd : item.toDate < today);
-    return (filter === "all" || item.status === filter) && matchesDate && (normalizeSearch(`${item.customerName} ${item.phone} ${item.email} ${item.carName} ${item.id} ${item.flight || ""} ${item.notes || ""}`).includes(queryText) || (queryDigits.length >= 3 && item.phone.replace(/\D/g, "").includes(queryDigits)));
+    return (filter === "all" || item.status === filter) && matchesDate && (normalizeSearch(`${item.customerName} ${item.phone} ${item.email} ${item.carName} ${item.id} CT-${item.id.replaceAll("-", "").slice(0,12)} ${item.flight || ""} ${item.notes || ""}`).includes(queryText) || (queryDigits.length >= 3 && item.phone.replace(/\D/g, "").includes(queryDigits)));
     }).sort((a, b) => sort === "oldest" ? a.createdAt.localeCompare(b.createdAt) : sort === "pickup" ? `${a.fromDate}${a.fromTime}`.localeCompare(`${b.fromDate}${b.fromTime}`) : sort === "highest" ? b.estimateUsd - a.estimateUsd : b.createdAt.localeCompare(a.createdAt));
   }, [items, filter, dateFilter, sort, query, today, weekEnd]);
   const selected = visible.find((item) => item.id === selectedId) || visible[0];
@@ -256,6 +257,7 @@ export default function AdminBoard({ locale, initialItems, loadError, initialNow
         {selected.notes && <div className="admin-notes"><small>{t.notes}</small><p>{selected.notes}</p></div>}
         <div className="admin-status-row"><span>{x.quickStatus}</span><div>{statuses.map((status) => <button type="button" key={status} className={selected.status === status ? "active" : ""} disabled={pendingId === selected.id} onClick={() => { if (selected.status !== status && (status !== "cancelled" || window.confirm(ax.cancelConfirm))) void updateStatus(selected.id, status); }}>{t[status]}</button>)}</div>{pendingId === selected.id && <small>{t.loading}</small>}</div>
         <div className="admin-contact-actions"><a target="_blank" rel="noopener noreferrer" href={`https://wa.me/${selected.phone.replace(/\D/g, "")}?text=${encodeURIComponent(greetingFor(selected))}`}><MessageCircle size={17} />{t.send}</a><a href={`mailto:${selected.email}?subject=${encodeURIComponent(`CarTime · ${selected.carName} · #${selected.id.slice(0, 8).toUpperCase()}`)}&body=${encodeURIComponent(greetingFor(selected))}`}><Mail size={17} />{t.email}</a><button type="button" onClick={() => void copySummary(selected)}><Clipboard size={17} />{x.copy}</button><a href={googleCalendarUrl} target="_blank" rel="noopener noreferrer"><ExternalLink size={17} />{x.openCalendar}</a><button type="button" onClick={() => downloadCalendar(selected)}><CalendarDays size={17} />{x.downloadCalendar}</button><button type="button" onClick={() => window.print()}><Printer size={17} />{x.print}</button><button type="button" className="admin-delete" disabled={pendingId === selected.id} onClick={() => void removeBooking(selected.id)}><Trash2 size={17} />{ax.remove}</button></div>
+        <AdminTravelPass key={`pass-${selected.id}`} locale={locale} bookingId={selected.id} confirmed={selected.status==="confirmed"}/>
         <AdminTimeline key={selected.id} locale={locale} bookingId={selected.id} createdAt={selected.createdAt} changedAt={selected.updatedAt} statusLabel={(status) => t[status as Status] ?? status} saving={t.loading} />
       </> : <p className="admin-empty">{items.length ? t.emptySearch : t.empty}</p>}</section></div>
     </div>

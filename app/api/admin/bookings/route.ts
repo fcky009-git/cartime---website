@@ -1,6 +1,6 @@
 import { desc, eq, lte } from "drizzle-orm";
 import { z } from "zod";
-import { adminBookingEvents, bookingRequests } from "@/db/schema";
+import { adminBookingEvents, bookingRequests, travelPasses } from "@/db/schema";
 import { getDb } from "@/db";
 import { currentBookingAdmin } from "@/lib/admin-auth";
 import { ADMIN_PAGE_SIZE } from "@/lib/admin-bookings";
@@ -59,6 +59,7 @@ export async function DELETE(request: Request) {
     const removed = await db.delete(bookingRequests).where(eq(bookingRequests.id, id.data)).returning({ id: bookingRequests.id });
     if (!removed.length) return Response.json({ error: "Request not found" }, { status: 404 });
     await db.delete(adminBookingEvents).where(eq(adminBookingEvents.bookingId, id.data));
+    await db.delete(travelPasses).where(eq(travelPasses.bookingId, id.data));
     return Response.json({ id: id.data }, { headers: { "Cache-Control": "no-store" } });
   } catch (error) {
     console.error("Admin booking delete failed", error);

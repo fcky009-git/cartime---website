@@ -2,6 +2,7 @@
 
 import { useEffect, useRef } from "react";
 import type { Locale } from "@/lib/i18n";
+import { travelUi } from "@/lib/travel-ui";
 
 const labels = {
   ru: {
@@ -72,7 +73,7 @@ export default function SiteDirectory({ locale }: { locale: Locale }) {
       menuRef.current.querySelector("summary")?.focus();
     }
   }}><summary>{l.all}<span aria-hidden="true">⌄</span></summary><div className="site-directory-panel">
-    <div className="directory-group"><strong>{l.cars}</strong><a href={`/${locale}/fleet`}>{l.fleet}</a><a href={`/${locale}/booking`}>{l.booking}</a><a href={`/${locale}#map`}>{l.map}</a></div>
+    <div className="directory-group"><strong>{l.cars}</strong><a href={`/${locale}/fleet`}>{l.fleet}</a><a href={`/${locale}/booking`}>{l.booking}</a><a href={`/${locale}/travel-pass`}>{travelUi[locale].lookup}</a><a href={`/${locale}#map`}>{l.map}</a></div>
     <div className="directory-group"><strong>{l.services}</strong><a href={`/${locale}/rental/airport`}>{l.airport}</a><a href={`/${locale}/rental/delivery`}>{l.delivery}</a><a href={`/${locale}/rental/long-term`}>{l.longTerm}</a></div>
     <div className="directory-group"><strong>{l.terms}</strong><a href={`/${locale}/rental`}>{l.rental}</a><a href={`/${locale}/rental/conditions`}>{l.conditions}</a><a href={`/${locale}/rental/insurance`}>{l.insurance}</a><a href={`/${locale}/rental/mileage`}>{l.mileage}</a></div>
     <div className="directory-group"><strong>{l.classes}</strong><a href={`/${locale}/rental/economy`}>{l.economy}</a><a href={`/${locale}/rental/suv`}>{l.suv}</a></div>

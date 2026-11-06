@@ -12,6 +12,7 @@ import "../home-design.css";
 import "../admin.css";
 import "../navigation-polish.css";
 import "../upgrades.css";
+import "../travel-pass.css";
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteOrigin),

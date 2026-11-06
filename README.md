@@ -18,6 +18,8 @@ Vehicle images and editorial scenes are illustrative. The published rates are a 
 
 ## Development
 
+Travel Pass adds a private client trip page, booking lookup with an access code, status updates, QR, calendar and print/PDF. Managers control public instructions and agreed amounts separately from internal notes. Apple Wallet signing is prepared but not enabled without the owner's Apple signing identity. See `docs/travel-pass.md` for access security, migration and Wallet setup.
+
 Use Node.js 22.13+ and run `npm run install:ci`, `npm run lint`, `npx tsc --noEmit` and `npm run build`. The Sites deployment has its own source repository; the GitHub repository is used for collaboration and must be synchronized deliberately.
 
 The home page has a trip-based car finder, a price calculator in the car window and a comparison of up to three cars, kept in the browser and shareable by link. `Ctrl/⌘+K` searches cars, pages and questions in the current language. The site can be added to a phone's home screen through its web manifest; there is no service worker, so nothing is cached offline. In the admin panel each request shows the customer's language, a history of status changes, private notes and a warning when the same model has overlapping dates.
