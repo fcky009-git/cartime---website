@@ -24,7 +24,7 @@ import { shareLink, useShortlist } from "@/lib/shortlist";
 import { upgradeUi } from "@/lib/upgrade-ui";
 import { dayCountLabel } from "@/lib/count-labels";
 import { carCountLabel } from "@/lib/count-labels";
-import { contact, phones, contactLocation } from "@/lib/service-info";
+import { contactLocation, phones } from "@/lib/service-info";
 
 // Real numbers only: the saving is the gap between the shortest and the longest published rate.
 const longTermSaving = (rates: readonly number[]) => Math.round((1 - rates[rates.length - 1] / rates[0]) * 100);
