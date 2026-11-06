@@ -37,7 +37,7 @@ These files connect the project to the Sites/Codex preview and deployment. Do no
 
 ## Design system
 
-The look is "Baku after dark". `app/redesign.css` loads last and holds the tokens (`--flame`, `--night`, `--font-display`, `--font-body`), so change colours and type there first. Headlines use Sofia Sans Extra Condensed, with Fira Sans Extra Condensed only for the Azerbaijani letter Ə, which the first font lacks; body text uses Onest. Keep body text at 13px or larger and check all three themes, phone width and Arabic.
+The look is "Baku after dark". `app/redesign.css` loads last and holds the tokens (`--accent`, `--accent-hot`, `--accent-ink`, `--night`, `--font-display`, `--font-body`), so change colours and type there first. Colours come from the logo's blues (`#0046DA`, `#125CF4`, `#2188FF`, `#59BDFF`), white and deep navy; the main site photos are graded to match, so do not add warm accents. Headlines use Sofia Sans Extra Condensed, with Fira Sans Extra Condensed only for the Azerbaijani letter Ə, which the first font lacks; body text uses Onest. Keep body text at 13px or larger and check all three themes, phone width and Arabic.
 
 ## Languages
 

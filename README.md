@@ -18,7 +18,7 @@ Vehicle images and editorial scenes are illustrative. The published rates are a 
 
 ## Design
 
-The visual system, "Baku after dark", lives in `app/redesign.css`: night asphalt and the Flame Towers' orange from the hero photo, poster headlines, cars in a showroom light and number plates as the one motif. Live elements are honest: Baku time, the 24/7 line, a departure board with published rates and savings calculated from those rates.
+The visual system, "Baku after dark", lives in `app/redesign.css`: the logo's blues, white and deep navy, main photos graded to the same blue hour, poster headlines, cars in a showroom light and number plates as the one motif. Live elements are honest: Baku time, the 24/7 line, a departure board with published rates and savings calculated from those rates.
 
 ## Development
 

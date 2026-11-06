@@ -43,7 +43,7 @@ export default async function LocaleLayout({ children, params }: Readonly<{ chil
     <html lang={info.hreflang} dir={info.dir} suppressHydrationWarning>
       <head>
         <script dangerouslySetInnerHTML={{ __html: themeScript }} />
-        <meta name="theme-color" content="#070b14" />
+        <meta name="theme-color" content="#060d1f" />
         <link rel="manifest" href="/manifest.webmanifest" crossOrigin="use-credentials" />
         <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png" />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
