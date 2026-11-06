@@ -14,7 +14,7 @@ export async function POST(request: Request) {
     if (text.length > 512) return Response.json({ error: "Invalid credentials" }, { status: 400, headers: noStore });
     credentials = JSON.parse(text);
   } catch { return Response.json({ error: "Invalid credentials" }, { status: 400, headers: noStore }); }
-  if (typeof credentials.username !== "string" || typeof credentials.password !== "string" || credentials.username.length > 80 || credentials.password.length > 128) return Response.json({ error: "Invalid credentials" }, { status: 400, headers: noStore });
+  if (!credentials || typeof credentials !== "object" || Array.isArray(credentials) || typeof credentials.username !== "string" || typeof credentials.password !== "string" || credentials.username.length > 80 || credentials.password.length > 128) return Response.json({ error: "Invalid credentials" }, { status: 400, headers: noStore });
 
   try {
     if (!adminLoginConfigured()) {

@@ -25,11 +25,14 @@ function readRates(xml: string) {
 
 export async function GET() {
   const now = new Date();
+  const deadline = Date.now() + 7000;
   for (let offset = 0; offset < 8; offset++) {
     const day = new Date(now.getTime() - offset * 86_400_000);
     const { display } = bakuDateParts(day);
     try {
-      const response = await fetch(`https://cbar.az/currencies/${display}.xml`, { signal: AbortSignal.timeout(4500) });
+      const remaining = deadline - Date.now();
+      if (remaining <= 0) break;
+      const response = await fetch(`https://cbar.az/currencies/${display}.xml`, { signal: AbortSignal.timeout(Math.min(2000, remaining)) });
       if (!response.ok) continue;
       const rates = readRates(await response.text());
       if (rates) return Response.json({ ...rates, source: "https://www.cbar.az/currency/rates", fallback: false }, { headers: { "Cache-Control": "public, s-maxage=21600, stale-while-revalidate=86400" } });
