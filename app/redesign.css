@@ -98,7 +98,11 @@ html .booking-submit:hover, html .booking-modal-link:hover, html .travel-primary
 }
 html .home-site .button-primary:active, html .home-site .search-button:active, html .home-site .airport-button:active, html .booking-submit:active { transform: translateY(0); }
 html .home-site .button-primary { min-height: 56px; padding: 14px 20px 14px 24px; gap: 28px; font-size: 16px; }
-html .home-site .header-cta { padding: 12px 16px; font-size: 14px; white-space: nowrap; }
+html .home-site .header-cta { padding: 11px 14px; font-size: 14px; white-space: nowrap; }
+html .home-site .header-cta svg { display: none; }
+html .home-site .header-actions { gap: 8px; }
+html .home-site .header-inner { padding-inline: 16px; }
+html .home-site .site-header.is-scrolled .header-inner { width: min(100% - clamp(30px,6vw,96px), 1480px); height: 62px; }
 html .home-site .airport-button { min-height: 54px; padding: 13px 22px; font-size: 16px; }
 html .home-site .load-more, html .home-site .fleet-all-link, html .home-site .rental-hub-cta a, html .home-site .home-about-actions a, html .home-site .home-map-actions a, html .home-site .faq-all-link {
   border: 1px solid color-mix(in srgb, currentColor 32%, transparent); border-radius: 12px; background: none; font-size: 15px; font-weight: 600; transition: background .2s, color .2s, border-color .2s;
@@ -106,6 +110,7 @@ html .home-site .load-more, html .home-site .fleet-all-link, html .home-site .re
 html .home-site .load-more:hover, html .home-site .fleet-all-link:hover, html .home-site .rental-hub-cta a:hover, html .home-site .home-about-actions a:hover, html .home-site .home-map-actions a:hover, html .home-site .faq-all-link:hover {
   border-color: var(--flame); background: var(--flame); color: var(--on-flame);
 }
+html .home-site .faq-all-link { color: var(--editorial-ink); }
 html .home-site .rental-hub-cta a:first-child, html[data-theme="dark"] .home-site .rental-hub-cta a:first-child { background: var(--flame); border-color: var(--flame); color: var(--on-flame); }
 
 /* ---------- Header ---------- */
@@ -338,7 +343,7 @@ html .home-site .faq-list details p { max-width: 68ch; font-size: 16px; line-hei
 
 /* ---------- Footer: the slogan as the closing poster ---------- */
 html .home-site .site-footer, html[data-theme="light"] .home-site .site-footer { background: var(--night); color: #e6ebf2; }
-.footer-slogan { display: block; margin: 0 0 clamp(32px,5vw,64px); padding-top: clamp(40px,6vw,72px); color: #fff; font: 800 min(12.2vw, 198px)/.86 "Sofia Sans Extra Condensed", "Arial Narrow", sans-serif; text-transform: uppercase; white-space: nowrap; direction: ltr; }
+.footer-slogan { display: block; margin: 0 0 clamp(32px,5vw,64px); padding-top: clamp(40px,6vw,72px); color: #fff; font: 800 min(14.2vw, 228px)/.86 "Sofia Sans Extra Condensed", "Arial Narrow", sans-serif; text-transform: uppercase; white-space: nowrap; direction: ltr; }
 .footer-slogan em { color: var(--flame); font-style: normal; }
 html .home-site .footer-right a, html .home-site .footer-guides a { transition: color .2s; font-size: 14px; }
 html .home-site .footer-right a:hover, html .home-site .footer-guides a:hover { color: var(--flame-hot); }
@@ -418,7 +423,13 @@ html .info-related-head a, html .contact-map > a, html .faq-answer a { color: va
 html .rental-action a, html .faq-page-cta a { font-size: 15px; }
 html .contact-map p { font-size: 16px; }
 html .contact-links strong { font-size: 14px; }
-html .contact-links a { font-size: 15px; }
+html .contact-links a { color: var(--flame-ink); font-size: 15px; }
+
+/* Inner page header follows the theme: its links were white on white in the light theme */
+html .info-shell:not(.info-booking-shell) .site-header { color: var(--header-ink); }
+html .info-shell:not(.info-booking-shell) .info-header-nav > a, html .info-shell:not(.info-booking-shell) .info-header-nav > .site-directory > summary { color: var(--header-ink); }
+html .info-shell:not(.info-booking-shell) .info-header-nav > a:hover, html .info-shell:not(.info-booking-shell) .info-header-nav > .site-directory > summary:hover { color: var(--flame-ink); }
+html[data-theme="light"] .info-shell:not(.info-booking-shell) .language-switcher summary, html[data-theme="light"] .info-shell:not(.info-booking-shell) .site-search-button { color: var(--ink); border-color: var(--border); background: transparent; }
 
 /* Rate table */
 html .fleet-page-index a { min-height: 42px; padding: 10px 16px; border-radius: 10px; font-size: 14px; font-weight: 600; }
@@ -487,6 +498,9 @@ html .info-booking-shell .booking-action-buttons .booking-next:hover { backgroun
 html .info-booking-shell .booking-extras-head h2, html .info-booking-shell .booking-extras-faq h2 { font: 800 calc(clamp(44px,4.6vw,76px) * var(--ds))/.96 var(--font-display); text-transform: uppercase; }
 html .booking-duration { border-color: var(--border); background: color-mix(in srgb, var(--flame) 7%, var(--surface)); }
 html .booking-duration small { color: var(--muted); }
+html .booking-duration, html .booking-duration span { color: var(--ink); }
+html[data-theme="dark"] .booking-car-facts span { color: var(--led); }
+html .booking-car-photo-year { border-radius: 6px; background: #fff; color: #0b1320; }
 html .booking-currency { border-color: var(--border); background: var(--page); }
 html .booking-currency strong { font: 600 16px var(--font-body); }
 html .booking-currency p { font-size: 14px; }
@@ -581,7 +595,7 @@ html .info-shell footer a:hover { color: var(--flame-hot); }
 html .info-shell footer p { font-size: 14px; }
 html[data-theme="light"] .info-shell footer .dark-logo { display: block; }
 html[data-theme="light"] .info-shell footer .light-logo { display: none; }
-html[data-theme="light"] .info-shell footer .brand-caption { color: #f6fbff; }
+html[data-theme="light"] .info-shell footer .info-footer-inner .brand-caption { color: #f6fbff; }
 
 /* Admin: an operations tool, so restraint and legibility; only the accent and headline join the brand */
 html .admin-shell { font-family: var(--font-body); }
@@ -623,10 +637,11 @@ html .admin-login-submit, html .admin-login button[type="submit"] { background: 
   html .home-site .rental-topic, html .home-site .rental-topic + .rental-topic { padding-inline: 0; border-inline-end: 0; }
 }
 @media (max-width: 640px) {
+  h1, h2, h3 { overflow-wrap: break-word; hyphens: auto; }
   html .home-site .hero h1 { font-size: calc(clamp(64px,19.5vw,110px) * var(--ds)); line-height: .88; }
   html .home-site .hero h1 span, html .home-site .hero h1 em { margin: 0; white-space: normal; }
   .hero-trails { display: none; }
-  .footer-slogan { font-size: 14vw; padding-top: 44px; margin-bottom: 28px; }
+  .footer-slogan { padding-top: 44px; margin-bottom: 28px; }
   html .info-hero { background-position: 62% center; }
   html .info-hero--fleet, html .info-hero--faq { background-image: linear-gradient(0deg,#070b14f5,#070b14b3 70%,#070b1466),url('/assets/cartime-baku-night-bmw-xm.webp'); }
   html .info-booking-shell .booking-progress button { display: grid; place-items: center; min-height: 48px; padding: 6px; }

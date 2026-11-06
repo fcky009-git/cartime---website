@@ -16,6 +16,10 @@ The domain `cartime.az` is not live. Without `NEXT_PUBLIC_SITE_URL`, all pages c
 
 Vehicle images and editorial scenes are illustrative. The published rates are a snapshot, not a real-time availability or final-price quote. Real vehicle photos, current rates, deposit and insurance details, social URLs, WhatsApp details and privacy/terms copy require owner confirmation before public launch. See `docs/claude-seo-handoff.md` for the SEO handoff and remaining decisions.
 
+## Design
+
+The visual system, "Baku after dark", lives in `app/redesign.css`: night asphalt and the Flame Towers' orange from the hero photo, poster headlines, cars in a showroom light and number plates as the one motif. Live elements are honest: Baku time, the 24/7 line, a departure board with published rates and savings calculated from those rates.
+
 ## Development
 
 Travel Pass adds a private client trip page, booking lookup with an access code, status updates, QR, calendar and print/PDF. Managers control public instructions and agreed amounts separately from internal notes. Apple Wallet signing is prepared but not enabled without the owner's Apple signing identity. See `docs/travel-pass.md` for access security, migration and Wallet setup.

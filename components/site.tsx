@@ -264,7 +264,7 @@ export default function CarTimeSite({ locale }: { locale: Locale }) {
           </div>
           <span className="nav-progress" aria-hidden="true" />
         </div>
-        {menuOpen && <nav className="mobile-nav" aria-label={t.mobileMenu}><a href="#search" onClick={() => setMenuOpen(false)}>{e.select}<ArrowRight size={18} /></a><a href="#fleet" onClick={() => setMenuOpen(false)}>{t.nav[0]}<ArrowRight size={18} /></a><a href="#airport" onClick={() => setMenuOpen(false)}>{t.nav[2]}<ArrowRight size={18} /></a><a href="#map" onClick={() => setMenuOpen(false)}>{mapUi[locale].kicker}<ArrowRight size={18} /></a><SiteDirectory locale={locale} /><div className="mobile-theme-picker" role="group" aria-label={e.styles}>{themeNames.map((name, index) => <button key={name} type="button" aria-pressed={theme === name} onClick={() => { changeTheme(name); setMenuOpen(false); }}>{t.themes[index]}</button>)}</div></nav>}
+        {menuOpen && <nav className="mobile-nav" aria-label={t.mobileMenu}><a href="#search" onClick={() => setMenuOpen(false)}>{e.select}<ArrowRight size={18} /></a><a href="#fleet" onClick={() => setMenuOpen(false)}>{t.nav[0]}<ArrowRight size={18} /></a><a href="#airport" onClick={() => setMenuOpen(false)}>{t.nav[2]}<ArrowRight size={18} /></a><a href="#map" onClick={() => setMenuOpen(false)}>{mapUi[locale].kicker.replace("CARTIME / ", "")}<ArrowRight size={18} /></a><SiteDirectory locale={locale} /><div className="mobile-theme-picker" role="group" aria-label={e.styles}>{themeNames.map((name, index) => <button key={name} type="button" aria-pressed={theme === name} onClick={() => { changeTheme(name); setMenuOpen(false); }}>{t.themes[index]}</button>)}</div></nav>}
       </header>
 
       <main id="top">

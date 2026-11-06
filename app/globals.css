@@ -1,4 +1,6 @@
 @import "tailwindcss";
+/* components/ui is unused platform scaffolding: do not ship its utility classes. */
+@source not "../components/ui";
 
 :root,
 html[data-theme="hybrid"] {
