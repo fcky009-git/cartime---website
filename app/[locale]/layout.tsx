@@ -15,6 +15,7 @@ import "../upgrades.css";
 import "../travel-pass.css";
 import "../redesign.css";
 import "../liquid-glass.css";
+import "../booking-flow.css";
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteOrigin),

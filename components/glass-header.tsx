@@ -11,7 +11,7 @@ import SiteDirectory from "@/components/site-directory";
 import { SearchButton } from "@/components/site-search";
 
 const themeIcons = { hybrid: SunMoon, dark: Moon, light: Sun } as const;
-const darkAreas = ".hero, .benefits-section, .airport-section, .home-guides, .home-about, .site-footer, .info-hero, .travel-page";
+const darkAreas = ".hero, .benefits-section, .airport-section, .home-guides, .home-about, .site-footer, .info-hero, .travel-page, .bf";
 
 /** The floating header: navigation on the left, the logo in the middle, tools on the right. */
 export default function GlassHeader({ locale, logoHref, links, cta, suffix = "", navLabel, languageLabel, menuLabel, closeLabel, styleLabel, themeLabels }: {

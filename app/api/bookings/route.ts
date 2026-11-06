@@ -76,6 +76,8 @@ export async function POST(request: Request) {
       customerName: data.customerName, phone: data.phone, email,
       age: data.age, experience: data.experience, flight: data.flight || null,
       secondDriver: data.secondDriver, payment: data.payment, notes: data.notes || null,
+      contactChannel: data.contactChannel, licenceCountry: data.licenceCountry || null, passengers: data.passengers,
+      childSeat: data.childSeat || null, secondDriverName: data.secondDriver ? data.secondDriverName || null : null, tripPlan: data.tripPlan || null,
     }).onConflictDoNothing({ target: bookingRequests.id }).returning({ id: bookingRequests.id }),
     db.insert(travelPasses).values(await newTravelPassRow(id, accessCode)).onConflictDoNothing({ target: travelPasses.bookingId })]);
     trip = await issueTravelPass(id, accessCode, false);
@@ -83,6 +85,7 @@ export async function POST(request: Request) {
       await notifyNewBooking({
         id, locale: data.locale, carName: validated.car.name, carYear: validated.car.year, fromDate: data.fromDate, fromTime: data.fromTime, toDate: data.toDate, toTime: data.toTime,
         days: validated.days, estimateUsd: validated.estimateUsd, customerName: data.customerName, phone: data.phone, email, pickup: data.pickup === "delivery" ? `delivery: ${data.pickupAddress}` : data.pickup, flight: data.flight,
+        contactChannel: data.contactChannel, payment: data.payment, childSeat: data.childSeat,
       }, new URL(request.url).origin);
     }
   } catch (error) {

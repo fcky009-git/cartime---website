@@ -337,41 +337,11 @@ html[data-theme='light'] .info-shell .info-footer-inner .brand-caption { color: 
 .info-booking-shell .booking-hero .section-kicker { color: #b9d9ee; }
 .info-booking-shell .booking-hero h1 { max-width: 820px; font: 400 clamp(62px,6vw,92px)/.88 var(--font-display); letter-spacing: 0; }
 .info-booking-shell .booking-hero .info-hero-inner > p:not(.section-kicker) { max-width: 550px; font-size: 14px; line-height: 1.6; }
-.info-booking-shell .booking-layout { padding-top: 65px; }
-.info-booking-shell .booking-wizard,.info-booking-shell .booking-review { scroll-margin-top: 105px; }
-.info-booking-shell .booking-side { top: 105px; }
-.info-booking-shell .booking-progress { gap: 0; border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
-.info-booking-shell .booking-progress button { border: 0; border-right: 1px solid var(--border); border-radius: 0; background: none; box-shadow: none; }
-.info-booking-shell .booking-progress button:last-child { border-right: 0; }
-.info-booking-shell .booking-progress button.current { background: color-mix(in srgb,#95c7e8 14%,var(--surface)); }
-.info-booking-shell .booking-progress button > span { border-radius: 50%; }
-.info-booking-shell .booking-card { border: 1px solid var(--border); border-radius: 16px; background: var(--surface); box-shadow: 0 14px 45px #132d3a0d; }
-.info-booking-shell .booking-card-head h2 { font: 400 clamp(28px,3vw,39px)/1 var(--font-display); letter-spacing: 0; }
-.info-booking-shell .booking-card-icon { width: 40px; height: 40px; border: 1px solid var(--border); border-radius: 50%; background: none; color: #4c84aa; }
-.info-booking-shell .booking-field input,.info-booking-shell .booking-field select,.info-booking-shell .booking-field textarea { border-radius: 8px; }
-.info-booking-shell .booking-summary { border: 1px solid #7c9bad51; border-radius: 16px; background: #152635; box-shadow: 0 20px 42px #0a1a2730; }
-.info-booking-shell .booking-summary h2 { font: 400 29px/1.08 var(--font-display); }
-.info-booking-shell .booking-action-bar { background: #f7f6f1e8; }
-.info-booking-shell .booking-action-buttons .booking-next { border: 1px solid #1a3548; border-radius: 100px; background: #1a3548; box-shadow: none; }
-.info-booking-shell .booking-action-buttons .booking-next::before { display: none; }
-.info-booking-shell .booking-action-buttons .booking-next:hover { background: #355c75; box-shadow: none; }
 .info-booking-shell .booking-extras-head h2,.info-booking-shell .booking-extras-faq h2 { font: 400 clamp(38px,4vw,58px)/.96 var(--font-display); }
 .info-booking-shell .booking-extras-grid article { border-radius: 12px; box-shadow: none; }
 
 /* Consistent geometric type across the editorial and booking pages. */
-.home-site .search-heading strong,
-.home-site .section h2,
-.home-site .airport-section h2,
-.home-site .benefit-card h3,
-.home-site .guide-card h3,
-.home-site .rental-topic h3,
-.home-site .home-map-copy h2,
-.home-site .home-about h2,
-.info-booking-shell .booking-hero h1,
-.info-booking-shell .booking-card-head h2,
-.info-booking-shell .booking-summary h2,
-.info-booking-shell .booking-extras-head h2,
-.info-booking-shell .booking-extras-faq h2 { font-family: var(--font-display); font-weight: 600; line-height: 1.1; letter-spacing: 0; }
+.home-site .search-heading strong, .home-site .section h2, .home-site .airport-section h2, .home-site .benefit-card h3, .home-site .guide-card h3, .home-site .rental-topic h3, .home-site .home-map-copy h2, .home-site .home-about h2, .info-booking-shell .booking-hero h1, .info-booking-shell .booking-extras-head h2, .info-booking-shell .booking-extras-faq h2 { font-family: var(--font-display); font-weight: 600; line-height: 1.1; letter-spacing: 0; }
 .home-site .home-about-facts strong { font-family: var(--font-display); font-weight: 600; }
 @media (max-width:640px) {
   .home-site .hero h1,html[data-theme='dark'] .home-site .hero h1 { font-size: clamp(37px,9vw,58px); line-height: 1.07; }
@@ -389,5 +359,4 @@ html[data-theme='light'] .info-shell .info-footer-inner .brand-caption { color: 
   .info-booking-shell .booking-hero .info-hero-inner { padding-top: 135px; padding-bottom: 55px; }
   .info-booking-shell .booking-hero h1 { font-size: clamp(54px,12vw,70px); }
   .info-booking-shell .booking-hero .info-hero-inner > p:not(.section-kicker) { font-size: 12px; }
-  .info-booking-shell .booking-progress button { min-width: 0; }
 }

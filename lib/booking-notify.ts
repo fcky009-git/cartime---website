@@ -5,6 +5,7 @@ import { localeInfo, type Locale } from "@/lib/locales";
 type NewBooking = {
   id: string; locale: Locale; carName: string; carYear: number; fromDate: string; fromTime: string; toDate: string; toTime: string;
   days: number; estimateUsd: number; customerName: string; phone: string; email: string; pickup: string; flight: string;
+  contactChannel: string; payment: string; childSeat: string;
 };
 
 /**
@@ -22,6 +23,8 @@ export async function notifyNewBooking(booking: NewBooking, siteOrigin: string) 
     `Получение: ${booking.pickup}`,
     `Сумма: $${booking.estimateUsd}`,
     `${booking.customerName}, ${booking.phone}, ${booking.email}`,
+    `Связь: ${booking.contactChannel}, оплата: ${booking.payment}`,
+    ...(booking.childSeat ? [`Детское кресло: ${booking.childSeat}`] : []),
     `Язык: ${localeInfo[booking.locale].name}`,
     ...(booking.flight ? [`Рейс: ${booking.flight}`] : []),
     `${siteOrigin}/admin`,
