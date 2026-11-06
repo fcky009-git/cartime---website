@@ -49,3 +49,15 @@ export function tripCalendar(trip: { reference: string; status: string; summary:
     "END:VEVENT", "END:VCALENDAR", "",
   ].map(foldLine).join("\r\n");
 }
+
+/** Opens in any browser, so it is the fallback when a phone will not take a calendar file. */
+export function googleCalendarLink(trip: { summary: string; location: string; description: string; fromDate: string; fromTime: string; toDate: string; toTime: string }) {
+  const params = new URLSearchParams({
+    action: "TEMPLATE",
+    text: trip.summary,
+    dates: `${bakuToUtc(trip.fromDate, trip.fromTime)}/${bakuToUtc(trip.toDate, trip.toTime)}`,
+    location: trip.location,
+    details: trip.description,
+  });
+  return `https://calendar.google.com/calendar/render?${params}`;
+}

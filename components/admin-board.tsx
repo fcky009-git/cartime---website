@@ -8,6 +8,7 @@ import fleetImages from "@/lib/fleet-images.json";
 import { fleetUi } from "@/lib/fleet-ui";
 import { bookingUi } from "@/lib/booking";
 import { dayCountLabel } from "@/lib/count-labels";
+import { copyText, downloadFile } from "@/lib/device-actions";
 import { ADMIN_PAGE_SIZE, bakuClock, bakuDate, bakuStamp } from "@/lib/admin-bookings";
 import { adminExtraUi, customerGreeting } from "@/lib/admin-extra-ui";
 import { isLocale, localeInfo } from "@/lib/locales";
@@ -216,22 +217,18 @@ export default function AdminBoard({ locale, initialItems, loadError, initialNow
       return `"${safe.replaceAll('"', '""')}"`;
     };
     const csv = [columns.join(","), ...visible.map((item) => columns.map((key) => safeCell(item[key])).join(","))].join("\r\n");
-    const url = URL.createObjectURL(new Blob(["\uFEFF", csv], { type: "text/csv;charset=utf-8" }));
-    const anchor = document.createElement("a"); anchor.href = url; anchor.download = `cartime-bookings-${bakuDate(new Date())}.csv`; anchor.click();
-    setTimeout(() => URL.revokeObjectURL(url), 1000);
+    downloadFile(new Blob(["\uFEFF", csv], { type: "text/csv;charset=utf-8" }), `cartime-bookings-${bakuDate(new Date())}.csv`);
   }
 
   async function copySummary(item: Booking) {
     const summary = [`CarTime ${travelReference(item.id)}`, `${item.carName} · ${item.carYear}`, `${item.fromDate} ${item.fromTime} → ${item.toDate} ${item.toTime}`, `${dayCountLabel(locale, item.days)} · $${item.estimateUsd} USD`, `${item.customerName} · ${item.phone} · ${item.email}`].join("\n");
-    try { await navigator.clipboard.writeText(summary); setNotice(x.copied); }
-    catch { setError(t.fail); }
+    if (await copyText(summary)) setNotice(x.copied);
+    else setError(t.fail);
   }
 
   function downloadCalendar(item: Booking) {
     const lines = ["BEGIN:VCALENDAR", "VERSION:2.0", "PRODID:-//CarTime//Booking Admin//EN", "BEGIN:VEVENT", `UID:${item.id}@cartime.az`, `DTSTAMP:${new Date().toISOString().replace(/[-:]/g, "").replace(/\.\d{3}/, "")}`, `DTSTART;TZID=Asia/Baku:${calendarStamp(item.fromDate, item.fromTime)}`, `DTEND;TZID=Asia/Baku:${calendarStamp(item.toDate, item.toTime)}`, `SUMMARY:${escapeIcs(`CarTime · ${item.carName} · ${item.customerName}`)}`, `LOCATION:${escapeIcs(place(item.pickup, item.pickupAddress, locale))}`, `DESCRIPTION:${escapeIcs(tripDetails(item, `${place(item.pickup, item.pickupAddress, locale)} → ${place(item.dropoff, item.returnAddress, locale)}`))}`, "END:VEVENT", "END:VCALENDAR"].join("\r\n") + "\r\n";
-    const url = URL.createObjectURL(new Blob([lines], { type: "text/calendar;charset=utf-8" }));
-    const anchor = document.createElement("a"); anchor.href = url; anchor.download = `cartime-${item.id.slice(0, 8)}.ics`; anchor.click();
-    setTimeout(() => URL.revokeObjectURL(url), 1000);
+    downloadFile(new Blob([lines], { type: "text/calendar;charset=utf-8" }), `cartime-${item.id.slice(0, 8)}.ics`);
   }
 
   async function signOut() {

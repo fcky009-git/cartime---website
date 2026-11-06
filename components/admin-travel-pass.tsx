@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { Copy, ExternalLink, MessageCircle, Ticket } from "lucide-react";
 import type { Locale } from "@/lib/locales";
 import { travelUi } from "@/lib/travel-ui";
+import { copyText } from "@/lib/device-actions";
 import { formattedCode, travelLink, type TravelCredentials } from "@/lib/travel-access";
 
 type Fields = { reference: string; message: string; pickupInstructions: string; confirmedTotalUsd: number | null; depositUsd: number | null; stage: string };
@@ -71,8 +72,8 @@ export default function AdminTravelPass({ locale, customerLocale, phone, booking
     return `${c.reference}: ${credentials.reference}\n${c.code}: ${formattedCode(credentials.accessCode)}\n${window.location.origin}${travelLink(customerLocale, credentials)}`;
   };
   const copy = async () => {
-    try { await navigator.clipboard.writeText(customerText()); setNotice(t.copied); }
-    catch { setError(t.unavailable); }
+    if (await copyText(customerText())) setNotice(t.copied);
+    else setError(t.unavailable);
   };
 
   return <section className="admin-travel-editor">

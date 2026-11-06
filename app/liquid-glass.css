@@ -348,3 +348,23 @@ html .travel-actions :is(a,button) { border-radius: 999px; }
   .glass-droplet, .glass-logo, .glass-cta, .glass-header * { transition: none !important; }
   html .glass-header .glass-nav .site-directory-panel, html .glass-header .language-switcher-panel, .glass-sheet, html .detail-modal, html .quick-help-panel { animation: none; }
 }
+
+/* ---------- Saving a Travel Pass: works where downloads and print are blocked ---------- */
+.travel-sheet-backdrop { position: fixed; inset: 0; z-index: 200; display: flex; align-items: center; justify-content: center; padding: 16px; background: rgb(4 10 26 / .56); -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px); animation: sheet-fade .25s ease backwards; }
+.travel-sheet { display: flex; flex-direction: column; gap: 12px; width: min(100%, 460px); max-height: calc(100dvh - 32px); padding: 20px; overflow: auto; border-radius: 30px; background: rgb(15 29 58 / .88); box-shadow: inset 0 1px 1px rgb(255 255 255 / .26), 0 40px 90px -30px #000; color: #fff; -webkit-backdrop-filter: blur(30px) saturate(190%); backdrop-filter: blur(30px) saturate(190%); animation: glass-pop .5s var(--spring) backwards; }
+.travel-sheet-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.travel-sheet-head h3 { margin: 0; font-size: 18px; font-weight: 600; }
+.travel-sheet-head button { display: grid; flex: none; place-items: center; width: 44px; height: 44px; border: 0; border-radius: 50%; background: rgb(255 255 255 / .12); color: #fff; }
+.travel-sheet-preview { display: block; width: 100%; max-height: 46dvh; object-fit: contain; border-radius: 16px; background: #fff; -webkit-touch-callout: default; user-select: auto; }
+.travel-sheet-primary, .travel-sheet-secondary { display: flex; flex: none; align-items: center; justify-content: center; gap: 9px; min-height: 54px; padding: 12px 18px; border-radius: 999px; font-size: 16px; font-weight: 600; text-align: center; }
+.travel-sheet-primary { border: 0; background: linear-gradient(180deg,#2a76fb 0%,#125cf4 52%,#0d50e0 100%); color: #fff; box-shadow: inset 0 1px 1px rgb(255 255 255 / .55), 0 14px 28px -12px rgb(18 92 244 / .85); }
+.travel-sheet-secondary { border: 1px solid rgb(255 255 255 / .3); color: #fff; }
+.travel-sheet-hint { margin: 0; color: #c6d5ea; font-size: 14px; line-height: 1.45; }
+.travel-sheet-state { display: flex; align-items: center; justify-content: center; gap: 10px; min-height: 120px; margin: 0; color: #c6d5ea; font-size: 15px; }
+.travel-sheet-link { box-sizing: border-box; width: 100%; min-height: 50px; padding: 12px 14px; border: 1px solid rgb(255 255 255 / .28); border-radius: 14px; background: rgb(255 255 255 / .08); color: #fff; font: inherit; font-size: 16px; }
+.booking-travel-manual { display: grid; gap: 8px; margin-top: 12px; color: #c6d5ea; font-size: 14px; line-height: 1.45; }
+.booking-travel-manual input { box-sizing: border-box; width: 100%; min-height: 48px; padding: 10px 14px; border: 1px solid rgb(255 255 255 / .28); border-radius: 14px; background: rgb(255 255 255 / .08); color: #fff; font: inherit; font-size: 16px; }
+.travel-toast { position: fixed; z-index: 210; left: 16px; right: 16px; bottom: calc(16px + env(safe-area-inset-bottom)); display: flex; align-items: center; justify-content: center; gap: 9px; width: fit-content; max-width: calc(100vw - 32px); margin: 0 auto; padding: 14px 20px; border-radius: 999px; background: #125cf4; color: #fff; box-shadow: inset 0 1px 1px rgb(255 255 255 / .5), 0 18px 40px -14px #000; font-size: 15px; font-weight: 600; line-height: 1.35; animation: glass-pop .45s var(--spring) backwards; }
+.travel-toast-error { border-radius: 22px; background: #8f1f33; }
+@keyframes sheet-fade { from { opacity: 0; } }
+@media print { .travel-sheet-backdrop, .travel-toast { display: none !important; } }
