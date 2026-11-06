@@ -95,6 +95,17 @@
 .bf-dates legend { float: inline-start; width: 100%; margin-bottom: 12px; padding: 0; color: #fff; font-size: 15px; font-weight: 600; }
 .bf-dates fieldset > div { clear: both; display: grid; grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr); gap: 10px; }
 .bf-dates .bf-field :is(input) { padding-inline: 11px; }
+/* iOS date/time controls have an intrinsic width that can exceed a grid track. */
+.bf-dates input:is([type="date"], [type="time"]) {
+  display: block;
+  -webkit-appearance: none;
+  appearance: none;
+  min-inline-size: 0;
+  max-inline-size: 100%;
+  inline-size: 100%;
+}
+.bf-dates input::-webkit-date-and-time-value { min-inline-size: 0; text-align: start; }
+.bf-dates input::-webkit-datetime-edit { min-width: 0; padding: 0; }
 .bf-quick { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
 .bf-quick > span { margin-inline-end: 4px; color: var(--bf-dim); font-size: 14px; }
 .bf-quick button, .bf-chips button { min-height: 42px; padding: 8px 15px; border: 0; border-radius: 999px; background: rgb(255 255 255 / .07); box-shadow: inset 0 0 0 1px rgb(255 255 255 / .18); color: var(--bf-soft); cursor: pointer; font-size: 14px; font-weight: 500; white-space: nowrap; transition: background .2s, color .2s; }
@@ -267,6 +278,7 @@ html .info-booking-shell .booking-hero h1 { font-size: calc(clamp(50px, 6vw, 92p
   .bf-panel { padding: 18px 16px; border-radius: 22px; }
   .bf-chips { margin-inline: -16px; padding-inline: 16px; }
   .bf-grid, .bf-dates, .bf-tools, .bf-included > div { grid-template-columns: minmax(0, 1fr); }
+  .bf-dates fieldset > div { grid-template-columns: minmax(0, 1fr); gap: 14px; }
   .bf-tiles, .bf-tiles-four { grid-template-columns: minmax(0, 1fr); }
   .bf-tiles-four { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .bf-tile { flex-direction: row; align-items: center; min-height: 56px; padding: 12px 14px; }
