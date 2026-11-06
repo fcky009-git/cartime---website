@@ -10,6 +10,8 @@ import { addDaysIso, rateTierIndex as rateIndex, rentalDuration } from "@/lib/re
 import { contact } from "@/lib/service-info";
 import type { Locale } from "@/lib/i18n";
 import { localeInfo } from "@/lib/locales";
+import { travelUi } from "@/lib/travel-ui";
+import { makeAccessCode,formattedCode,travelLink,type TravelCredentials } from "@/lib/travel-access";
 
 type Place = "office" | "airport" | "delivery";
 type Car = (typeof fleet)[number];
@@ -72,6 +74,8 @@ export default function BookingForm({ locale }: { locale: Locale }) {
   const [ratesError, setRatesError] = useState(false);
   const [saving, setSaving] = useState(false);
   const [savedId, setSavedId] = useState<string | null>(null);
+  const [travelCredentials,setTravelCredentials]=useState<TravelCredentials|null>(null);
+  const travelCodeRef=useRef<string|null>(null);
   const [website, setWebsite] = useState("");
 
   useEffect(() => {
@@ -188,17 +192,19 @@ export default function BookingForm({ locale }: { locale: Locale }) {
     setSaving(true);
     try {
       requestIdRef.current ||= crypto.randomUUID();
+      travelCodeRef.current ||= makeAccessCode();
       const response = await fetch("/api/bookings", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({
-        requestId: requestIdRef.current, locale, carId, pickup, pickupAddress, dropoff, returnAddress, fromDate, fromTime, toDate, toTime,
+        requestId: requestIdRef.current, accessCode:travelCodeRef.current, locale, carId, pickup, pickupAddress, dropoff, returnAddress, fromDate, fromTime, toDate, toTime,
         customerName: name.trim(), phone: phone.trim(), email: email.trim(), age: Number(age), experience: Number(experience),
         flight: flight.trim(), secondDriver, payment, notes: notes.trim(), website,
       }) });
       if (response.status === 429) { setError(submitText.limited); return; }
       if (response.status === 400) { setError(submitText.invalid); return; }
       if (!response.ok) throw new Error("booking save failed");
-      const result = await response.json() as { id: string };
+      const result = await response.json() as { id: string; trip:TravelCredentials|null };
       if (!result.id) throw new Error("booking reference missing");
       setSavedId(result.id);
+      setTravelCredentials(result.trip);
     } catch { setError(submitText.failed); }
     finally { setSaving(false); }
   }
@@ -246,7 +252,7 @@ export default function BookingForm({ locale }: { locale: Locale }) {
           <p className="booking-privacy">{ui.privacy} <a href={`/${locale}/rental/conditions`}>{ui.conditions} ↗</a></p>
         </section>
         </>}
-        {step === 4 && <div className="booking-card booking-review" id="booking-review" aria-live="polite"><div className="booking-card-head"><span className="booking-card-icon"><Check size={22} /></span><div><small>{ui.step} 04</small><h2>{ui.paymentAndReview}</h2></div></div><p>{submitText.lead}</p><fieldset className="booking-payment" disabled={Boolean(savedId)}><legend>{ui.payment}</legend><div>{(["card", "cash", "transfer"] as Payment[]).map((method) => <label key={method} className={payment === method ? "selected" : ""}><input type="radio" name="payment" value={method} checked={payment === method} onChange={() => setPayment(method)} /><span>{ui[method]}</span></label>)}</div><small>{ui.paymentNote}</small></fieldset><div className="booking-review-lines"><span>{selectedCar?.name} · {selectedCar?.year}</span><span>{fromDate} {fromTime} → {toDate} {toTime}</span><span>{locationText(pickup, pickupAddress)} → {locationText(dropoff, returnAddress)}</span><span>{ui.days}: {days} · {ui.rate}: {money(rate)}</span><strong>{ui.estimate}: {money(amount)}</strong>{currency !== "USD" && <small>USD {amount}</small>}</div>{savedId ? <div className="booking-saved" role="status"><Check size={24} /><div><strong>{submitText.success}</strong><span>{submitText.reference}: {savedId.slice(0, 8).toUpperCase()}</span><p>{submitText.follow}</p></div></div> : <button className="booking-submit" type="submit" disabled={saving}>{saving ? submitText.sending : submitText.submit}<ArrowRight size={18} /></button>}{savedId && <div className="booking-send-actions"><a className="booking-whatsapp" href={whatsappHref} target="_blank" rel="noopener noreferrer"><MessageCircle size={19} />{ui.whatsapp}</a><a href={emailHref}><Mail size={19} />{submitText.mail}</a><button type="button" onClick={copyRequest}><Clipboard size={18} />{copied ? ui.copied : ui.copy}</button></div>}{!savedId && <button className="booking-edit" type="button" onClick={() => goTo(1)}><ArrowLeft size={17} />{ui.edit}</button>}</div>}
+        {step === 4 && <div className="booking-card booking-review" id="booking-review" aria-live="polite"><div className="booking-card-head"><span className="booking-card-icon"><Check size={22} /></span><div><small>{ui.step} 04</small><h2>{ui.paymentAndReview}</h2></div></div><p>{submitText.lead}</p><fieldset className="booking-payment" disabled={Boolean(savedId)}><legend>{ui.payment}</legend><div>{(["card", "cash", "transfer"] as Payment[]).map((method) => <label key={method} className={payment === method ? "selected" : ""}><input type="radio" name="payment" value={method} checked={payment === method} onChange={() => setPayment(method)} /><span>{ui[method]}</span></label>)}</div><small>{ui.paymentNote}</small></fieldset><div className="booking-review-lines"><span>{selectedCar?.name} · {selectedCar?.year}</span><span>{fromDate} {fromTime} → {toDate} {toTime}</span><span>{locationText(pickup, pickupAddress)} → {locationText(dropoff, returnAddress)}</span><span>{ui.days}: {days} · {ui.rate}: {money(rate)}</span><strong>{ui.estimate}: {money(amount)}</strong>{currency !== "USD" && <small>USD {amount}</small>}</div>{savedId ? <div className="booking-saved" role="status"><Check size={24} /><div><strong>{submitText.success}</strong><span>{submitText.reference}: {savedId.slice(0, 8).toUpperCase()}</span><p>{submitText.follow}</p></div></div> : <button className="booking-submit" type="submit" disabled={saving}>{saving ? submitText.sending : submitText.submit}<ArrowRight size={18} /></button>}{travelCredentials&&<div className="booking-travel-issued"><span>CarTime / Travel Pass</span><h3>{travelUi[locale].credentials}</h3><dl><div><dt>{travelUi[locale].reference}</dt><dd>{travelCredentials.reference}</dd></div><div><dt>{travelUi[locale].code}</dt><dd>{formattedCode(travelCredentials.accessCode)}</dd></div></dl><p>{travelUi[locale].save}</p><a href={travelLink(locale,travelCredentials)}>{travelUi[locale].openPass}<ArrowRight size={18}/></a></div>}{savedId && <div className="booking-send-actions"><a className="booking-whatsapp" href={whatsappHref} target="_blank" rel="noopener noreferrer"><MessageCircle size={19} />{ui.whatsapp}</a><a href={emailHref}><Mail size={19} />{submitText.mail}</a><button type="button" onClick={copyRequest}><Clipboard size={18} />{copied ? ui.copied : ui.copy}</button></div>}{!savedId && <button className="booking-edit" type="button" onClick={() => goTo(1)}><ArrowLeft size={17} />{ui.edit}</button>}</div>}
         {step === 4 && error && <p className="booking-error" role="alert">{error}</p>}
       </form>
     </div>

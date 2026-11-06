@@ -50,3 +50,21 @@ export const adminSessionState = sqliteTable("admin_session_state", {
   id: integer("id").primaryKey(),
   notBefore: integer("not_before").notNull(),
 });
+
+export const travelPasses = sqliteTable("travel_passes", {
+  bookingId: text("booking_id").primaryKey(),
+  reference: text("reference").notNull().unique(),
+  accessHash: text("access_hash").notNull(),
+  updatedAt: text("updated_at").notNull(),
+  message: text("message").notNull().default(""),
+  pickupInstructions: text("pickup_instructions").notNull().default(""),
+  confirmedTotalUsd: integer("confirmed_total_usd"),
+  depositUsd: integer("deposit_usd"),
+  stage: text("stage").notNull().default("booking"),
+});
+
+export const travelAccessAttempts = sqliteTable("travel_access_attempts", {
+  fingerprint: text("fingerprint").primaryKey(),
+  attempts: integer("attempts").notNull(),
+  windowStart: integer("window_start").notNull(),
+});

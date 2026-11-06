@@ -1,3 +1,4 @@
+import { travelUi } from "@/lib/travel-ui";
 import LanguageSwitcher from "@/components/language-switcher";
 import type { ReactNode } from "react";
 import Image from "next/image";
@@ -41,6 +42,7 @@ export default function InfoShell({ locale, current, children }: { locale: Local
           <a href={`/${locale}`}>{ui.back}</a>
           <a href={`/${locale}/fleet`}>{ui.allCars}</a>
           <a href={`/${locale}/booking`}>{bookingUi[locale].nav}</a>
+          <a href={`/${locale}/travel-pass`}>{travelUi[locale].lookup}</a>
           <a href={`/${locale}/about`}>{service.aboutNav}</a>
           <a href={`/${locale}/faq`}>{service.faqNav}</a>
           <a href={`/${locale}/rental`}>{rentalUi[locale].nav}</a>

@@ -3,6 +3,7 @@ import { bookingInput, validateBooking } from "@/lib/booking-request";
 import { bookingRequests } from "@/db/schema";
 import { getDb } from "@/db";
 import { notifyNewBooking } from "@/lib/booking-notify";
+import { issueTravelPass, newAccessCode } from "@/lib/travel-pass";
 
 export const dynamic = "force-dynamic";
 
@@ -48,6 +49,7 @@ export async function POST(request: Request) {
   const now = new Date(nowMs).toISOString();
   const id = data.requestId;
   const email = data.email.toLowerCase();
+  let trip: { reference: string; accessCode: string } | null = null;
   try {
     const db = getDb();
     const [recent] = await db.select({ total: count() }).from(bookingRequests).where(and(
@@ -67,6 +69,7 @@ export async function POST(request: Request) {
       age: data.age, experience: data.experience, flight: data.flight || null,
       secondDriver: data.secondDriver, payment: data.payment, notes: data.notes || null,
     }).onConflictDoNothing({ target: bookingRequests.id }).returning({ id: bookingRequests.id });
+    trip = await issueTravelPass(id, data.accessCode || newAccessCode(), inserted.length > 0);
     if (inserted.length) {
       await notifyNewBooking({
         id, locale: data.locale, carName: validated.car.name, carYear: validated.car.year, fromDate: data.fromDate, fromTime: data.fromTime, toDate: data.toDate, toTime: data.toTime,
@@ -77,5 +80,5 @@ export async function POST(request: Request) {
     console.error("Booking persistence failed", error);
     return Response.json({ error: "Could not save the request. Please try again." }, { status: 503 });
   }
-  return Response.json({ id, status: "new" }, { status: 201, headers: { "Cache-Control": "no-store" } });
+  return Response.json({ id, status: "new", trip }, { status: 201, headers: { "Cache-Control": "no-store" } });
 }

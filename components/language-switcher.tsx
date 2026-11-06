@@ -19,9 +19,9 @@ export default function LanguageSwitcher({ locale, suffix = "", label }: {
         dir={localeInfo[code].dir}
         aria-current={code === locale ? "page" : undefined}
         onClick={(event) => {
-          if (window.location.search && !event.metaKey && !event.ctrlKey && !event.shiftKey && !event.altKey) {
+          if ((window.location.search || (suffix === "/travel-pass" && window.location.hash)) && !event.metaKey && !event.ctrlKey && !event.shiftKey && !event.altKey) {
             event.preventDefault();
-            router.push(`/${code}${suffix}${window.location.search}`);
+            router.push(`/${code}${suffix}${window.location.search}${suffix === "/travel-pass" ? window.location.hash : ""}`);
           }
         }}
       ><span>{localeInfo[code].name}</span><small>{code.toUpperCase()}</small></a>)}
