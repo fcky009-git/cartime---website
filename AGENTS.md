@@ -12,7 +12,7 @@ Node 22.13+ and npm.
 
 ```
 npm run install:ci     # install (use this, not plain npm install)
-npm run lint           # must stay at 0 errors (14 known <img> warnings)
+npm run lint           # must stay at 0 errors (12 known <img> warnings)
 npx tsc --noEmit       # must stay clean
 npm run build          # must succeed
 ```
@@ -35,6 +35,10 @@ These files connect the project to the Sites/Codex preview and deployment. Do no
 - Do not re-add `app/layout.tsx`; it would conflict with the two root layouts.
 - `app/[locale]/not-found.tsx` is the 404 page.
 
+## Design system
+
+The look is "Baku after dark". `app/redesign.css` loads last and holds the tokens (`--accent`, `--accent-hot`, `--accent-ink`, `--night`, `--font-display`, `--font-body`), so change colours and type there first. Colours come from the logo's blues (`#0046DA`, `#125CF4`, `#2188FF`, `#59BDFF`), white and deep navy; the main site photos are graded to match, so do not add warm accents. `app/liquid-glass.css` holds the glass material and the shared `components/glass-header.tsx`; put glass on pseudo-elements and keep panel animations to `backwards` fill, because an element with opacity animating or held by an animation stops its children's backdrop blur. Headlines use Sofia Sans Extra Condensed, with Fira Sans Extra Condensed only for the Azerbaijani letter Ə, which the first font lacks; body text uses Onest. Keep body text at 13px or larger and check all three themes, phone width and Arabic.
+
 ## Languages
 
 All languages are configured in `lib/locales.ts` (codes, hreflang, og:locale, text direction, switcher order). Never type a language list by hand: use `locales`, `localeParams()`, `localeInfo` and `switcherOrder`. See "Adding a language" in `docs/claude-seo-handoff.md` before enabling a new one.
@@ -48,6 +52,7 @@ All languages are configured in `lib/locales.ts` (codes, hreflang, og:locale, te
 - Do not invent availability, deposit amounts, insurance coverage or delivery prices. Open items are listed in `README.md`; update `lib/service-info.ts` only when the owner confirms them.
 - Do not add ratings, reviews, price ranges or social profile links to structured data unless they are real and confirmed.
 - Do not claim instant confirmed booking or online payment. The request form is live and saves leads in the admin panel.
+- No fake urgency: no invented discounts, countdown timers or "only N left". Savings badges are calculated from the published rates in `lib/fleet.json`; the live clock shows real Baku time.
 - The owner explicitly decided that CarTime is a separate project and the public interface must not mention 9fleet. Keep public copy about CarTime only.
 
 ## Adding a page

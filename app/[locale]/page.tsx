@@ -34,7 +34,7 @@ export default async function LocalePage({ params }: { params: Promise<{ locale:
   const { locale } = await params;
   if (!(locale in dictionaries)) notFound();
   return <>
-    <link rel="preload" as="image" href="/assets/cartime-baku-sunrise.jpg" type="image/jpeg" fetchPriority="high" />
+    <link rel="preload" as="image" href="/assets/cartime-cinematic-bmw-m5-v3.webp" type="image/webp" fetchPriority="high" />
     <JsonLd data={websiteJsonLd(homeMeta[locale as Locale][1])} />
     <CarTimeSite locale={locale as Locale} />
   </>;
