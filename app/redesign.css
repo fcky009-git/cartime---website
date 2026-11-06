@@ -551,7 +551,9 @@ html .booking-next { border: 0; border-radius: 12px; background: var(--flame); c
 html .booking-next:hover { background: var(--flame-hot); }
 html .booking-back { border-radius: 12px; }
 html .booking-saved { border-radius: 14px; }
-html .booking-whatsapp { border-radius: 12px; }
+html .booking-whatsapp { border-radius: 12px; background: #1b7346; }
+html .booking-submit { min-height: 56px; font-size: 16px; }
+html .booking-send-actions a, html .booking-send-actions button { max-width: 100%; min-width: 0; font-size: 15px; white-space: normal; overflow-wrap: anywhere; }
 
 /* Travel Pass joins the same world */
 html .travel-page { background: var(--night); }
@@ -645,7 +647,7 @@ html .admin-login-submit, html .admin-login button[type="submit"] { background: 
   html .info-hero { background-position: 62% center; }
   html .info-hero--fleet, html .info-hero--faq { background-image: linear-gradient(0deg,#070b14f5,#070b14b3 70%,#070b1466),url('/assets/cartime-baku-night-bmw-xm.webp'); }
   html .info-booking-shell .booking-progress button { display: grid; place-items: center; min-height: 48px; padding: 6px; }
-  html .info-booking-shell .booking-progress button > span { display: grid; place-items: center; width: 30px; height: 30px; }
+  html .info-booking-shell .booking-progress button > span { display: grid; place-items: center; align-self: center; flex: none; width: 30px; height: 30px; min-height: 0; }
   html .home-site .hero-inner, html[data-theme="light"] .home-site .hero-inner { padding-bottom: 76px; }
   html .home-site .hero-lead { font-size: 16px; margin-bottom: 18px; }
   html .home-site .button-primary { width: 100%; }
