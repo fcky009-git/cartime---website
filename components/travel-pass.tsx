@@ -3,7 +3,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import Image from "next/image";
 import QRCode from "qrcode";
-import { ArrowRight, CalendarDays, Check, CheckCircle2, Clock3, Copy, Download, LockKeyhole, MapPin, MessageCircle, RefreshCw, ShieldCheck, Sparkles, Ticket, Wallet, X } from "lucide-react";
+import { ArrowRight, CalendarDays, Check, CheckCircle2, Clock3, Copy, Download, LockKeyhole, MapPin, MessageCircle, Phone, RefreshCw, ShieldCheck, Sparkles, Ticket, Wallet, X } from "lucide-react";
 import type { Locale } from "@/lib/locales";
 import { localeInfo } from "@/lib/locales";
 import { travelUi } from "@/lib/travel-ui";
@@ -13,7 +13,8 @@ import { copyText, downloadFile, saveFile } from "@/lib/device-actions";
 import { renderTravelPass } from "@/lib/travel-pdf";
 import { dayCountLabel } from "@/lib/count-labels";
 import fleetImages from "@/lib/fleet-images.json";
-import { contact, contactLocation } from "@/lib/service-info";
+import { contact, contactLocation, phones, whatsappLink, whatsappUi } from "@/lib/service-info";
+import WhatsAppChoice from "@/components/whatsapp-choice";
 
 const REFRESH_MS = 90_000;
 /** The window for saving or copying, with a visible way out when a phone blocks the direct route. */
@@ -21,7 +22,8 @@ type Sheet =
   | { kind: "pdf"; status: "loading" | "failed" }
   | { kind: "pdf"; status: "ready"; preview: string; file: string; blob: Blob }
   | { kind: "calendar"; blob: Blob; google: string }
-  | { kind: "link"; link: string };
+  | { kind: "link"; link: string }
+  | { kind: "contact" };
 const stages = ["new", "contacted", "confirmed", "active", "completed"] as const;
 
 export default function TravelPass({ locale }: { locale: Locale }) {
@@ -215,7 +217,7 @@ export default function TravelPass({ locale }: { locale: Locale }) {
           ...(pass.message ? [{ title: t.message, text: pass.message }] : []),
           ...(showInstructions && pass.pickupInstructions ? [{ title: t.instructions, text: pass.pickupInstructions }] : []),
         ],
-        contact: `CarTime · ${contact.phoneDisplay} · ${contact.email}`,
+        contact: `CarTime · ${contact.allPhones} · ${contact.email}`,
         hint: t.estimateHint,
       });
       if (attempt !== pdfAttempt.current) return;
@@ -235,7 +237,7 @@ export default function TravelPass({ locale }: { locale: Locale }) {
     finally { setBusy(false); }
   };
 
-  const whatsapp = `https://wa.me/${contact.phone.replace(/\D/g, "")}`;
+  const sheetTitle = sheet?.kind === "pdf" ? t.print : sheet?.kind === "calendar" ? t.calendar : sheet?.kind === "contact" ? t.support : t.share;
 
   return <main className={`travel-page${pass ? " has-pass" : ""}`}>
     <div className="travel-aurora" aria-hidden="true" />
@@ -258,7 +260,7 @@ export default function TravelPass({ locale }: { locale: Locale }) {
             <button className="travel-primary" disabled={busy}>{busy ? t.loading : t.open}<ArrowRight className="travel-flip" size={18} /></button>
           </form>
           <p className="travel-privacy"><ShieldCheck size={17} />{t.privacy}</p>
-          <a href={whatsapp} target="_blank" rel="noopener noreferrer">{t.support} ↗</a>
+          {phones.map((item) => <a key={item.phone} href={whatsappLink(item.phone)} target="_blank" rel="noopener noreferrer"><bdi dir="ltr">WhatsApp {item.display}</bdi> ↗</a>)}
         </section>
       </div> : <>
         <div className="travel-toolbar">
@@ -324,7 +326,7 @@ export default function TravelPass({ locale }: { locale: Locale }) {
               <button onClick={calendar}><CalendarDays size={19} />{t.calendar}</button>
               <button onClick={() => void pdf()}><Download size={19} />{t.print}</button>
               <button onClick={() => void copy()}><Copy size={19} />{t.share}</button>
-              <a href={`${whatsapp}?text=${encodeURIComponent(`CarTime ${pass.reference}`)}`} target="_blank" rel="noopener noreferrer"><MessageCircle size={19} />{t.support}</a>
+              <button type="button" onClick={() => setSheet({ kind: "contact" })}><MessageCircle size={19} />{t.support}</button>
             </section>
           </aside>
         </div>
@@ -335,8 +337,8 @@ export default function TravelPass({ locale }: { locale: Locale }) {
       </>}
     </div>
     {sheet && pass && createPortal(<div className="travel-sheet-backdrop" onClick={closeSheet}>
-      <div className="travel-sheet" role="dialog" aria-modal="true" aria-label={sheet.kind === "pdf" ? t.print : sheet.kind === "calendar" ? t.calendar : t.share} onClick={(event) => event.stopPropagation()}>
-        <div className="travel-sheet-head"><h3>{sheet.kind === "pdf" ? t.print : sheet.kind === "calendar" ? t.calendar : t.share}</h3><button type="button" aria-label={t.closeSheet} onClick={closeSheet}><X size={20} /></button></div>
+      <div className="travel-sheet" role="dialog" aria-modal="true" aria-label={sheetTitle} onClick={(event) => event.stopPropagation()}>
+        <div className="travel-sheet-head"><h3>{sheetTitle}</h3><button type="button" aria-label={t.closeSheet} onClick={closeSheet}><X size={20} /></button></div>
         {sheet.kind === "pdf" && sheet.status === "loading" && <p className="travel-sheet-state" role="status"><RefreshCw size={18} className="travel-spin" />{t.loading}</p>}
         {sheet.kind === "pdf" && sheet.status === "failed" && <><p className="travel-error" role="alert">{t.fileFailed}</p><button type="button" className="travel-sheet-primary" onClick={() => void pdf()}><RefreshCw size={18} />{t.refresh}</button></>}
         {sheet.kind === "pdf" && sheet.status === "ready" && <>
@@ -349,6 +351,11 @@ export default function TravelPass({ locale }: { locale: Locale }) {
         {sheet.kind === "calendar" && <>
           <button type="button" className="travel-sheet-primary" onClick={() => void saveFile(sheet.blob, `CarTime-${pass.reference}.ics`)}><Download size={18} />{t.saveFile}</button>
           <a className="travel-sheet-secondary" href={sheet.google} target="_blank" rel="noopener noreferrer">Google Calendar ↗</a>
+        </>}
+        {sheet.kind === "contact" && <>
+          <p className="travel-sheet-hint">{whatsappUi[locale].choose}</p>
+          <WhatsAppChoice text={`CarTime ${pass.reference}`} />
+          {phones.map((item) => <a key={item.phone} className="travel-sheet-secondary" href={`tel:${item.phone}`} dir="ltr"><Phone size={18} />{item.display}</a>)}
         </>}
         {sheet.kind === "link" && <>
           <label className="travel-sheet-hint" htmlFor="travel-link">{t.copyManual}</label>

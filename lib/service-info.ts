@@ -4,7 +4,27 @@ import type { Locale } from "./i18n";
 export type FaqGroup = "prices" | "fleet" | "pickup" | "terms";
 export type FaqItem = { id: string; group: FaqGroup; question: string; answer: string; href?: string };
 
-export const contact = { phone: "+994994400009", phoneDisplay: "+994 99 440 00 09", email: "info@cartime.az" } as const;
+export const phones = [
+  { phone: "+994994400009", display: "+994 99 440 00 09" },
+  { phone: "+994998088009", display: "+994 99 808 80 09" },
+] as const;
+export const contact = {
+  phone: phones[0].phone,
+  phoneDisplay: phones[0].display,
+  allPhones: phones.map((item) => item.display).join(", "),
+  email: "info@cartime.az",
+} as const;
+export const whatsappLink = (phone: string, text?: string) => `https://wa.me/${phone.replace(/\D/g, "")}${text ? `?text=${encodeURIComponent(text)}` : ""}`;
+export const whatsappUi: Record<Locale, { open: string; choose: string }> = {
+  ru: { open: "Написать в WhatsApp", choose: "Выберите удобный номер" },
+  az: { open: "WhatsApp-da yazın", choose: "Rahat nömrəni seçin" },
+  en: { open: "Message us on WhatsApp", choose: "Choose a number" },
+  de: { open: "Per WhatsApp schreiben", choose: "Wählen Sie eine Nummer" },
+  zh: { open: "通过 WhatsApp 联系", choose: "请选择号码" },
+  ko: { open: "WhatsApp으로 문의", choose: "번호를 선택하세요" },
+  fr: { open: "Écrire sur WhatsApp", choose: "Choisissez un numéro" },
+  ar: { open: "راسلنا عبر WhatsApp", choose: "اختر الرقم" },
+};
 export const contactLocation = {
   address: "221F Nizami Gəncəvi, Bakı 1000",
   latitude: 40.3778175,
@@ -366,7 +386,7 @@ export const faqItems: Record<Locale, FaqItem[]> = {
     { id: "late", group: "terms", question: "Что делать при задержке возврата?", answer: "Свяжитесь с прокатчиком до согласованного времени возврата. Правила доплаты и допустимое опоздание CarTime ещё должен опубликовать." },
     { id: "cleaning", group: "terms", question: "Нужна ли мойка перед возвратом?", answer: "Требования к чистоте и возможная стоимость уборки пока не указаны. Состояние салона и кузова разумно зафиксировать вместе с актом выдачи." },
     { id: "damage", group: "terms", question: "Что делать при повреждении или ДТП?", answer: "Сначала обеспечьте безопасность людей и при необходимости вызовите экстренные службы. Затем сообщите прокатчику и действуйте по договору и условиям страховки; контакт и точная процедура CarTime ещё не опубликованы." },
-    { id: "support", group: "terms", question: "Как связаться с поддержкой во время поездки?", answer: "Поддержка CarTime работает 24/7. Позвоните по номеру +994 99 440 00 09 или напишите на info@cartime.az. При аварии сначала обеспечьте безопасность людей и вызовите экстренные службы при необходимости." },
+    { id: "support", group: "terms", question: "Как связаться с поддержкой во время поездки?", answer: "Поддержка CarTime работает 24/7. Позвоните по номеру +994 99 440 00 09 / +994 99 808 80 09 или напишите на info@cartime.az. При аварии сначала обеспечьте безопасность людей и вызовите экстренные службы при необходимости." },
   ],
   az: [
     { id: "rates", group: "prices", question: "Saytdakı tarifləri necə oxumalı?", answer: "Avtomobil kartında USD ilə bir günlük qiymət göstərilir. O, icarə müddətindən asılıdır: 2–3, 4–7, 8–14, 15–21, 22–31 və ya 32+ gün. Müqayisə üçün öz müddətinizin sütununu seçin.", href: "/fleet" },
@@ -398,7 +418,7 @@ export const faqItems: Record<Locale, FaqItem[]> = {
     { id: "late", group: "terms", question: "Qaytarmağa geciksəm nə etməliyəm?", answer: "Razılaşdırılmış vaxtdan əvvəl icarə şirkəti ilə əlaqə saxlayın. Gecikmə və əlavə ödəniş qaydalarını CarTime hələ dərc etməlidir." },
     { id: "cleaning", group: "terms", question: "Qaytarmadan əvvəl maşını yumaq lazımdır?", answer: "Təmizlik tələbləri və mümkün təmizləmə haqqı hələ göstərilməyib. Salonun və kuzovun vəziyyətini təhvil aktında qeyd etmək faydalıdır." },
     { id: "damage", group: "terms", question: "Qəza və ya zədə zamanı nə etməli?", answer: "Əvvəlcə insanların təhlükəsizliyini təmin edin, lazım olduqda təcili xidmətləri çağırın. Sonra icarə şirkətinə məlumat verin və müqavilə ilə sığorta qaydalarına əməl edin; CarTime əlaqə nömrəsini və dəqiq proseduru hələ dərc etməyib." },
-    { id: "support", group: "terms", question: "Səfər zamanı dəstəyə necə müraciət etməli?", answer: "CarTime dəstəyi 24/7 işləyir. +994 99 440 00 09 nömrəsinə zəng edin və ya info@cartime.az ünvanına yazın. Qəza zamanı əvvəlcə insanların təhlükəsizliyini təmin edin və lazım olduqda təcili xidmətləri çağırın." },
+    { id: "support", group: "terms", question: "Səfər zamanı dəstəyə necə müraciət etməli?", answer: "CarTime dəstəyi 24/7 işləyir. +994 99 440 00 09 / +994 99 808 80 09 nömrəsinə zəng edin və ya info@cartime.az ünvanına yazın. Qəza zamanı əvvəlcə insanların təhlükəsizliyini təmin edin və lazım olduqda təcili xidmətləri çağırın." },
   ],
   en: [
     { id: "rates", group: "prices", question: "How do I read the rates?", answer: "A car card shows a USD rate for one day. It depends on rental length: 2–3, 4–7, 8–14, 15–21, 22–31 or 32+ days. Compare the column for your actual period.", href: "/fleet" },
@@ -430,7 +450,7 @@ export const faqItems: Record<Locale, FaqItem[]> = {
     { id: "late", group: "terms", question: "What if I return the car late?", answer: "Contact the rental provider before the agreed return time. CarTime still needs to publish its grace period and late fee rules." },
     { id: "cleaning", group: "terms", question: "Do I need to wash the car before return?", answer: "Cleaning requirements and possible fees are not published. Recording the interior and exterior condition at collection is useful." },
     { id: "damage", group: "terms", question: "What should I do after damage or an accident?", answer: "First make sure everyone is safe and call emergency services if needed. Then notify the rental provider and follow the agreement and insurance instructions; CarTime has not published its contact or exact procedure yet." },
-    { id: "support", group: "terms", question: "How can I reach support during a trip?", answer: "CarTime support is available 24/7. Call +994 99 440 00 09 or email info@cartime.az. After an accident, first make sure everyone is safe and call emergency services if needed." },
+    { id: "support", group: "terms", question: "How can I reach support during a trip?", answer: "CarTime support is available 24/7. Call +994 99 440 00 09 / +994 99 808 80 09 or email info@cartime.az. After an accident, first make sure everyone is safe and call emergency services if needed." },
   ],
   de: [
     { id: "rates", group: "prices", question: "Wie lese ich die Tarife?", answer: "Eine Autokarte zeigt einen USD-Kurs für einen Tag. Dies hängt von der Mietdauer ab: 2–3, 4–7, 8–14, 15–21, 22–31 oder 32+ Tage. Vergleichen Sie die Spalte mit Ihrem tatsächlichen Zeitraum.", href: "/fleet" },
@@ -462,7 +482,7 @@ export const faqItems: Record<Locale, FaqItem[]> = {
     { id: "late", group: "terms", question: "Was passiert, wenn ich das Auto verspätet zurückgebe?", answer: "Kontaktieren Sie den Vermieter vor der vereinbarten Rückgabezeit. CarTime muss noch seine Nachfrist- und Verspätungsgebührenregeln veröffentlichen." },
     { id: "cleaning", group: "terms", question: "Muss ich das Auto vor der Rückgabe waschen?", answer: "Reinigungsanforderungen und mögliche Gebühren werden nicht veröffentlicht. Es ist hilfreich, bei der Abholung den Zustand innen und außen zu dokumentieren." },
     { id: "damage", group: "terms", question: "Was soll ich nach einem Schaden oder Unfall tun?", answer: "Stellen Sie zunächst sicher, dass alle in Sicherheit sind, und rufen Sie bei Bedarf den Notdienst an. Benachrichtigen Sie dann den Vermieter und befolgen Sie die Vertrags- und Versicherungsanweisungen. CarTime hat seinen Kontakt oder das genaue Verfahren noch nicht veröffentlicht." },
-    { id: "support", group: "terms", question: "Wie kann ich während einer Reise Unterstützung erreichen?", answer: "Der CarTime-Support ist rund um die Uhr verfügbar. Rufen Sie +994 99 440 00 09 an oder senden Sie eine E-Mail an info@cartime.az. Stellen Sie nach einem Unfall zunächst sicher, dass alle in Sicherheit sind, und rufen Sie bei Bedarf den Rettungsdienst an." },
+    { id: "support", group: "terms", question: "Wie kann ich während einer Reise Unterstützung erreichen?", answer: "Der CarTime-Support ist rund um die Uhr verfügbar. Rufen Sie +994 99 440 00 09 / +994 99 808 80 09 an oder senden Sie eine E-Mail an info@cartime.az. Stellen Sie nach einem Unfall zunächst sicher, dass alle in Sicherheit sind, und rufen Sie bei Bedarf den Rettungsdienst an." },
   ],
   zh: [
     { id: "rates", group: "prices", question: "如何阅读费率？", answer: "车卡显示一天的美元费率。这取决于租赁长度：2-3、4-7、8-14、15-21、22-31 或 32 天以上。将该列与您的实际经期进行比较。", href: "/fleet" },
@@ -494,7 +514,7 @@ export const faqItems: Record<Locale, FaqItem[]> = {
     { id: "late", group: "terms", question: "还车晚了怎么办？", answer: "在约定的归还时间之前联系租赁提供商。 CarTime 仍需要公布其宽限期和滞纳金规则。" },
     { id: "cleaning", group: "terms", question: "还车前需要洗车吗？", answer: "清洁要求和可能的费用未公布。记录取车时的内部和外部状况很有用。" },
     { id: "damage", group: "terms", question: "损坏或发生事故后我该怎么办？", answer: "首先确保每个人都安全，并在需要时致电紧急服务。然后通知租赁提供商并遵循协议和保险说明； CarTime尚未公布其联系方式或具体流程。" },
-    { id: "support", group: "terms", question: "在旅行期间如何获得支持？", answer: "CarTime 支持 24/7 提供。请致电 +994 99 440 00 09 或发送电子邮件至 info@cartime.az。事故发生后，首先确保每个人都安全，并在需要时致电紧急服务部门。" },
+    { id: "support", group: "terms", question: "在旅行期间如何获得支持？", answer: "CarTime 支持 24/7 提供。请致电 +994 99 440 00 09 / +994 99 808 80 09 或发送电子邮件至 info@cartime.az。事故发生后，首先确保每个人都安全，并在需要时致电紧急服务部门。" },
   ],
   ko: [
     { id: "rates", group: "prices", question: "요금은 어떻게 확인하나요?", answer: "자동차 카드에는 하루 동안의 USD 환율이 표시됩니다. 대여 기간에 따라 다릅니다: 2~3, 4~7, 8~14, 15~21, 22~31 또는 32일 이상. 실제 기간에 대한 열을 비교하십시오.", href: "/fleet" },
@@ -526,7 +546,7 @@ export const faqItems: Record<Locale, FaqItem[]> = {
     { id: "late", group: "terms", question: "차를 늦게 반납하면 어떻게 되나요?", answer: "약속된 반납 시간 전에 렌트 업체에 연락하세요. CarTime은 여전히 ​​유예 기간 및 연체료 규정을 공개해야 합니다." },
     { id: "cleaning", group: "terms", question: "반납 전 세차를 해야 하나요?", answer: "청소 요건 및 가능한 수수료는 공개되지 않습니다. 수령 시 내부 및 외부 상태를 기록하는 것이 유용합니다." },
     { id: "damage", group: "terms", question: "파손이나 사고가 발생한 후에는 어떻게 해야 하나요?", answer: "먼저 모두가 안전한지 확인하고 필요한 경우 응급 서비스에 전화하세요. 그런 다음 렌트 업체에 알리고 계약 및 보험 지침을 따르십시오. CarTime은 아직 연락처나 정확한 절차를 공개하지 않았습니다." },
-    { id: "support", group: "terms", question: "여행 중에 어떻게 지원을 받을 수 있나요?", answer: "CarTime 지원은 연중무휴 24시간 이용 가능합니다. +994 99 440 00 09로 전화하거나 info@cartime.az로 이메일을 보내세요. 사고가 발생한 후에는 먼저 모두가 안전한지 확인하고 필요한 경우 응급 서비스에 전화하세요." },
+    { id: "support", group: "terms", question: "여행 중에 어떻게 지원을 받을 수 있나요?", answer: "CarTime 지원은 연중무휴 24시간 이용 가능합니다. +994 99 440 00 09 / +994 99 808 80 09로 전화하거나 info@cartime.az로 이메일을 보내세요. 사고가 발생한 후에는 먼저 모두가 안전한지 확인하고 필요한 경우 응급 서비스에 전화하세요." },
   ],
   fr: [
     { id: "rates", group: "prices", question: "Comment lire les tarifs ?", answer: "Une carte de voiture indique un tarif en USD pour une journée. Cela dépend de la durée de la location : 2-3, 4-7, 8-14, 15-21, 22-31 ou 32+ jours. Comparez la colonne pour votre période réelle.", href: "/fleet" },
@@ -558,7 +578,7 @@ export const faqItems: Record<Locale, FaqItem[]> = {
     { id: "late", group: "terms", question: "Que faire si je rends la voiture en retard ?", answer: "Contacter le loueur avant l'heure de retour convenue. CarTime doit encore publier ses règles sur le délai de grâce et les frais de retard." },
     { id: "cleaning", group: "terms", question: "Dois-je laver la voiture avant de la rendre ?", answer: "Les exigences de nettoyage et les éventuels frais ne sont pas publiés. Il est utile d’enregistrer l’état intérieur et extérieur lors du retrait." },
     { id: "damage", group: "terms", question: "Que dois-je faire après un dommage ou un accident ?", answer: "Assurez-vous d’abord que tout le monde est en sécurité et appelez les services d’urgence si nécessaire. Prévenez ensuite le loueur et suivez les instructions du contrat et de l'assurance ; CarTime n'a pas encore publié son contact ni sa procédure exacte." },
-    { id: "support", group: "terms", question: "Comment puis-je joindre l'assistance pendant un voyage ?", answer: "L'assistance CarTime est disponible 24h/24 et 7j/7. Appelez le +994 99 440 00 09 ou envoyez un e-mail à info@cartime.az. Après un accident, assurez-vous d’abord que tout le monde est en sécurité et appelez les services d’urgence si nécessaire." },
+    { id: "support", group: "terms", question: "Comment puis-je joindre l'assistance pendant un voyage ?", answer: "L'assistance CarTime est disponible 24h/24 et 7j/7. Appelez le +994 99 440 00 09 / +994 99 808 80 09 ou envoyez un e-mail à info@cartime.az. Après un accident, assurez-vous d’abord que tout le monde est en sécurité et appelez les services d’urgence si nécessaire." },
   ],
   ar: [
     { id: "rates", group: "prices", question: "كيف أقرأ الأسعار؟", answer: "بطاقة السيارة تظهر سعر الدولار ليوم واحد. يعتمد ذلك على مدة الإيجار: 2-3، 4-7، 8-14، 15-21، 22-31 أو أكثر من 32 يومًا. قارن العمود بفترتك الفعلية.", href: "/fleet" },
@@ -590,6 +610,6 @@ export const faqItems: Record<Locale, FaqItem[]> = {
     { id: "late", group: "terms", question: "ماذا لو قمت بإرجاع السيارة متأخراً؟", answer: "اتصل بمزود الإيجار قبل وقت العودة المتفق عليه. لا يزال CarTime بحاجة إلى نشر فترة السماح وقواعد الرسوم المتأخرة." },
     { id: "cleaning", group: "terms", question: "هل أحتاج إلى غسل السيارة قبل العودة؟", answer: "لم يتم نشر متطلبات التنظيف والرسوم المحتملة. من المفيد تسجيل الحالة الداخلية والخارجية عند الاستلام." },
     { id: "damage", group: "terms", question: "ماذا يجب أن أفعل بعد التعرض لضرر أو حادث؟", answer: "تأكد أولاً من سلامة الجميع واتصل بخدمات الطوارئ إذا لزم الأمر. ثم قم بإخطار مزود الإيجار واتبع تعليمات الاتفاقية والتأمين؛ لم تنشر CarTime جهة الاتصال أو الإجراء الدقيق الخاص بها حتى الآن." },
-    { id: "support", group: "terms", question: "كيف يمكنني الوصول إلى الدعم أثناء الرحلة؟", answer: "دعم CarTime متاح على مدار 24 ساعة طوال أيام الأسبوع. اتصل بالرقم +994 99 440 00 09 أو أرسل بريدًا إلكترونيًا إلى info@cartime.az. بعد وقوع حادث، تأكد أولاً من سلامة الجميع واتصل بخدمات الطوارئ إذا لزم الأمر." },
+    { id: "support", group: "terms", question: "كيف يمكنني الوصول إلى الدعم أثناء الرحلة؟", answer: "دعم CarTime متاح على مدار 24 ساعة طوال أيام الأسبوع. اتصل بالرقم +994 99 440 00 09 / +994 99 808 80 09 أو أرسل بريدًا إلكترونيًا إلى info@cartime.az. بعد وقوع حادث، تأكد أولاً من سلامة الجميع واتصل بخدمات الطوارئ إذا لزم الأمر." },
   ],
 };
