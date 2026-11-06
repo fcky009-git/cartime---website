@@ -1,8 +1,4 @@
 /* Page changes: a short cross-fade in browsers that support it, nothing elsewhere. */
-@media (prefers-reduced-motion: no-preference) {
-  @view-transition { navigation: auto; }
-  ::view-transition-old(root), ::view-transition-new(root) { animation-duration: .18s; }
-}
 
 :root { --upgrade-accent: #17689f; --upgrade-accent-ink: #fff; }
 html[data-theme="dark"] { --upgrade-accent: #7ec2ec; --upgrade-accent-ink: #0a2030; }
@@ -42,7 +38,7 @@ html[data-theme="dark"] { --upgrade-accent: #7ec2ec; --upgrade-accent-ink: #0a20
 /* Car finder: the live total is the one loud element here. */
 .car-finder { background: var(--editorial-paper, var(--surface)); color: var(--editorial-ink, var(--ink)); }
 .car-finder-grid { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); gap: clamp(28px, 5vw, 76px); align-items: start; }
-.car-finder h2 { margin: 0 0 12px; font: 600 clamp(30px, 3.4vw, 46px)/1.1 Sora, Inter, sans-serif; letter-spacing: -.045em; }
+.car-finder h2 { margin: 0 0 12px; font: 600 clamp(30px, 3.4vw, 46px)/1.1 var(--font-display); letter-spacing: 0; }
 .car-finder-controls > p { max-width: 46ch; margin: 0 0 30px; color: var(--editorial-muted, var(--muted)); font-size: 15px; line-height: 1.6; }
 .car-finder fieldset { margin: 0 0 24px; padding: 0; border: 0; }
 .car-finder legend, .car-finder-days label { display: block; margin-bottom: 9px; color: var(--editorial-muted, var(--muted)); font-size: 13px; font-weight: 600; }
@@ -52,19 +48,19 @@ html[data-theme="dark"] { --upgrade-accent: #7ec2ec; --upgrade-accent-ink: #0a20
 .car-finder-options button[aria-pressed="true"] { border-color: var(--editorial-ink, var(--ink)); background: var(--editorial-ink, var(--ink)); color: var(--editorial-paper, var(--surface)); }
 .car-finder-days { display: grid; grid-template-columns: 1fr auto; align-items: baseline; gap: 2px 12px; margin-bottom: 26px; }
 .car-finder-days label { margin: 0; }
-.car-finder-days output { font: 600 clamp(26px, 3vw, 36px)/1.1 Sora, Inter, sans-serif; letter-spacing: -.04em; font-variant-numeric: tabular-nums; }
+.car-finder-days output { font: 600 clamp(26px, 3vw, 36px)/1.1 var(--font-display); letter-spacing: 0; font-variant-numeric: tabular-nums; }
 .car-finder-days input { grid-column: 1 / -1; width: 100%; height: 44px; margin: 0; accent-color: var(--upgrade-accent); cursor: pointer; }
 .car-finder-results { display: grid; gap: 0; border-top: 2px solid var(--editorial-ink, var(--ink)); }
 .car-finder-results article { display: grid; grid-template-columns: 148px minmax(0, 1fr) auto; align-items: center; gap: 18px; padding: 16px 0; border-bottom: 1px solid var(--editorial-line, var(--border)); }
 .car-finder-photo { padding: 0; border: 0; background: none; cursor: pointer; }
 .car-finder-photo img { display: block; width: 100%; aspect-ratio: 3 / 2; object-fit: contain; }
 html[data-theme="dark"] :is(.car-finder-photo img, .compare-dialog thead img, .compare-tray-photos img) { border-radius: 10px; background: #1c3242; }
-.car-finder-name h3 { margin: 0 0 3px; font: 600 18px/1.25 Sora, Inter, sans-serif; letter-spacing: -.02em; }
+.car-finder-name h3 { margin: 0 0 3px; font: 600 18px/1.25 var(--font-display); letter-spacing: 0; }
 .car-finder-name p { margin: 0 0 7px; color: var(--editorial-muted, var(--muted)); font-size: 13px; }
 .car-finder-name span { font-size: 13px; font-weight: 600; }
 .car-finder-total { display: grid; justify-items: end; gap: 3px; text-align: end; }
 .car-finder-total small { max-width: 130px; color: var(--editorial-muted, var(--muted)); font-size: 11px; line-height: 1.3; }
-.car-finder-total strong { font: 600 clamp(30px, 3.2vw, 42px)/1.1 Sora, Inter, sans-serif; letter-spacing: -.05em; font-variant-numeric: tabular-nums; }
+.car-finder-total strong { font: 600 clamp(30px, 3.2vw, 42px)/1.1 var(--font-display); letter-spacing: 0; font-variant-numeric: tabular-nums; }
 .car-finder-total a { display: inline-flex; align-items: center; gap: 6px; min-height: 36px; margin-top: 2px; color: var(--upgrade-accent); font-size: 13px; font-weight: 700; }
 html[dir="rtl"] .car-finder-total a svg { transform: scaleX(-1); }
 .car-finder-empty { margin: 0; padding: 36px 0; border-bottom: 1px solid var(--editorial-line, var(--border)); color: var(--editorial-muted, var(--muted)); font-size: 15px; line-height: 1.6; }
@@ -86,7 +82,7 @@ html[dir="rtl"] .car-finder-total a svg { transform: scaleX(-1); }
 .compare-dialog { width: min(100% - 28px, 980px); }
 .compare-panel { display: flex; flex-direction: column; max-height: inherit; }
 .compare-head { display: flex; flex: none; align-items: center; gap: 10px; padding: 14px 14px 14px 24px; border-bottom: 1px solid var(--border); }
-.compare-head h2 { flex: 1; min-width: 0; margin: 0; font: 600 20px/1.2 Sora, Inter, sans-serif; letter-spacing: -.03em; }
+.compare-head h2 { flex: 1; min-width: 0; margin: 0; font: 600 20px/1.2 var(--font-display); letter-spacing: 0; }
 .compare-share { display: inline-flex; align-items: center; gap: 7px; min-height: 42px; padding: 8px 13px; border: 1px solid var(--border); border-radius: 10px; background: none; color: inherit; font-size: 13px; font-weight: 600; cursor: pointer; }
 .compare-close { display: grid; place-items: center; width: 44px; height: 44px; padding: 0; border: 0; border-radius: 10px; background: none; color: inherit; cursor: pointer; }
 .compare-share:hover, .compare-close:hover { background: var(--page); }
@@ -94,16 +90,16 @@ html[dir="rtl"] .car-finder-total a svg { transform: scaleX(-1); }
 .compare-dialog table { width: 100%; min-width: 560px; border-collapse: collapse; table-layout: fixed; }
 .compare-dialog thead th { padding: 16px 12px; vertical-align: top; text-align: start; }
 .compare-dialog thead img { display: block; width: 100%; aspect-ratio: 3 / 2; margin-bottom: 9px; object-fit: contain; }
-.compare-dialog thead strong { display: block; font: 600 15px/1.25 Sora, Inter, sans-serif; }
+.compare-dialog thead strong { display: block; font: 600 15px/1.25 var(--font-display); }
 .compare-dialog thead small { display: block; margin: 3px 0 7px; color: var(--muted); font-size: 12px; font-weight: 500; }
 .compare-dialog thead button { min-height: 32px; padding: 0; border: 0; background: none; color: var(--muted); font-size: 12px; text-decoration: underline; cursor: pointer; }
 .compare-dialog tbody th { width: 24%; padding: 11px 12px 11px 0; color: var(--muted); font-size: 13px; font-weight: 600; text-align: start; }
 .compare-dialog tbody th small { display: block; font-size: 11px; font-weight: 500; }
-.compare-dialog tbody td { padding: 11px 12px; font: 600 17px/1.2 Sora, Inter, sans-serif; font-variant-numeric: tabular-nums; }
+.compare-dialog tbody td { padding: 11px 12px; font: 600 17px/1.2 var(--font-display); font-variant-numeric: tabular-nums; }
 .compare-dialog tbody tr:not(.compare-actions) { border-top: 1px solid var(--border); }
 .compare-dialog td.lowest { color: var(--upgrade-accent); font-weight: 800; }
 .compare-actions td { padding-top: 16px; }
-.compare-actions a { display: inline-flex; align-items: center; min-height: 42px; padding: 9px 14px; border-radius: 10px; background: var(--upgrade-accent); color: var(--upgrade-accent-ink); font: 700 13px Inter, sans-serif; }
+.compare-actions a { display: inline-flex; align-items: center; min-height: 42px; padding: 9px 14px; border-radius: 10px; background: var(--upgrade-accent); color: var(--upgrade-accent-ink); font: 700 13px var(--font-body); }
 
 /* Price calculator in the car window */
 .car-calc { margin: 0 0 16px; padding: 15px 16px; border: 1px solid var(--border); border-radius: 13px; background: color-mix(in srgb, var(--surface) 85%, #d9ebfb); }
@@ -113,7 +109,7 @@ html[dir="rtl"] .car-finder-total a svg { transform: scaleX(-1); }
 .car-calc input { width: 100%; height: 40px; margin: 0; accent-color: var(--upgrade-accent); cursor: pointer; }
 .car-calc-total { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; }
 .car-calc-total span { color: var(--muted); font-size: 12px; }
-.car-calc-total strong { font: 700 25px/1.1 Sora, Inter, sans-serif; letter-spacing: -.03em; font-variant-numeric: tabular-nums; }
+.car-calc-total strong { font: 700 25px/1.1 var(--font-display); letter-spacing: 0; font-variant-numeric: tabular-nums; }
 .tariff-list > div.active { color: var(--upgrade-accent); font-weight: 700; }
 .modal-share { display: inline-flex; align-items: center; gap: 7px; min-height: 42px; margin-top: 16px; padding: 8px 13px; border: 1px solid var(--border); border-radius: 10px; background: none; color: inherit; font-size: 13px; font-weight: 600; cursor: pointer; }
 .modal-share:hover { background: var(--page); }

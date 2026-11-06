@@ -4,7 +4,7 @@ import { useEffect, useRef, useState, useSyncExternalStore } from "react";
 import { useRouter } from "next/navigation";
 import { switcherOrder } from "@/lib/locales";
 import LanguageSwitcher from "@/components/language-switcher";
-import { ArrowDown, ArrowDownRight, ArrowRight, ChevronDown, Menu, Search, X, Scale, Share2, Check } from "lucide-react";
+import { ArrowDownRight, ArrowRight, ChevronDown, Menu, Moon, Search, Sun, SunMoon, X, Scale, Share2, Check } from "lucide-react";
 import { dictionaries, type Locale } from "@/lib/i18n";
 import { fleetUi } from "@/lib/fleet-ui";
 import { guideSlugs, guides, guideUi } from "@/lib/guides";
@@ -26,7 +26,28 @@ import { shareLink, useShortlist } from "@/lib/shortlist";
 import { upgradeUi } from "@/lib/upgrade-ui";
 import { dayCountLabel } from "@/lib/count-labels";
 import { carCountLabel } from "@/lib/count-labels";
-import { contactLocation } from "@/lib/service-info";
+import { contact, contactLocation } from "@/lib/service-info";
+
+// Real numbers only: the saving is the gap between the shortest and the longest published rate.
+const longTermSaving = (rates: readonly number[]) => Math.round((1 - rates[rates.length - 1] / rates[0]) * 100);
+// One car per class, then the cheapest of the rest, for the departure board.
+const boardCars = [...new Map(fleet.map((car) => [car.category, car])).values(), ...fleet.slice(0, 8)].filter((car, index, list) => list.findIndex((item) => item.id === car.id) === index);
+
+/** Baku has one fixed offset, so this clock is correct wherever the visitor is. */
+function HeroLive({ label }: { label: string }) {
+  const [now, setNow] = useState("");
+  useEffect(() => {
+    const format = new Intl.DateTimeFormat("en-GB", { timeZone: "Asia/Baku", hour: "2-digit", minute: "2-digit", second: "2-digit", hourCycle: "h23" });
+    const tick = () => setNow(format.format(new Date()));
+    tick();
+    const timer = window.setInterval(tick, 1000);
+    return () => clearInterval(timer);
+  }, []);
+  return <div className="hero-live">
+    <span className="hero-live-clock"><small>{label}</small><time dir="ltr" suppressHydrationWarning>{now || "--:--:--"}</time></span>
+    <a href={`tel:${contact.phone}`} dir="ltr"><span className="live-dot" aria-hidden="true" />24/7 · {contact.phoneDisplay}</a>
+  </div>;
+}
 
 type Theme = "hybrid" | "dark" | "light";
 const themeNames: Theme[] = ["hybrid", "dark", "light"];
@@ -175,21 +196,6 @@ export default function CarTimeSite({ locale }: { locale: Locale }) {
   }, []);
 
   useEffect(() => {
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches || !window.IntersectionObserver) return;
-    const sections = document.querySelectorAll<HTMLElement>(".home-reveal");
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach((entry) => {
-        if (!entry.isIntersecting) return;
-        entry.target.classList.add("is-visible");
-        observer.unobserve(entry.target);
-      });
-    }, { threshold: 0.08, rootMargin: "0px 0px -24px 0px" });
-    sections.forEach((section) => observer.observe(section));
-    document.documentElement.classList.add("motion-ready");
-    return () => { observer.disconnect(); document.documentElement.classList.remove("motion-ready"); };
-  }, []);
-
-  useEffect(() => {
     if (!detailCar) return;
     const previousFocus = document.activeElement instanceof HTMLElement ? document.activeElement : null;
     modalRef.current?.querySelector<HTMLElement>(".modal-close")?.focus();
@@ -237,7 +243,7 @@ export default function CarTimeSite({ locale }: { locale: Locale }) {
         <div className="container header-inner">
           <a className="brand" href="#top" aria-label="CarTime — home">
             {/* The dark mark is extracted from the supplied approved reference. */}
-            <img className="dark-logo" src="/assets/logo-dark.png" alt="CarTime" />
+            <img className="dark-logo" src="/assets/logo-dark.webp" alt="CarTime" />
             <img className="light-logo" src="/assets/logo-light.svg" alt="" aria-hidden="true" />
             <span className="brand-caption" aria-hidden="true">CAR RENTAL</span>
           </a>
@@ -251,7 +257,7 @@ export default function CarTimeSite({ locale }: { locale: Locale }) {
             <SearchButton locale={locale} />
             <LanguageSwitcher locale={locale} label={t.languageLabel} />
             <div className="theme-picker" role="group" aria-label={e.styles}>
-              {themeNames.map((name, index) => <button key={name} type="button" title={themeConcepts[name]} aria-label={`${t.themes[index]} — ${themeConcepts[name]}`} aria-pressed={theme === name} onClick={() => changeTheme(name)}><span>{t.themes[index]}</span></button>)}
+              {themeNames.map((name, index) => <button key={name} type="button" title={themeConcepts[name]} aria-label={`${t.themes[index]} — ${themeConcepts[name]}`} aria-pressed={theme === name} onClick={() => changeTheme(name)}>{name === "hybrid" ? <SunMoon size={16} aria-hidden="true" /> : name === "dark" ? <Moon size={16} aria-hidden="true" /> : <Sun size={16} aria-hidden="true" />}</button>)}
             </div>
             <a className="header-cta" href="#search">{e.select} <ArrowRight size={16} /></a>
             <button className="menu-button" type="button" aria-label={menuOpen ? t.close : t.mobileMenu} aria-expanded={menuOpen} onClick={() => setMenuOpen(!menuOpen)}>{menuOpen ? <X size={23} /> : <Menu size={23} />}</button>
@@ -265,17 +271,18 @@ export default function CarTimeSite({ locale }: { locale: Locale }) {
         <section className="hero">
           <div className="hero-photo" role="img" aria-label="CarTime automotive scene in Baku" />
           <div className="hero-sheen" />
+          <div className="hero-trails" aria-hidden="true"><i /><i /><i /></div>
           <div className="container hero-inner">
-            <div className="hero-copy"><p className="hero-overline"><span className="overline-dot" />Drive on Your Time <span>·</span> {t.eyebrow}</p><h1><span>{e.lineOne}</span><em>{e.lineTwo}</em></h1></div>
+            <div className="hero-copy"><p className="hero-overline"><span className="live-dot" aria-hidden="true" />{t.eyebrow}</p><h1><span>{e.lineOne}</span><em>{e.lineTwo}</em></h1></div>
             <div className="hero-side"><p className="hero-lead">{e.lead}</p><a className="button-primary" href="#search">{e.select}<ArrowRight size={18} /></a><a className="hero-text-link" href="#fleet">{e.explore}<ArrowDownRight size={17} /></a></div>
-            <a className="hero-scroll" href="#search"><span className="scroll-line" /><span>{e.scroll}</span><ArrowDown size={14} /></a>
-            <span className="hero-index">01 / 04 — BAKU</span>
+            <HeroLive label={travelUi[locale].timezone} />
           </div>
+          <div className="hero-board" aria-hidden="true"><div className="hero-board-track">{[0, 1].map((copy) => <div className="hero-board-group" key={copy}>{boardCars.map((car) => <span className="hero-board-item" key={car.id}>{car.name} {car.year}<b>${car.ratesUsd[0]}</b><small>{f.durations[0]}</small><b>${car.ratesUsd[5]}</b><small>{f.durations[5]}</small></span>)}</div>)}</div></div>
         </section>
 
         <div className="container search-container" id="search">
           <form className="search-panel" onSubmit={submitSearch} noValidate>
-            <div className="search-heading"><span className="search-icon">01 / DRIVE</span><strong>{e.pickup}</strong><p>{e.collection}</p></div>
+            <div className="search-heading"><strong>{e.pickup}</strong><p>{e.collection}</p></div>
             <div className="search-fields">
               <label className="search-field"><span>{t.pickup}</span><select value={pickup} onChange={(e) => setPickup(e.target.value)}><option value="city">{t.city}</option><option value="airport">{t.airport}</option></select></label>
               <label className="search-field"><span>{t.dropoff}</span><select value={dropoff} onChange={(e) => setDropoff(e.target.value)}><option value="city">{t.city}</option><option value="airport">{t.airport}</option></select></label>
@@ -293,18 +300,18 @@ export default function CarTimeSite({ locale }: { locale: Locale }) {
 
         <section className="section benefits-section home-reveal" id="benefits">
           <div className="container">
-            <div className="section-head"><div><p className="section-kicker">CARTIME / 01</p><h2>{t.benefitTitle}</h2></div><p className="section-intro">{t.benefitLead}</p></div>
+            <div className="section-head"><div><h2>{t.benefitTitle}</h2></div><p className="section-intro">{t.benefitLead}</p></div>
             <div className="benefit-grid">{t.benefits.map((benefit) => <article className="benefit-card" key={benefit[0]}><span className="benefit-number">{benefit[0]}</span><div><h3>{benefit[1]}</h3><p>{benefit[2]}</p></div><ArrowDownRight size={20} aria-hidden="true" /></article>)}</div>
           </div>
         </section>
 
         <section className="section fleet-section home-reveal" id="fleet">
           <div className="container">
-            <div className="section-head"><div><p className="section-kicker">CARTIME / 02 · {f.kicker}</p><h2>{f.title}</h2></div><p className="section-intro">{f.lead}</p></div>
+            <div className="section-head"><div><h2>{f.title}</h2></div><p className="section-intro">{f.lead}</p></div>
             <div className="fleet-toolbar"><label className="fleet-query"><Search size={17} /><span className="sr-only">{f.searchLabel}</span><input type="search" value={modelQuery} placeholder={f.searchPlaceholder} onChange={(event) => { setModelQuery(event.target.value); setVisibleCount(8); }} /></label><label className="fleet-sort"><span>{f.sortLabel}</span><select value={sort} onChange={(event) => setSort(event.target.value)}><option value="priceAsc">{f.sortOptions[0]}</option><option value="priceDesc">{f.sortOptions[1]}</option><option value="yearDesc">{f.sortOptions[2]}</option></select></label></div>
             <div className="filter-row" role="group" aria-label={f.title}>{categories.map((item) => <button type="button" key={item} className={category === item ? "active" : ""} aria-pressed={category === item} onClick={() => { setCategory(item); setVisibleCount(8); }}>{f.categories[item]}</button>)}</div>
             <p className="fleet-count">{carCountLabel(locale, filteredCars.length)}</p>
-            <div className="fleet-showcase">{filteredCars.length ? <div className="car-grid">{filteredCars.slice(0, visibleCount).map((car, index) => <article className="car-card" key={car.id}><button type="button" className="car-save" aria-pressed={shortlist.ids.includes(car.id)} aria-label={`${shortlist.ids.includes(car.id) ? up.shortlist.unsave : up.shortlist.save}: ${car.name} ${car.year}`} title={shortlist.ids.includes(car.id) ? up.shortlist.unsave : up.shortlist.save} onClick={() => shortlist.toggle(car.id)}><Scale size={18} aria-hidden="true" /></button><button className="car-card-open" type="button" onClick={() => setDetailCar(car.id)} aria-label={`${carInfo.details}: ${car.name} ${car.year}`}><div className="car-image"><span className="car-tag">{f.categories[car.category]}</span><img src={(fleetImages as Record<string, string>)[car.id]} alt={`${car.name} ${car.year}`} loading={index < 4 ? "eager" : "lazy"} decoding="async" onError={(event) => { event.currentTarget.src = car.category === "SUV" ? "/assets/suv.svg" : "/assets/sedan.svg"; }} /></div><div className="car-info"><div className="car-heading"><div><p className="car-year">{car.year} · {f.categories[car.category]}</p><h3>{car.name}</h3></div><span className="car-card-arrow"><ArrowRight size={18} /></span></div><p className="car-fit">{carInfo.fit[car.category]}</p><div className="car-features"><span>{carInfo.included[0]}</span><span>{carInfo.included[1]}</span></div><div className="car-bottom"><div className="car-price"><strong>${car.ratesUsd[0]}</strong><small>{f.durations[0]} · {f.perDay}</small></div><div className="car-price car-price-long"><strong>${car.ratesUsd[1]}</strong><small>{f.durations[1]} · {f.perDay}</small></div></div></div></button></article>)}</div> : <p className="fleet-empty">{f.empty}</p>}</div>
+            <div className="fleet-showcase">{filteredCars.length ? <div className="car-grid">{filteredCars.slice(0, visibleCount).map((car, index) => <article className="car-card" key={car.id}><button type="button" className="car-save" aria-pressed={shortlist.ids.includes(car.id)} aria-label={`${shortlist.ids.includes(car.id) ? up.shortlist.unsave : up.shortlist.save}: ${car.name} ${car.year}`} title={shortlist.ids.includes(car.id) ? up.shortlist.unsave : up.shortlist.save} onClick={() => shortlist.toggle(car.id)}><Scale size={18} aria-hidden="true" /></button><button className="car-card-open" type="button" onClick={() => setDetailCar(car.id)} aria-label={`${carInfo.details}: ${car.name} ${car.year}`}><div className="car-image"><span className="car-plate" aria-hidden="true"><i>AZ</i><b>{car.year}</b></span><span className="car-saving">−{longTermSaving(car.ratesUsd)}% · {f.durations[5]}</span><img src={(fleetImages as Record<string, string>)[car.id]} alt={`${car.name} ${car.year}`} width={600} height={400} loading={index < 4 ? "eager" : "lazy"} decoding="async" onError={(event) => { event.currentTarget.src = car.category === "SUV" ? "/assets/suv.svg" : "/assets/sedan.svg"; }} /></div><div className="car-info"><div className="car-heading"><div><p className="car-year">{car.year} · {f.categories[car.category]}</p><h3>{car.name}</h3></div><span className="car-card-arrow"><ArrowRight size={18} /></span></div><p className="car-fit">{carInfo.fit[car.category]}</p><div className="car-features"><span>{carInfo.included[0]}</span><span>{carInfo.included[1]}</span></div><div className="car-bottom"><div className="car-price"><strong>${car.ratesUsd[0]}</strong><small>{f.durations[0]} · {f.perDay}</small></div><div className="car-price car-price-long"><strong>${car.ratesUsd[5]}</strong><small>{f.durations[5]} · {f.perDay}</small></div></div></div></button></article>)}</div> : <p className="fleet-empty">{f.empty}</p>}</div>
             {filteredCars.length > visibleCount && <button className="load-more" type="button" onClick={() => setVisibleCount((count) => count + 12)}>{f.more}<ArrowDownRight size={17} /></button>}
             <a className="fleet-all-link" href={`/${locale}/fleet`}>{g.allCars}<ArrowRight size={18} /></a>
           </div>
@@ -314,18 +321,18 @@ export default function CarTimeSite({ locale }: { locale: Locale }) {
           <div className="container airport-inner"><div><p className="airport-kicker">{t.airportEyebrow}</p><h2>{t.airportTitle}</h2><p>{t.airportLead}</p><button className="airport-button" onClick={chooseAirport} type="button">{t.airportCta}<ArrowRight size={18} /></button><a className="airport-guide-link" href={`/${locale}/guide/airport`}>{guides[locale].airport.title} ↗</a></div></div>
         </section>
 
-        <section className="section home-guides home-reveal" id="guides"><div className="container"><div className="section-head"><div><p className="section-kicker">CARTIME / GUIDE</p><h2>{g.homeTitle}</h2></div><p className="section-intro">{g.homeLead}</p></div><div className="guide-card-grid">{guideSlugs.map((slug, index) => <a className={`guide-card guide-card--${slug}`} key={slug} href={`/${locale}/guide/${slug}`}><span>0{index + 1} / {guides[locale][slug].eyebrow}</span><h3>{guides[locale][slug].title}</h3><p>{guides[locale][slug].teaser}</p><b>{g.read} ↗</b></a>)}</div></div></section>
+        <section className="section home-guides home-reveal" id="guides"><div className="container"><div className="section-head"><div><h2>{g.homeTitle}</h2></div><p className="section-intro">{g.homeLead}</p></div><div className="guide-card-grid">{guideSlugs.map((slug) => <a className={`guide-card guide-card--${slug}`} key={slug} href={`/${locale}/guide/${slug}`}><span>{guides[locale][slug].eyebrow}</span><h3>{guides[locale][slug].title}</h3><p>{guides[locale][slug].teaser}</p><b>{g.read} ↗</b></a>)}</div></div></section>
 
-        <section className="section home-rental home-reveal" id="rental"><div className="container"><div className="section-head"><div><p className="section-kicker">CARTIME / RENTAL</p><h2>{rental.hubTitle}</h2></div><p className="section-intro">{rental.hubLead}</p></div><div className="rental-hub-grid">{rentalSlugs.slice(0, 3).map((slug, index) => <a className="rental-topic" key={slug} href={`/${locale}/rental/${slug}`}><span>0{index + 1} / {rental.nav}</span><h3>{rentalPages[locale][slug].title}</h3><p>{rentalPages[locale][slug].teaser}</p><b>{rental.read} →</b></a>)}</div><div className="rental-hub-cta"><a href={`/${locale}/rental`}>{rental.nav} →</a><a href={`/${locale}/booking`}>{bookingUi[locale].nav} →</a><a href={`/${locale}/contact`}>{rental.contact} →</a></div></div></section>
+        <section className="section home-rental home-reveal" id="rental"><div className="container"><div className="section-head"><div><h2>{rental.hubTitle}</h2></div><p className="section-intro">{rental.hubLead}</p></div><div className="rental-hub-grid">{rentalSlugs.slice(0, 3).map((slug) => <a className="rental-topic" key={slug} href={`/${locale}/rental/${slug}`}><h3>{rentalPages[locale][slug].title}</h3><p>{rentalPages[locale][slug].teaser}</p><b>{rental.read} →</b></a>)}</div><div className="rental-hub-cta"><a href={`/${locale}/rental`}>{rental.nav} →</a><a href={`/${locale}/booking`}>{bookingUi[locale].nav} →</a><a href={`/${locale}/contact`}>{rental.contact} →</a></div></div></section>
 
         <section className="section home-map home-reveal" id="map"><div className="container home-map-grid"><div className="home-map-copy"><p className="section-kicker">{mapUi[locale].kicker}</p><h2>{mapUi[locale].title}</h2><p>{mapUi[locale].lead}</p><address>{contactLocation.address}</address><div className="home-map-actions"><a href={contactLocation.mapsUrl} target="_blank" rel="noopener noreferrer">{mapUi[locale].open} ↗</a><a href={`/${locale}/contact`}>{mapUi[locale].contact} →</a></div></div><div className="home-map-frame"><iframe title={mapUi[locale].title} src="https://maps.google.com/maps?q=40.3778175%2C49.8561227&z=17&output=embed" loading="lazy" referrerPolicy="no-referrer-when-downgrade" allowFullScreen /></div></div></section>
 
         <section className="section home-about" id="about"><div className="container home-about-inner"><div><p className="section-kicker">{s.aboutEyebrow}</p><h2>{s.aboutTitle}</h2><p>{s.aboutMission}</p><div className="home-about-actions"><a href={`/${locale}/about`}>{s.aboutNav}<ArrowRight size={17} /></a><a href={`/${locale}/fleet`}>{s.aboutCta}<ArrowRight size={17} /></a></div></div><div className="home-about-facts">{s.aboutFacts.map(([number, label]) => <div key={label}><strong>{number}</strong><span>{label}</span></div>)}</div></div></section>
 
-        <section className="section faq-section" id="faq"><div className="container faq-inner"><div><p className="section-kicker">CARTIME / FAQ</p><h2>{s.faqTitle}</h2><p className="faq-slogan">{s.quickLead}</p><a className="faq-all-link" href={`/${locale}/faq`}>{s.quickButton}<ArrowRight size={17} /></a></div><div className="faq-list">{homeFaqIds.map((id) => faqItems[locale].find((item) => item.id === id)).filter((item) => !!item).map((item) => <details key={item.id}><summary>{item.question}<ChevronDown size={20} /></summary><p>{item.answer}</p></details>)}</div></div></section>
+        <section className="section faq-section" id="faq"><div className="container faq-inner"><div><h2>{s.faqTitle}</h2><p className="faq-slogan">{s.quickLead}</p><a className="faq-all-link" href={`/${locale}/faq`}>{s.quickButton}<ArrowRight size={17} /></a></div><div className="faq-list">{homeFaqIds.map((id) => faqItems[locale].find((item) => item.id === id)).filter((item) => !!item).map((item) => <details key={item.id}><summary>{item.question}<ChevronDown size={20} /></summary><p>{item.answer}</p></details>)}</div></div></section>
       </main>
 
-      <footer className="site-footer"><div className="container footer-inner"><div className="footer-brand"><img className="dark-logo" src="/assets/logo-dark.png" alt="CarTime" /><img className="light-logo" src="/assets/logo-light.svg" alt="" aria-hidden="true" /><span className="brand-caption" aria-hidden="true">CAR RENTAL</span><p>{t.footerText}</p><ContactLinks locale={locale} /></div><div className="footer-right"><p>{t.footerDemo}</p><a href={`/${locale}/fleet`}>{g.allCars} ↗</a><a href={`/${locale}/booking`}>{bookingUi[locale].nav} ↗</a><a href="#top">{t.backTop} ↑</a></div></div><nav className="container footer-guides" aria-label={g.nav}><a href={`/${locale}/booking`}>{bookingUi[locale].nav}</a><a href={`/${locale}/travel-pass`}>{travelUi[locale].lookup}</a><a href={`/${locale}/about`}>{s.aboutNav}</a><a href={`/${locale}/faq`}>{s.faqNav}</a><a href={`/${locale}/rental`}>{rental.nav}</a><a href={`/${locale}/contact`}>{rental.contact}</a>{rentalSlugs.map((slug) => <a key={slug} href={`/${locale}/rental/${slug}`}>{rentalPages[locale][slug].title}</a>)}{guideSlugs.map((slug) => <a key={slug} href={`/${locale}/guide/${slug}`}>{guides[locale][slug].title}</a>)}</nav><div className="container footer-bottom"><span>© {new Date().getFullYear()} CarTime</span><span>{switcherOrder.map((code) => code.toUpperCase()).join(" / ")}</span></div></footer>
+      <footer className="site-footer"><div className="container"><span className="footer-slogan" aria-hidden="true">Drive on <em>your time</em></span></div><div className="container footer-inner"><div className="footer-brand"><img className="dark-logo" src="/assets/logo-dark.webp" alt="CarTime" /><img className="light-logo" src="/assets/logo-light.svg" alt="" aria-hidden="true" /><span className="brand-caption" aria-hidden="true">CAR RENTAL</span><p>{t.footerText}</p><ContactLinks locale={locale} /></div><div className="footer-right"><p>{t.footerDemo}</p><a href={`/${locale}/fleet`}>{g.allCars} ↗</a><a href={`/${locale}/booking`}>{bookingUi[locale].nav} ↗</a><a href="#top">{t.backTop} ↑</a></div></div><nav className="container footer-guides" aria-label={g.nav}><a href={`/${locale}/booking`}>{bookingUi[locale].nav}</a><a href={`/${locale}/travel-pass`}>{travelUi[locale].lookup}</a><a href={`/${locale}/about`}>{s.aboutNav}</a><a href={`/${locale}/faq`}>{s.faqNav}</a><a href={`/${locale}/rental`}>{rental.nav}</a><a href={`/${locale}/contact`}>{rental.contact}</a>{rentalSlugs.map((slug) => <a key={slug} href={`/${locale}/rental/${slug}`}>{rentalPages[locale][slug].title}</a>)}{guideSlugs.map((slug) => <a key={slug} href={`/${locale}/guide/${slug}`}>{guides[locale][slug].title}</a>)}</nav><div className="container footer-bottom"><span>© {new Date().getFullYear()} CarTime</span><span>{switcherOrder.map((code) => code.toUpperCase()).join(" / ")}</span></div></footer>
 
       <CarCompare locale={locale} />
 
@@ -334,8 +341,8 @@ export default function CarTimeSite({ locale }: { locale: Locale }) {
       {selectedCar && <div className="modal-backdrop" onMouseDown={() => setDetailCar(null)}><div className="detail-modal" ref={modalRef} role="dialog" aria-modal="true" aria-labelledby="car-modal-title" onMouseDown={(e) => e.stopPropagation()}>
         <button type="button" className="modal-close" aria-label={carInfo.close} onClick={() => setDetailCar(null)}><X size={20} /></button>
         <div className="modal-image"><img src={(fleetImages as Record<string, string>)[selectedCar.id]} alt={`${selectedCar.name} ${selectedCar.year}`} /><span>{selectedCar.year} · {f.categories[selectedCar.category]}</span></div>
-        <div className="modal-content"><p className="section-kicker">CARTIME / {f.categories[selectedCar.category]}</p><h2 id="car-modal-title">{selectedCar.name}</h2><p className="modal-fit">{carInfo.fit[selectedCar.category]}</p>
-          <div className="modal-fact-groups"><section><h3>{carInfo.highlights}</h3><ul>{carInfo.included.map((line) => <li key={line}>✓ {line}</li>)}</ul></section><section><h3>{carInfo.before}</h3><ul>{carInfo.terms.map((line) => <li key={line}>✓ {line}</li>)}</ul></section></div>
+        <div className="modal-content"><p className="car-year">{selectedCar.year} · {f.categories[selectedCar.category]}</p><h2 id="car-modal-title">{selectedCar.name}</h2><p className="modal-fit">{carInfo.fit[selectedCar.category]}</p>
+          <div className="modal-fact-groups"><section><h3>{carInfo.highlights}</h3><ul>{carInfo.included.map((line) => <li key={line}><Check size={15} aria-hidden="true" />{line}</li>)}</ul></section><section><h3>{carInfo.before}</h3><ul>{carInfo.terms.map((line) => <li key={line}><Check size={15} aria-hidden="true" />{line}</li>)}</ul></section></div>
           <div className="car-calc"><div className="car-calc-head"><label htmlFor="car-calc-range">{up.calc.title}</label><output htmlFor="car-calc-range">{dayCountLabel(locale, calcDays)}</output></div><input id="car-calc-range" type="range" min={2} max={45} value={calcDays} aria-valuetext={dayCountLabel(locale, calcDays)} onChange={(event) => setCalcDays(Number(event.target.value))} /><div className="car-calc-total"><span>${selectedCar.ratesUsd[rateTierIndex(calcDays)]} {f.perDay} · {up.calc.total}</span><strong>${selectedCar.ratesUsd[rateTierIndex(calcDays)] * calcDays}</strong></div></div><h3>{carInfo.rates}</h3><div className="tariff-list">{selectedCar.ratesUsd.map((rate, index) => <div key={f.durations[index]} className={index === rateTierIndex(calcDays) ? "active" : ""}><span>{f.durations[index]}</span><strong>${rate} <small>{f.perDay}</small></strong></div>)}</div><p className="tariff-note">{carInfo.rateNote}</p><div className="modal-actions"><a className="booking-modal-link" href={`/${locale}/booking?car=${selectedCar.id}${today ? `&from=${addDaysIso(today, 1)}&to=${addDaysIso(addDaysIso(today, 1), calcDays)}` : ""}`}>{bookingUi[locale].nav}<ArrowRight size={18} /></a><button type="button" className="modal-share" onClick={() => void shareCar()}>{linkCopied ? <Check size={16} /> : <Share2 size={16} />}<span role="status">{linkCopied ? up.calc.copied : up.calc.share}</span></button><a href={`/${locale}/fleet`}>{carInfo.compare} ↗</a></div>
         </div></div></div>}
     </div>

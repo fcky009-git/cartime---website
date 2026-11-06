@@ -20,7 +20,7 @@ export default function InfoShell({ locale, current, children }: { locale: Local
     <header className="site-header">
       <div className="container info-header-inner">
         <a className="brand" href={`/${locale}`} aria-label="CarTime">
-          <Image unoptimized width={894} height={242} className="dark-logo" src="/assets/logo-dark.png" alt="CarTime" />
+          <Image unoptimized width={894} height={242} className="dark-logo" src="/assets/logo-dark.webp" alt="CarTime" />
           <Image unoptimized width={748} height={216} className="light-logo" src="/assets/logo-light.svg" alt="" aria-hidden="true" />
             <span className="brand-caption" aria-hidden="true">CAR RENTAL</span>
         </a>
@@ -36,8 +36,9 @@ export default function InfoShell({ locale, current, children }: { locale: Local
     </header>
     {children}
     <footer className="site-footer">
+      <div className="container"><span className="footer-slogan" aria-hidden="true">Drive on <em>your time</em></span></div>
       <div className="container info-footer-inner">
-        <div><Image unoptimized width={894} height={242} className="dark-logo" src="/assets/logo-dark.png" alt="CarTime" /><Image unoptimized width={748} height={216} className="light-logo" src="/assets/logo-light.svg" alt="" aria-hidden="true" /><span className="brand-caption" aria-hidden="true">CAR RENTAL</span><p>{ui.homeLead}</p><ContactLinks locale={locale} /></div>
+        <div><Image unoptimized width={894} height={242} className="dark-logo" src="/assets/logo-dark.webp" alt="CarTime" /><Image unoptimized width={748} height={216} className="light-logo" src="/assets/logo-light.svg" alt="" aria-hidden="true" /><span className="brand-caption" aria-hidden="true">CAR RENTAL</span><p>{ui.homeLead}</p><ContactLinks locale={locale} /></div>
         <nav aria-label={ui.next}>
           <a href={`/${locale}`}>{ui.back}</a>
           <a href={`/${locale}/fleet`}>{ui.allCars}</a>

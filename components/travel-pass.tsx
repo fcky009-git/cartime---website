@@ -194,7 +194,7 @@ export default function TravelPass({ locale }: { locale: Locale }) {
         {notice && <p className="travel-notice" role="status"><Check size={16} />{notice}</p>}
         <div className="travel-dashboard">
           <article className={`travel-ticket travel-state-${stage}`}>
-            <div className="travel-ticket-top"><Image unoptimized src="/assets/logo-dark.png" alt="CarTime" width={160} height={45} /><span><LockKeyhole size={12} /> TRAVEL PASS</span></div>
+            <div className="travel-ticket-top"><Image unoptimized src="/assets/logo-dark.webp" alt="CarTime" width={160} height={45} /><span><LockKeyhole size={12} /> TRAVEL PASS</span></div>
             <div className="travel-car">
               <div className="travel-car-halo" />
               {fleetImages[pass.carId as keyof typeof fleetImages] && <Image unoptimized src={fleetImages[pass.carId as keyof typeof fleetImages]} alt={`${pass.carName} ${pass.carYear}`} width={900} height={500} priority />}

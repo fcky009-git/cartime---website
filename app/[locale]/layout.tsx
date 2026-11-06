@@ -13,6 +13,7 @@ import "../admin.css";
 import "../navigation-polish.css";
 import "../upgrades.css";
 import "../travel-pass.css";
+import "../redesign.css";
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteOrigin),
@@ -24,8 +25,10 @@ export const metadata: Metadata = {
 };
 
 const themeScript = `try{var t=localStorage.getItem('cartime-theme');document.documentElement.dataset.theme=['hybrid','dark','light'].includes(t)?t:'hybrid'}catch(e){document.documentElement.dataset.theme='hybrid'}`;
-const fontsHref = "https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Inter:wght@400;500;600;700;800&family=Sora:wght@400;500;600;700;800&display=swap";
+const fontsHref = "https://fonts.googleapis.com/css2?family=Onest:wght@400;500;600;700&family=Sofia+Sans+Extra+Condensed:wght@600;700;800&display=swap";
 const localeFonts: Partial<Record<import("@/lib/locales").Locale, string>> = {
+  // The display face has no Ə, which every Azerbaijani headline needs.
+  az: "https://fonts.googleapis.com/css2?family=Fira+Sans+Extra+Condensed:wght@600;700;800&display=swap",
   zh: "https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;600;700;800&display=swap",
   ko: "https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;600;700;800&display=swap",
   ar: "https://fonts.googleapis.com/css2?family=Noto+Sans+Arabic:wght@400;500;600;700;800&display=swap",
@@ -40,7 +43,7 @@ export default async function LocaleLayout({ children, params }: Readonly<{ chil
     <html lang={info.hreflang} dir={info.dir} suppressHydrationWarning>
       <head>
         <script dangerouslySetInnerHTML={{ __html: themeScript }} />
-        <meta name="theme-color" content="#080f1a" />
+        <meta name="theme-color" content="#070b14" />
         <link rel="manifest" href="/manifest.webmanifest" crossOrigin="use-credentials" />
         <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png" />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
