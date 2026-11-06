@@ -2,8 +2,7 @@ import { asc, eq } from "drizzle-orm";
 import { z } from "zod";
 import { getDb } from "@/db";
 import { adminBookingEvents } from "@/db/schema";
-import { findTravelPass, passHeaders, travelAccessAllowed } from "@/lib/travel-pass";
-import { buildWalletPass, walletConfigured } from "@/lib/wallet-pass";
+import { findTravelPass, passHeaders, travelAccessAllowed, walletConfigured } from "@/lib/travel-pass";
 export const dynamic = "force-dynamic";
 const input = z.object({ reference:z.string().trim().max(32), accessCode:z.string().max(40), wallet:z.boolean().optional() });
 export async function POST(request:Request) {
@@ -21,6 +20,7 @@ export async function POST(request:Request) {
     const {booking:b,pass:p}=row;
     if(parsed.data.wallet){
       if(!walletConfigured()) return Response.json({error:"Wallet unavailable"},{status:503,headers:passHeaders});
+      const { buildWalletPass } = await import("@/lib/wallet-pass");
       const bytes=await buildWalletPass(row,new URL(request.url).origin,parsed.data.accessCode);
       return new Response(bytes.buffer as ArrayBuffer,{headers:{...passHeaders,"Content-Type":"application/vnd.apple.pkpass","Content-Disposition":`attachment; filename="${p.reference}.pkpass"`}});
     }
@@ -29,6 +29,6 @@ export async function POST(request:Request) {
       carId:b.carId,carName:b.carName,carYear:b.carYear,fromDate:b.fromDate,fromTime:b.fromTime,toDate:b.toDate,toTime:b.toTime,days:b.days,
       pickup:b.pickup,pickupAddress:b.pickupAddress,dropoff:b.dropoff,returnAddress:b.returnAddress,estimateUsd:b.estimateUsd,
       confirmedTotalUsd:p.confirmedTotalUsd,depositUsd:p.depositUsd,message:p.message,pickupInstructions:p.pickupInstructions,
-      history:[{status:"new",at:b.createdAt},...events.filter(e=>e.type==="status").map(e=>({status:e.value,at:e.createdAt}))],walletReady:walletConfigured()}},{headers:passHeaders});
+      history:[{status:"new",at:b.createdAt},...events.filter(e=>e.type==="status"||e.type==="stage").map(e=>({status:e.value,at:e.createdAt}))],walletReady:walletConfigured()}},{headers:passHeaders});
   }catch(error){ console.error("Travel pass request failed",error);return Response.json({error:"Unavailable"},{status:503,headers:passHeaders}); }
 }

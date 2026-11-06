@@ -2,23 +2,30 @@ import { env } from "cloudflare:workers";
 import { eq } from "drizzle-orm";
 import { getDb } from "@/db";
 import { bookingRequests, travelPasses } from "@/db/schema";
+import { normalizeAccessCode, travelReference } from "@/lib/travel-access";
 
 export const passHeaders = { "Cache-Control": "no-store, private", "X-Robots-Tag": "noindex, nofollow", "Referrer-Policy": "no-referrer" };
-export const normalizeCode = (value: string) => value.toUpperCase().replace(/[\s-]/g, "");
 export async function hashAccess(value: string) {
-  const bytes = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(normalizeCode(value)));
+  const bytes = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(normalizeAccessCode(value)));
   return Array.from(new Uint8Array(bytes), b => b.toString(16).padStart(2, "0")).join("");
 }
 export function newAccessCode() {
   const alphabet = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
   return Array.from(crypto.getRandomValues(new Uint8Array(12)), b => alphabet[b & 31]).join("");
 }
+export function walletConfigured() {
+  return Boolean(env.CARTIME_WALLET_PASS_TYPE_ID && env.CARTIME_WALLET_TEAM_ID && env.CARTIME_WALLET_CERT_PEM && env.CARTIME_WALLET_KEY_PEM && env.CARTIME_WALLET_WWDR_PEM);
+}
+/** The row for a new pass, so a booking and its pass can be saved in one batch. */
+export async function newTravelPassRow(bookingId: string, code: string) {
+  return { bookingId, reference: travelReference(bookingId), accessHash: await hashAccess(code), updatedAt: new Date().toISOString() };
+}
 export async function issueTravelPass(bookingId: string, code: string, create = true) {
   const accessHash = await hashAccess(code);
   const db = getDb();
-  if(create) await db.insert(travelPasses).values({ bookingId, reference: `CT-${bookingId.replaceAll("-", "").slice(0,12).toUpperCase()}`, accessHash, updatedAt: new Date().toISOString() }).onConflictDoNothing({ target: travelPasses.bookingId });
+  if (create) await db.insert(travelPasses).values(await newTravelPassRow(bookingId, code)).onConflictDoNothing({ target: travelPasses.bookingId });
   const [pass] = await db.select().from(travelPasses).where(eq(travelPasses.bookingId, bookingId));
-  return pass?.accessHash === accessHash ? { reference: pass.reference, accessCode: normalizeCode(code) } : null;
+  return pass?.accessHash === accessHash ? { reference: pass.reference, accessCode: normalizeAccessCode(code) } : null;
 }
 export async function travelAccessAllowed(request: Request) {
   const ip = request.headers.get("cf-connecting-ip");
@@ -26,7 +33,8 @@ export async function travelAccessAllowed(request: Request) {
   if (!ip) return false;
   const fingerprint = await hashAccess(`${env.CARTIME_ADMIN_SESSION_SECRET}:${ip}`);
   const now = Date.now();
-  await env.DB!.prepare("DELETE FROM travel_access_attempts WHERE window_start < ?1").bind(now-86400000).run();
+  // Old rows only need removing now and then; this runs on every automatic refresh.
+  if (Math.random() < 0.02) await env.DB!.prepare("DELETE FROM travel_access_attempts WHERE window_start < ?1").bind(now-86400000).run();
   const row = await env.DB!.prepare(`INSERT INTO travel_access_attempts (fingerprint, attempts, window_start) VALUES (?1,1,?2)
     ON CONFLICT(fingerprint) DO UPDATE SET attempts = CASE WHEN ?2-window_start >= 900000 THEN 1 ELSE attempts+1 END,
     window_start = CASE WHEN ?2-window_start >= 900000 THEN ?2 ELSE window_start END RETURNING attempts`).bind(fingerprint,now).first<{attempts:number}>();
