@@ -14,6 +14,7 @@ import "../navigation-polish.css";
 import "../upgrades.css";
 import "../travel-pass.css";
 import "../redesign.css";
+import "../liquid-glass.css";
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteOrigin),

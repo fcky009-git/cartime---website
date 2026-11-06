@@ -12,7 +12,7 @@ Node 22.13+ and npm.
 
 ```
 npm run install:ci     # install (use this, not plain npm install)
-npm run lint           # must stay at 0 errors (14 known <img> warnings)
+npm run lint           # must stay at 0 errors (12 known <img> warnings)
 npx tsc --noEmit       # must stay clean
 npm run build          # must succeed
 ```
@@ -37,7 +37,7 @@ These files connect the project to the Sites/Codex preview and deployment. Do no
 
 ## Design system
 
-The look is "Baku after dark". `app/redesign.css` loads last and holds the tokens (`--accent`, `--accent-hot`, `--accent-ink`, `--night`, `--font-display`, `--font-body`), so change colours and type there first. Colours come from the logo's blues (`#0046DA`, `#125CF4`, `#2188FF`, `#59BDFF`), white and deep navy; the main site photos are graded to match, so do not add warm accents. Headlines use Sofia Sans Extra Condensed, with Fira Sans Extra Condensed only for the Azerbaijani letter Ə, which the first font lacks; body text uses Onest. Keep body text at 13px or larger and check all three themes, phone width and Arabic.
+The look is "Baku after dark". `app/redesign.css` loads last and holds the tokens (`--accent`, `--accent-hot`, `--accent-ink`, `--night`, `--font-display`, `--font-body`), so change colours and type there first. Colours come from the logo's blues (`#0046DA`, `#125CF4`, `#2188FF`, `#59BDFF`), white and deep navy; the main site photos are graded to match, so do not add warm accents. `app/liquid-glass.css` holds the glass material and the shared `components/glass-header.tsx`; put glass on pseudo-elements and keep panel animations to `backwards` fill, because an element with opacity animating or held by an animation stops its children's backdrop blur. Headlines use Sofia Sans Extra Condensed, with Fira Sans Extra Condensed only for the Azerbaijani letter Ə, which the first font lacks; body text uses Onest. Keep body text at 13px or larger and check all three themes, phone width and Arabic.
 
 ## Languages
 

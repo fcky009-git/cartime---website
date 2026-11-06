@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef } from "react";
+import { ArrowRight, ArrowUpRight, Building2, CarFront, ChevronDown, Compass, ConciergeBell, FileText, Layers, type LucideIcon } from "lucide-react";
 import type { Locale } from "@/lib/i18n";
 import { travelUi } from "@/lib/travel-ui";
 
@@ -55,29 +56,47 @@ const labels = {
   },
 } satisfies Record<Locale, Record<string, string>>;
 
-export default function SiteDirectory({ locale }: { locale: Locale }) {
+export default function SiteDirectory({ locale, inline = false }: { locale: Locale; inline?: boolean }) {
   const l = labels[locale];
   const menuRef = useRef<HTMLDetailsElement>(null);
 
   useEffect(() => {
+    if (inline) return;
     const closeOutside = (event: PointerEvent) => {
       if (menuRef.current && !menuRef.current.contains(event.target as Node)) menuRef.current.open = false;
     };
     document.addEventListener("pointerdown", closeOutside);
     return () => document.removeEventListener("pointerdown", closeOutside);
-  }, []);
+  }, [inline]);
+
+  const close = () => { if (menuRef.current && !inline) menuRef.current.open = false; };
+  const group = (Icon: LucideIcon, title: string, links: [string, string][]) => <div className="directory-group">
+    <strong><Icon size={15} aria-hidden="true" />{title}</strong>
+    {links.map(([path, label]) => <a key={path} href={`/${locale}${path}`} onClick={close}><span>{label}</span><ArrowUpRight size={15} aria-hidden="true" /></a>)}
+  </div>;
+
+  const panel = <div className={`site-directory-panel${inline ? "" : " glass-panel"}`}>
+    <div className="directory-column">
+      {group(CarFront, l.cars, [["/fleet", l.fleet], ["/travel-pass", travelUi[locale].lookup], ["#map", l.map]])}
+      {group(Building2, l.company, [["/about", l.about], ["/faq", l.faq], ["/contact", l.contact]])}
+    </div>
+    <div className="directory-column">
+      {group(ConciergeBell, l.services, [["/rental/airport", l.airport], ["/rental/delivery", l.delivery], ["/rental/long-term", l.longTerm]])}
+      {group(Layers, l.classes, [["/rental/economy", l.economy], ["/rental/suv", l.suv]])}
+    </div>
+    <div className="directory-column">
+      {group(FileText, l.terms, [["/rental", l.rental], ["/rental/conditions", l.conditions], ["/rental/insurance", l.insurance], ["/rental/mileage", l.mileage]])}
+      <a className="directory-tile" href={`/${locale}/booking`} onClick={close}><span>{l.booking}</span><ArrowRight size={20} aria-hidden="true" className="travel-flip" /></a>
+    </div>
+    <div className="directory-column">
+      {group(Compass, l.travel, [["/guide/baku", l.baku], ["/guide/routes", l.routes], ["/guide/absheron", l.absheron], ["/guide/gobustan", l.gobustan], ["/guide/sheki", l.sheki], ["/guide/airport", l.airportGuide], ["/guide/rental", l.rentalGuide]])}
+    </div>
+  </div>;
 
   return <details ref={menuRef} className="site-directory" onKeyDown={(event) => {
     if (event.key === "Escape" && menuRef.current) {
       menuRef.current.open = false;
       menuRef.current.querySelector("summary")?.focus();
     }
-  }}><summary>{l.all}<span aria-hidden="true">⌄</span></summary><div className="site-directory-panel">
-    <div className="directory-group"><strong>{l.cars}</strong><a href={`/${locale}/fleet`}>{l.fleet}</a><a href={`/${locale}/booking`}>{l.booking}</a><a href={`/${locale}/travel-pass`}>{travelUi[locale].lookup}</a><a href={`/${locale}#map`}>{l.map}</a></div>
-    <div className="directory-group"><strong>{l.services}</strong><a href={`/${locale}/rental/airport`}>{l.airport}</a><a href={`/${locale}/rental/delivery`}>{l.delivery}</a><a href={`/${locale}/rental/long-term`}>{l.longTerm}</a></div>
-    <div className="directory-group"><strong>{l.terms}</strong><a href={`/${locale}/rental`}>{l.rental}</a><a href={`/${locale}/rental/conditions`}>{l.conditions}</a><a href={`/${locale}/rental/insurance`}>{l.insurance}</a><a href={`/${locale}/rental/mileage`}>{l.mileage}</a></div>
-    <div className="directory-group"><strong>{l.classes}</strong><a href={`/${locale}/rental/economy`}>{l.economy}</a><a href={`/${locale}/rental/suv`}>{l.suv}</a></div>
-    <div className="directory-group"><strong>{l.travel}</strong><a href={`/${locale}/guide/baku`}>{l.baku}</a><a href={`/${locale}/guide/routes`}>{l.routes}</a><a href={`/${locale}/guide/absheron`}>{l.absheron}</a><a href={`/${locale}/guide/gobustan`}>{l.gobustan}</a><a href={`/${locale}/guide/sheki`}>{l.sheki}</a><a href={`/${locale}/guide/airport`}>{l.airportGuide}</a><a href={`/${locale}/guide/rental`}>{l.rentalGuide}</a></div>
-    <div className="directory-group"><strong>{l.company}</strong><a href={`/${locale}/about`}>{l.about}</a><a href={`/${locale}/faq`}>{l.faq}</a><a href={`/${locale}/contact`}>{l.contact}</a></div>
-  </div></details>;
+  }}><summary>{l.all}<ChevronDown size={15} aria-hidden="true" /></summary>{panel}</details>;
 }

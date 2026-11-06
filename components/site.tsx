@@ -1,10 +1,10 @@
 "use client";
 
-import { useEffect, useRef, useState, useSyncExternalStore } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { switcherOrder } from "@/lib/locales";
-import LanguageSwitcher from "@/components/language-switcher";
-import { ArrowDownRight, ArrowRight, ChevronDown, Menu, Moon, Search, Sun, SunMoon, X, Scale, Share2, Check } from "lucide-react";
+import GlassHeader from "@/components/glass-header";
+import { ArrowDownRight, ArrowRight, ChevronDown, Search, X, Scale, Share2, Check } from "lucide-react";
 import { dictionaries, type Locale } from "@/lib/i18n";
 import { fleetUi } from "@/lib/fleet-ui";
 import { guideSlugs, guides, guideUi } from "@/lib/guides";
@@ -18,8 +18,6 @@ import { bookingUi } from "@/lib/booking";
 import { carDetailUi } from "@/lib/car-detail-ui";
 import { addDaysIso, rateTierIndex, rentalDuration } from "@/lib/rental-duration";
 import { travelUi } from "@/lib/travel-ui";
-import SiteDirectory from "@/components/site-directory";
-import { SearchButton } from "@/components/site-search";
 import CarFinder from "@/components/car-finder";
 import CarCompare from "@/components/car-compare";
 import { shareLink, useShortlist } from "@/lib/shortlist";
@@ -49,47 +47,15 @@ function HeroLive({ label }: { label: string }) {
   </div>;
 }
 
-type Theme = "hybrid" | "dark" | "light";
-const themeNames: Theme[] = ["hybrid", "dark", "light"];
-const themeStorageKey = "cartime-theme";
-const themeChangeEvent = "cartime-theme-change";
-function subscribeToTheme(onChange: () => void) {
-  window.addEventListener("storage", onChange);
-  window.addEventListener(themeChangeEvent, onChange);
-  return () => {
-    window.removeEventListener("storage", onChange);
-    window.removeEventListener(themeChangeEvent, onChange);
-  };
-}
-let sessionTheme: Theme | null = null;
-function readStoredTheme(): Theme {
-  if (sessionTheme) return sessionTheme;
-  try {
-    const stored = localStorage.getItem(themeStorageKey);
-    return themeNames.includes(stored as Theme) ? stored as Theme : "hybrid";
-  } catch {
-    return "hybrid";
-  }
-}
-function saveTheme(next: Theme) {
-  try {
-    localStorage.setItem(themeStorageKey, next);
-    sessionTheme = null;
-  } catch {
-    sessionTheme = next;
-  }
-  window.dispatchEvent(new Event(themeChangeEvent));
-}
-const themeConcepts: Record<Theme, string> = { hybrid: "Vision Glass", dark: "Obsidian Motion", light: "Aero Liquid" };
-const editorialUi: Record<Locale, { lineOne: string; lineTwo: string; lead: string; select: string; explore: string; scroll: string; pickup: string; collection: string; styles: string }> = {
-  ru: { lineOne: "Баку ближе.", lineTwo: "Когда вы за рулём.", lead: "Выберите автомобиль для поездок по Баку и всему Азербайджану. Маршрут задаёте вы.", select: "Выбрать автомобиль", explore: "Смотреть автопарк", scroll: "Листайте вниз", pickup: "Начните поездку", collection: "Выберите место и даты — покажем автомобили и тарифы.", styles: "Стиль сайта" },
-  az: { lineOne: "Bakı daha yaxındır.", lineTwo: "Sükan sizdədir.", lead: "Bakı və bütün Azərbaycan üzrə səfəriniz üçün avtomobil seçin. Marşrutu siz müəyyənləşdirirsiniz.", select: "Avtomobil seçin", explore: "Avtoparka baxın", scroll: "Aşağı keçin", pickup: "Səfərə başlayın", collection: "Məkan və tarixləri seçin — avtomobilləri və tarifləri göstərəcəyik.", styles: "Saytın üslubu" },
-  en: { lineOne: "Baku gets closer.", lineTwo: "Take the wheel.", lead: "Choose a car for Baku and the rest of Azerbaijan. The route is yours to make.", select: "Find your car", explore: "Explore the fleet", scroll: "Scroll to explore", pickup: "Begin your journey", collection: "Choose your place and dates to see cars and published rates.", styles: "Site style" },
-  de: { lineOne: "Baku rückt näher.", lineTwo: "Übernimm das Steuer.", lead: "Wählen Sie ein Auto für Baku und den Rest von Aserbaidschan. Die Route liegt ganz bei Ihnen.", select: "Finden Sie Ihr Auto", explore: "Entdecken Sie die Flotte", scroll: "Scrollen Sie zum Erkunden", pickup: "Beginnen Sie Ihre Reise", collection: "Wählen Sie Ihren Ort und Ihre Daten, um Autos und veröffentlichte Preise anzuzeigen.", styles: "Site-Stil" },
-  zh: { lineOne: "巴库越来越近了。", lineTwo: "握紧方向盘。", lead: "选择前往巴库和阿塞拜疆其他地区的汽车。路线由你来制定。", select: "找到你的车", explore: "浏览车队", scroll: "滚动浏览", pickup: "开始你的旅程", collection: "选择您的地点和日期以查看汽车和公布的价格。", styles: "网站风格" },
-  ko: { lineOne: "바쿠가 가까워진다.", lineTwo: "운전대를 잡으세요.", lead: "바쿠와 아제르바이잔의 나머지 지역을 위한 자동차를 선택하세요. 경로는 당신이 만드는 것입니다.", select: "차를 찾아보세요", explore: "차량 목록 보기", scroll: "스크롤하여 탐색하세요.", pickup: "여행을 시작하세요", collection: "장소와 날짜를 선택하여 자동차와 공시 요금을 확인하세요.", styles: "사이트 스타일" },
-  fr: { lineOne: "Bakou se rapproche.", lineTwo: "Prenez le volant.", lead: "Choisissez une voiture pour Bakou et le reste de l'Azerbaïdjan. L'itinéraire vous appartient.", select: "Trouvez votre voiture", explore: "Explorez la flotte", scroll: "Faites défiler pour explorer", pickup: "Commencez votre voyage", collection: "Choisissez votre lieu et vos dates pour voir les voitures et les tarifs publiés.", styles: "Style du site" },
-  ar: { lineOne: "باكو تقترب.", lineTwo: "خذ عجلة القيادة.", lead: "اختر سيارة لباكو وبقية أذربيجان. أنت من يرسم الطريق.", select: "ابحث عن سيارتك", explore: "اكتشف الأسطول", scroll: "قم بالتمرير للاستكشاف", pickup: "ابدأ رحلتك", collection: "اختر مكانك وتواريخك لرؤية السيارات والأسعار المعلنة.", styles: "أسلوب الموقع" },
+const editorialUi: Record<Locale, { lineOne: string; lineTwo: string; lead: string; select: string; explore: string; pickup: string; collection: string; styles: string }> = {
+  ru: { lineOne: "Баку ближе.", lineTwo: "Когда вы за рулём.", lead: "Выберите автомобиль для поездок по Баку и всему Азербайджану. Маршрут задаёте вы.", select: "Выбрать автомобиль", explore: "Смотреть автопарк", pickup: "Начните поездку", collection: "Выберите место и даты — покажем автомобили и тарифы.", styles: "Стиль сайта" },
+  az: { lineOne: "Bakı daha yaxındır.", lineTwo: "Sükan sizdədir.", lead: "Bakı və bütün Azərbaycan üzrə səfəriniz üçün avtomobil seçin. Marşrutu siz müəyyənləşdirirsiniz.", select: "Avtomobil seçin", explore: "Avtoparka baxın", pickup: "Səfərə başlayın", collection: "Məkan və tarixləri seçin — avtomobilləri və tarifləri göstərəcəyik.", styles: "Saytın üslubu" },
+  en: { lineOne: "Baku gets closer.", lineTwo: "Take the wheel.", lead: "Choose a car for Baku and the rest of Azerbaijan. The route is yours to make.", select: "Find your car", explore: "Explore the fleet", pickup: "Begin your journey", collection: "Choose your place and dates to see cars and published rates.", styles: "Site style" },
+  de: { lineOne: "Baku rückt näher.", lineTwo: "Übernimm das Steuer.", lead: "Wählen Sie ein Auto für Baku und den Rest von Aserbaidschan. Die Route liegt ganz bei Ihnen.", select: "Finden Sie Ihr Auto", explore: "Entdecken Sie die Flotte", pickup: "Beginnen Sie Ihre Reise", collection: "Wählen Sie Ihren Ort und Ihre Daten, um Autos und veröffentlichte Preise anzuzeigen.", styles: "Site-Stil" },
+  zh: { lineOne: "巴库越来越近了。", lineTwo: "握紧方向盘。", lead: "选择前往巴库和阿塞拜疆其他地区的汽车。路线由你来制定。", select: "找到你的车", explore: "浏览车队", pickup: "开始你的旅程", collection: "选择您的地点和日期以查看汽车和公布的价格。", styles: "网站风格" },
+  ko: { lineOne: "바쿠가 가까워진다.", lineTwo: "운전대를 잡으세요.", lead: "바쿠와 아제르바이잔의 나머지 지역을 위한 자동차를 선택하세요. 경로는 당신이 만드는 것입니다.", select: "차를 찾아보세요", explore: "차량 목록 보기", pickup: "여행을 시작하세요", collection: "장소와 날짜를 선택하여 자동차와 공시 요금을 확인하세요.", styles: "사이트 스타일" },
+  fr: { lineOne: "Bakou se rapproche.", lineTwo: "Prenez le volant.", lead: "Choisissez une voiture pour Bakou et le reste de l'Azerbaïdjan. L'itinéraire vous appartient.", select: "Trouvez votre voiture", explore: "Explorez la flotte", pickup: "Commencez votre voyage", collection: "Choisissez votre lieu et vos dates pour voir les voitures et les tarifs publiés.", styles: "Style du site" },
+  ar: { lineOne: "باكو تقترب.", lineTwo: "خذ عجلة القيادة.", lead: "اختر سيارة لباكو وبقية أذربيجان. أنت من يرسم الطريق.", select: "ابحث عن سيارتك", explore: "اكتشف الأسطول", pickup: "ابدأ رحلتك", collection: "اختر مكانك وتواريخك لرؤية السيارات والأسعار المعلنة.", styles: "أسلوب الموقع" },
 };
 const categories = ["all", "Mini", "Economy", "Comfort", "SUV", "Business", "VAN", "Luxury"] as const;
 const bakuToday = () => {
@@ -118,8 +84,6 @@ export default function CarTimeSite({ locale }: { locale: Locale }) {
   const rental = rentalUi[locale];
   const carInfo = carDetailUi[locale];
   const e = editorialUi[locale];
-  const theme = useSyncExternalStore(subscribeToTheme, readStoredTheme, (): Theme => "hybrid");
-  const [menuOpen, setMenuOpen] = useState(false);
   const [category, setCategory] = useState<string>("all");
   const [modelQuery, setModelQuery] = useState("");
   const [sort, setSort] = useState("priceAsc");
@@ -159,10 +123,6 @@ export default function CarTimeSite({ locale }: { locale: Locale }) {
     return () => { active = false; };
   }, []);
 
-  useEffect(() => {
-    document.documentElement.dataset.theme = theme;
-  }, [theme]);
-
   // The address follows the open car, so it can be shared or reopened.
   useEffect(() => {
     const url = new URL(window.location.href);
@@ -172,16 +132,11 @@ export default function CarTimeSite({ locale }: { locale: Locale }) {
   }, [detailCar]);
 
   useEffect(() => {
-    const header = document.querySelector<HTMLElement>(".home-site .site-header");
     const hero = document.querySelector<HTMLElement>(".home-site .hero");
-    if (!header || !hero) return;
+    if (!hero) return;
     let scheduled = false;
     const update = () => {
-      const y = window.scrollY;
-      header.classList.toggle("is-scrolled", y > 36);
-      hero.style.setProperty("--hero-parallax", `${Math.min(y, 900) * .15}px`);
-      const extent = Math.max(1, document.documentElement.scrollHeight - window.innerHeight);
-      header.style.setProperty("--page-progress", `${Math.min(100, y / extent * 100)}%`);
+      hero.style.setProperty("--hero-parallax", `${Math.min(window.scrollY, 900) * .15}px`);
       scheduled = false;
     };
     const onScroll = () => {
@@ -191,8 +146,7 @@ export default function CarTimeSite({ locale }: { locale: Locale }) {
     };
     update();
     window.addEventListener("scroll", onScroll, { passive: true });
-    window.addEventListener("resize", onScroll);
-    return () => { window.removeEventListener("scroll", onScroll); window.removeEventListener("resize", onScroll); };
+    return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
   useEffect(() => {
@@ -212,10 +166,6 @@ export default function CarTimeSite({ locale }: { locale: Locale }) {
     document.addEventListener("keydown", onKeyDown);
     return () => { document.removeEventListener("keydown", onKeyDown); previousFocus?.focus(); };
   }, [detailCar]);
-
-  function changeTheme(next: Theme) {
-    saveTheme(next);
-  }
 
   function submitSearch(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -239,33 +189,18 @@ export default function CarTimeSite({ locale }: { locale: Locale }) {
 
   return (
     <div className="site-shell home-site">
-      <header className="site-header">
-        <div className="container header-inner">
-          <a className="brand" href="#top" aria-label="CarTime — home">
-            {/* The dark mark is extracted from the supplied approved reference. */}
-            <img className="dark-logo" src="/assets/logo-dark.webp" alt="CarTime" />
-            <img className="light-logo" src="/assets/logo-light.svg" alt="" aria-hidden="true" />
-            <span className="brand-caption" aria-hidden="true">CAR RENTAL</span>
-          </a>
-          <nav className="desktop-nav" aria-label="Main navigation">
-            <a href="#fleet">{t.nav[0]}</a>
-            <a href="#benefits">{t.nav[1]}</a>
-            <a href="#airport">{t.nav[2]}</a>
-            <SiteDirectory locale={locale} />
-          </nav>
-          <div className="header-actions">
-            <SearchButton locale={locale} />
-            <LanguageSwitcher locale={locale} label={t.languageLabel} />
-            <div className="theme-picker" role="group" aria-label={e.styles}>
-              {themeNames.map((name, index) => <button key={name} type="button" title={themeConcepts[name]} aria-label={`${t.themes[index]} — ${themeConcepts[name]}`} aria-pressed={theme === name} onClick={() => changeTheme(name)}>{name === "hybrid" ? <SunMoon size={16} aria-hidden="true" /> : name === "dark" ? <Moon size={16} aria-hidden="true" /> : <Sun size={16} aria-hidden="true" />}</button>)}
-            </div>
-            <a className="header-cta" href="#search">{e.select} <ArrowRight size={16} /></a>
-            <button className="menu-button" type="button" aria-label={menuOpen ? t.close : t.mobileMenu} aria-expanded={menuOpen} onClick={() => setMenuOpen(!menuOpen)}>{menuOpen ? <X size={23} /> : <Menu size={23} />}</button>
-          </div>
-          <span className="nav-progress" aria-hidden="true" />
-        </div>
-        {menuOpen && <nav className="mobile-nav" aria-label={t.mobileMenu}><a href="#search" onClick={() => setMenuOpen(false)}>{e.select}<ArrowRight size={18} /></a><a href="#fleet" onClick={() => setMenuOpen(false)}>{t.nav[0]}<ArrowRight size={18} /></a><a href="#airport" onClick={() => setMenuOpen(false)}>{t.nav[2]}<ArrowRight size={18} /></a><a href="#map" onClick={() => setMenuOpen(false)}>{mapUi[locale].kicker.replace("CARTIME / ", "")}<ArrowRight size={18} /></a><SiteDirectory locale={locale} /><div className="mobile-theme-picker" role="group" aria-label={e.styles}>{themeNames.map((name, index) => <button key={name} type="button" aria-pressed={theme === name} onClick={() => { changeTheme(name); setMenuOpen(false); }}>{t.themes[index]}</button>)}</div></nav>}
-      </header>
+      <GlassHeader
+        locale={locale}
+        logoHref="#top"
+        links={[{ href: "#fleet", label: t.nav[0] }, { href: "#benefits", label: t.nav[1] }, { href: "#airport", label: t.nav[2] }]}
+        cta={{ href: "#search", label: e.select }}
+        navLabel={g.nav}
+        languageLabel={t.languageLabel}
+        menuLabel={t.mobileMenu}
+        closeLabel={t.close}
+        styleLabel={e.styles}
+        themeLabels={t.themes}
+      />
 
       <main id="top">
         <section className="hero">

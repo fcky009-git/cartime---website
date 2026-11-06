@@ -20,6 +20,8 @@ Vehicle images and editorial scenes are illustrative. The published rates are a 
 
 The visual system, "Baku after dark", lives in `app/redesign.css`: the logo's blues, white and deep navy, main photos graded to the same blue hour, poster headlines, cars in a showroom light and number plates as the one motif. Live elements are honest: Baku time, the 24/7 line, a departure board with published rates and savings calculated from those rates.
 
+Glass surfaces are built from a blur, a tint that follows the tone behind them, a bright rim and a pointer highlight. Chromium on desktop also bends the page along the rim with an SVG displacement filter; other browsers and touch devices skip that layer, and people who ask for reduced transparency or motion get solid, still surfaces.
+
 ## Development
 
 Travel Pass adds a private client trip page, booking lookup with an access code, status updates, QR, calendar and print/PDF. Managers control public instructions and agreed amounts separately from internal notes. Apple Wallet signing is prepared but not enabled without the owner's Apple signing identity. See `docs/travel-pass.md` for access security, migration and Wallet setup.
