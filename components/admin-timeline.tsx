@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { bakuStamp } from "@/lib/admin-bookings";
 import { adminExtraUi } from "@/lib/admin-extra-ui";
 import type { Locale } from "@/lib/locales";
+import { travelUi } from "@/lib/travel-ui";
 
 type BookingEvent = { id: string; type: string; value: string; createdAt: string };
 
@@ -48,7 +49,7 @@ export default function AdminTimeline({ locale, bookingId, createdAt, changedAt,
     <h3>{t.timeline}</h3>
     <ol>
       <li><time>{bakuStamp(new Date(createdAt))}</time><span>{t.createdEvent}</span></li>
-      {events.map((item) => <li key={item.id} className={item.type === "note" ? "note" : ""}><time>{bakuStamp(new Date(item.createdAt))}</time><span>{item.type === "status" ? `${t.statusEvent}: ${statusLabel(item.value)}` : item.value}</span></li>)}
+      {events.map((item) => <li key={item.id} className={item.type === "note" ? "note" : ""}><time>{bakuStamp(new Date(item.createdAt))}</time><span>{item.type === "status" ? `${t.statusEvent}: ${statusLabel(item.value)}` : item.type === "stage" ? `${t.statusEvent}: ${travelUi[locale][item.value as "active"] ?? item.value}` : item.value}</span></li>)}
     </ol>
     {failed && <p className="admin-alert" role="alert">{t.timelineFail}</p>}
     <form onSubmit={addNote}>

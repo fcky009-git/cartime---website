@@ -56,10 +56,12 @@ export async function DELETE(request: Request) {
   if (!id.success) return Response.json({ error: "Invalid request" }, { status: 400 });
   try {
     const db = getDb();
-    const removed = await db.delete(bookingRequests).where(eq(bookingRequests.id, id.data)).returning({ id: bookingRequests.id });
+    const [removed] = await db.batch([
+      db.delete(bookingRequests).where(eq(bookingRequests.id, id.data)).returning({ id: bookingRequests.id }),
+      db.delete(adminBookingEvents).where(eq(adminBookingEvents.bookingId, id.data)),
+      db.delete(travelPasses).where(eq(travelPasses.bookingId, id.data)),
+    ]);
     if (!removed.length) return Response.json({ error: "Request not found" }, { status: 404 });
-    await db.delete(adminBookingEvents).where(eq(adminBookingEvents.bookingId, id.data));
-    await db.delete(travelPasses).where(eq(travelPasses.bookingId, id.data));
     return Response.json({ id: id.data }, { headers: { "Cache-Control": "no-store" } });
   } catch (error) {
     console.error("Admin booking delete failed", error);

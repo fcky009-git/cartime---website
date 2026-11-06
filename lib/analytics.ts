@@ -7,7 +7,8 @@ const rawId = process.env.NEXT_PUBLIC_GTM_ID ?? "";
 export const gtmId = /^GTM-[A-Z0-9]{4,12}$/.test(rawId) ? rawId : "";
 
 export function gtmHeadScript(id: string) {
-  return `(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);})(window,document,'script','dataLayer','${id}');`;
+  // The Travel Pass address holds the customer's private access code.
+  return `if(!/\\/travel-pass\\/?$/.test(location.pathname)){(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);})(window,document,'script','dataLayer','${id}');}`;
 }
 
 /** Pushes click_phone, click_email and click_whatsapp events to dataLayer for conversion tracking. */

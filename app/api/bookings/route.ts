@@ -1,9 +1,9 @@
 import { and, count, eq, gte, ne, or } from "drizzle-orm";
 import { bookingInput, validateBooking } from "@/lib/booking-request";
-import { bookingRequests } from "@/db/schema";
+import { bookingRequests, travelPasses } from "@/db/schema";
 import { getDb } from "@/db";
 import { notifyNewBooking } from "@/lib/booking-notify";
-import { issueTravelPass, newAccessCode } from "@/lib/travel-pass";
+import { issueTravelPass, newAccessCode, newTravelPassRow } from "@/lib/travel-pass";
 
 export const dynamic = "force-dynamic";
 
@@ -58,7 +58,15 @@ export async function POST(request: Request) {
       ne(bookingRequests.id, id),
     ));
     if (recent.total >= MAX_PER_CONTACT_PER_HOUR) return tooMany();
-    const inserted = await db.insert(bookingRequests).values({
+    const accessCode = data.accessCode || newAccessCode();
+    // A retry of a saved request only returns its pass. It must not create one for an older request.
+    const [existing] = await db.select({ id: bookingRequests.id }).from(bookingRequests).where(eq(bookingRequests.id, id)).limit(1);
+    if (existing) {
+      trip = await issueTravelPass(id, accessCode, false);
+      return Response.json({ id, status: "new", trip }, { status: 201, headers: { "Cache-Control": "no-store" } });
+    }
+    // One batch: a request is never saved without its pass, and a retry never loses the manager's notification.
+    const [inserted] = await db.batch([db.insert(bookingRequests).values({
       id, createdAt: now, updatedAt: now, status: "new", locale: data.locale,
       carId: data.carId, carName: validated.car.name, carYear: validated.car.year,
       pickup: data.pickup, pickupAddress: data.pickup === "delivery" ? data.pickupAddress : null,
@@ -68,8 +76,9 @@ export async function POST(request: Request) {
       customerName: data.customerName, phone: data.phone, email,
       age: data.age, experience: data.experience, flight: data.flight || null,
       secondDriver: data.secondDriver, payment: data.payment, notes: data.notes || null,
-    }).onConflictDoNothing({ target: bookingRequests.id }).returning({ id: bookingRequests.id });
-    trip = await issueTravelPass(id, data.accessCode || newAccessCode(), inserted.length > 0);
+    }).onConflictDoNothing({ target: bookingRequests.id }).returning({ id: bookingRequests.id }),
+    db.insert(travelPasses).values(await newTravelPassRow(id, accessCode)).onConflictDoNothing({ target: travelPasses.bookingId })]);
+    trip = await issueTravelPass(id, accessCode, false);
     if (inserted.length) {
       await notifyNewBooking({
         id, locale: data.locale, carName: validated.car.name, carYear: validated.car.year, fromDate: data.fromDate, fromTime: data.fromTime, toDate: data.toDate, toTime: data.toTime,

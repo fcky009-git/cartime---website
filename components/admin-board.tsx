@@ -13,6 +13,7 @@ import { adminExtraUi, customerGreeting } from "@/lib/admin-extra-ui";
 import { isLocale, localeInfo } from "@/lib/locales";
 import AdminTimeline from "@/components/admin-timeline";
 import AdminTravelPass from "@/components/admin-travel-pass";
+import { travelReference } from "@/lib/travel-access";
 import { adminAccessCopy } from "@/components/admin-login";
 
 type Booking = typeof bookingRequests.$inferSelect;
@@ -44,7 +45,7 @@ type DateFilter = "all" | "today" | "week" | "past";
 type Sort = "newest" | "oldest" | "pickup" | "highest";
 const calendarStamp = (date: string, time: string) => `${date.replaceAll("-", "")}T${time.replace(":", "")}00`;
 const greetingFor = (item: Booking) => customerGreeting[isLocale(item.locale) ? item.locale : "en"](item.customerName, `${item.carName} ${item.carYear}`, item.fromDate, item.toDate, `#${item.id.slice(0, 8).toUpperCase()}`);
-const tripDetails = (item: Booking, pickupText: string) => [`#${item.id.slice(0, 8).toUpperCase()}`, `${item.customerName}, ${item.phone}, ${item.email}`, pickupText, ...(item.flight ? [item.flight] : []), `$${item.estimateUsd} USD`].join("\n");
+const tripDetails = (item: Booking, pickupText: string) => [travelReference(item.id), `${item.customerName}, ${item.phone}, ${item.email}`, pickupText, ...(item.flight ? [item.flight] : []), `$${item.estimateUsd} USD`].join("\n");
 const normalizeSearch = (value: string) => value.replace(/[İı]/g, "i").toLowerCase();
 const sessionEnded = (response: Response) => response.status === 401 || response.status === 403;
 const mergeBookings = (current: Booking[], incoming: Booking[]) => {
@@ -67,6 +68,7 @@ export default function AdminBoard({ locale, initialItems, loadError, initialNow
   const x = extra[locale];
   const ax = adminExtraUi[locale];
   const [items, setItems] = useState(initialItems);
+  const [timelineTick, setTimelineTick] = useState(0);
   const [filter, setFilter] = useState<Status | "all">("all");
   const [dateFilter, setDateFilter] = useState<DateFilter>("all");
   const [sort, setSort] = useState<Sort>("newest");
@@ -90,7 +92,7 @@ export default function AdminBoard({ locale, initialItems, loadError, initialNow
     const queryDigits = query.replace(/\D/g, "").replace(/^0+/, "");
     return items.filter((item) => {
     const matchesDate = dateFilter === "all" || (dateFilter === "today" ? item.fromDate === today || item.toDate === today : dateFilter === "week" ? item.fromDate >= today && item.fromDate <= weekEnd : item.toDate < today);
-    return (filter === "all" || item.status === filter) && matchesDate && (normalizeSearch(`${item.customerName} ${item.phone} ${item.email} ${item.carName} ${item.id} CT-${item.id.replaceAll("-", "").slice(0,12)} ${item.flight || ""} ${item.notes || ""}`).includes(queryText) || (queryDigits.length >= 3 && item.phone.replace(/\D/g, "").includes(queryDigits)));
+    return (filter === "all" || item.status === filter) && matchesDate && (normalizeSearch(`${item.customerName} ${item.phone} ${item.email} ${item.carName} ${item.id} ${travelReference(item.id)} ${item.flight || ""} ${item.notes || ""}`).includes(queryText) || (queryDigits.length >= 3 && item.phone.replace(/\D/g, "").includes(queryDigits)));
     }).sort((a, b) => sort === "oldest" ? a.createdAt.localeCompare(b.createdAt) : sort === "pickup" ? `${a.fromDate}${a.fromTime}`.localeCompare(`${b.fromDate}${b.fromTime}`) : sort === "highest" ? b.estimateUsd - a.estimateUsd : b.createdAt.localeCompare(a.createdAt));
   }, [items, filter, dateFilter, sort, query, today, weekEnd]);
   const selected = visible.find((item) => item.id === selectedId) || visible[0];
@@ -220,7 +222,7 @@ export default function AdminBoard({ locale, initialItems, loadError, initialNow
   }
 
   async function copySummary(item: Booking) {
-    const summary = [`CarTime #${item.id.slice(0, 8).toUpperCase()}`, `${item.carName} · ${item.carYear}`, `${item.fromDate} ${item.fromTime} → ${item.toDate} ${item.toTime}`, `${dayCountLabel(locale, item.days)} · $${item.estimateUsd} USD`, `${item.customerName} · ${item.phone} · ${item.email}`].join("\n");
+    const summary = [`CarTime ${travelReference(item.id)}`, `${item.carName} · ${item.carYear}`, `${item.fromDate} ${item.fromTime} → ${item.toDate} ${item.toTime}`, `${dayCountLabel(locale, item.days)} · $${item.estimateUsd} USD`, `${item.customerName} · ${item.phone} · ${item.email}`].join("\n");
     try { await navigator.clipboard.writeText(summary); setNotice(x.copied); }
     catch { setError(t.fail); }
   }
@@ -250,15 +252,15 @@ export default function AdminBoard({ locale, initialItems, loadError, initialNow
       <div className="admin-date-filters" role="group" aria-label={x.calendar}>{(["all", "today", "week", "past"] as DateFilter[]).map((choice) => <button key={choice} type="button" className={dateFilter === choice ? "active" : ""} onClick={() => setDateFilter(choice)}>{choice === "all" ? x.allDates : choice === "today" ? x.today : choice === "week" ? x.nextWeek : x.past}</button>)}</div>
       {error && <p className="admin-alert" role="alert">{error}</p>}{notice && <p className="admin-notice" role="status"><Check size={15} />{notice}</p>}
       <div className="admin-layout"><section className="admin-list" aria-label={t.title}>{visible.length ? visible.map((item) => <button key={item.id} type="button" className={`admin-list-item${selected?.id === item.id ? " selected" : ""}`} onClick={() => select(item.id)}><div><strong>{item.customerName}</strong><span className={`admin-status admin-status-${item.status}`}>{t[item.status as Status]}</span></div><p>{item.carName} · {item.carYear}</p><small>{item.fromDate} → {item.toDate} <b>${item.estimateUsd}</b></small><em>{bakuStamp(new Date(item.createdAt))} <b>{item.locale.toUpperCase()}</b></em></button>) : <p className="admin-empty">{items.length ? t.emptySearch : t.empty}</p>}</section>
-      <section className="admin-detail" ref={detailRef} aria-label={t.details}>{selected ? <><div className="admin-detail-head"><div><span>{t.created} · {bakuStamp(new Date(selected.createdAt))}</span><h2>{selected.carName}</h2><p>{selected.carYear} · #{selected.id.slice(0, 8).toUpperCase()}</p></div><strong>${selected.estimateUsd}</strong></div>
+      <section className="admin-detail" ref={detailRef} aria-label={t.details}>{selected ? <><div className="admin-detail-head"><div><span>{t.created} · {bakuStamp(new Date(selected.createdAt))}</span><h2>{selected.carName}</h2><p>{selected.carYear} · {travelReference(selected.id)}</p></div><strong>${selected.estimateUsd}</strong></div>
         {fleetImages[selected.carId as keyof typeof fleetImages] && <div className="admin-car-visual"><img src={fleetImages[selected.carId as keyof typeof fleetImages]} alt={`${selected.carName} ${selected.carYear}`} /><span>{selected.carName} · {selected.carYear}</span></div>}
         <div className="admin-detail-grid"><div><small>{t.route}</small><strong>{selected.fromDate} {selected.fromTime}</strong><p>{place(selected.pickup, selected.pickupAddress, locale)}</p><span>↓</span><strong>{selected.toDate} {selected.toTime}</strong><p>{place(selected.dropoff, selected.returnAddress, locale)}</p><em>{dayCountLabel(locale, selected.days)} · {t.rate} ${selected.dailyRateUsd} {fleetUi[locale].perDay}</em></div><div><small>{t.contact}</small><strong>{selected.customerName}</strong><a href={`tel:${selected.phone}`}>{selected.phone}</a><a href={`mailto:${selected.email}`}>{selected.email}</a><p>{ax.language}: <b>{isLocale(selected.locale) ? localeInfo[selected.locale].name : selected.locale}</b></p><p>{t.age}: {selected.age} · {t.experience}: {selected.experience} {t.years}</p><p>{t.second}: {selected.secondDriver ? t.yes : t.no}</p><p>{t.payment}: {bookingUi[locale][selected.payment] || selected.payment}</p>{selected.flight && <p>{t.flight}: {selected.flight}</p>}</div></div>
         {conflicts.length > 0 && <div className="admin-conflict" role="status"><strong><TriangleAlert size={16} aria-hidden="true" />{ax.conflict}: {conflicts.length}</strong><p>{ax.conflictHint}</p><ul>{conflicts.slice(0, 5).map((item) => <li key={item.id}><button type="button" onClick={() => select(item.id)}>{item.customerName}, {item.fromDate} → {item.toDate}, {t[item.status as Status]}</button></li>)}</ul></div>}
         {selected.notes && <div className="admin-notes"><small>{t.notes}</small><p>{selected.notes}</p></div>}
         <div className="admin-status-row"><span>{x.quickStatus}</span><div>{statuses.map((status) => <button type="button" key={status} className={selected.status === status ? "active" : ""} disabled={pendingId === selected.id} onClick={() => { if (selected.status !== status && (status !== "cancelled" || window.confirm(ax.cancelConfirm))) void updateStatus(selected.id, status); }}>{t[status]}</button>)}</div>{pendingId === selected.id && <small>{t.loading}</small>}</div>
-        <div className="admin-contact-actions"><a target="_blank" rel="noopener noreferrer" href={`https://wa.me/${selected.phone.replace(/\D/g, "")}?text=${encodeURIComponent(greetingFor(selected))}`}><MessageCircle size={17} />{t.send}</a><a href={`mailto:${selected.email}?subject=${encodeURIComponent(`CarTime · ${selected.carName} · #${selected.id.slice(0, 8).toUpperCase()}`)}&body=${encodeURIComponent(greetingFor(selected))}`}><Mail size={17} />{t.email}</a><button type="button" onClick={() => void copySummary(selected)}><Clipboard size={17} />{x.copy}</button><a href={googleCalendarUrl} target="_blank" rel="noopener noreferrer"><ExternalLink size={17} />{x.openCalendar}</a><button type="button" onClick={() => downloadCalendar(selected)}><CalendarDays size={17} />{x.downloadCalendar}</button><button type="button" onClick={() => window.print()}><Printer size={17} />{x.print}</button><button type="button" className="admin-delete" disabled={pendingId === selected.id} onClick={() => void removeBooking(selected.id)}><Trash2 size={17} />{ax.remove}</button></div>
-        <AdminTravelPass key={`pass-${selected.id}`} locale={locale} bookingId={selected.id} confirmed={selected.status==="confirmed"}/>
-        <AdminTimeline key={selected.id} locale={locale} bookingId={selected.id} createdAt={selected.createdAt} changedAt={selected.updatedAt} statusLabel={(status) => t[status as Status] ?? status} saving={t.loading} />
+        <div className="admin-contact-actions"><a target="_blank" rel="noopener noreferrer" href={`https://wa.me/${selected.phone.replace(/\D/g, "")}?text=${encodeURIComponent(greetingFor(selected))}`}><MessageCircle size={17} />{t.send}</a><a href={`mailto:${selected.email}?subject=${encodeURIComponent(`CarTime · ${selected.carName} · ${travelReference(selected.id)}`)}&body=${encodeURIComponent(greetingFor(selected))}`}><Mail size={17} />{t.email}</a><button type="button" onClick={() => void copySummary(selected)}><Clipboard size={17} />{x.copy}</button><a href={googleCalendarUrl} target="_blank" rel="noopener noreferrer"><ExternalLink size={17} />{x.openCalendar}</a><button type="button" onClick={() => downloadCalendar(selected)}><CalendarDays size={17} />{x.downloadCalendar}</button><button type="button" onClick={() => window.print()}><Printer size={17} />{x.print}</button><button type="button" className="admin-delete" disabled={pendingId === selected.id} onClick={() => void removeBooking(selected.id)}><Trash2 size={17} />{ax.remove}</button></div>
+        <AdminTravelPass key={`pass-${selected.id}`} locale={locale} customerLocale={isLocale(selected.locale) ? selected.locale : locale} phone={selected.phone} bookingId={selected.id} confirmed={selected.status === "confirmed"} onSaved={() => setTimelineTick((tick) => tick + 1)} />
+        <AdminTimeline key={selected.id} locale={locale} bookingId={selected.id} createdAt={selected.createdAt} changedAt={`${selected.updatedAt}-${timelineTick}`} statusLabel={(status) => t[status as Status] ?? status} saving={t.loading} />
       </> : <p className="admin-empty">{items.length ? t.emptySearch : t.empty}</p>}</section></div>
     </div>
   </main>;

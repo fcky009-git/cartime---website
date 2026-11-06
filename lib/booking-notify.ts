@@ -1,3 +1,4 @@
+import { travelReference } from "@/lib/travel-access";
 import { env } from "cloudflare:workers";
 import { localeInfo, type Locale } from "@/lib/locales";
 
@@ -15,7 +16,7 @@ export async function notifyNewBooking(booking: NewBooking, siteOrigin: string) 
   const chatId = env.CARTIME_TELEGRAM_CHAT_ID;
   if (!token || !chatId) return;
   const text = [
-    `CarTime: новая заявка #${booking.id.slice(0, 8).toUpperCase()}`,
+    `CarTime: новая заявка ${travelReference(booking.id)}`,
     `${booking.carName} ${booking.carYear}`,
     `${booking.fromDate} ${booking.fromTime} → ${booking.toDate} ${booking.toTime} (${booking.days})`,
     `Получение: ${booking.pickup}`,

@@ -1,7 +1,7 @@
 import { eq } from "drizzle-orm";
 import { z } from "zod";
 import { getDb } from "@/db";
-import { bookingRequests,travelPasses } from "@/db/schema";
+import { adminBookingEvents,bookingRequests,travelPasses } from "@/db/schema";
 import { currentBookingAdmin } from "@/lib/admin-auth";
 import { hashAccess,issueTravelPass,newAccessCode,passHeaders } from "@/lib/travel-pass";
 export const dynamic="force-dynamic";
@@ -29,7 +29,9 @@ export async function POST(request:Request,{params}:Context){
     const [existing]=await db.select().from(travelPasses).where(eq(travelPasses.bookingId,id));let credentials=null;
     if(!existing||data.data.rotate){const code=newAccessCode();if(existing){await db.update(travelPasses).set({accessHash:await hashAccess(code),updatedAt:new Date().toISOString()}).where(eq(travelPasses.bookingId,id));credentials={reference:existing.reference,accessCode:code};}else credentials=await issueTravelPass(id,code);}
     const {rotate:_,...fields}=data.data;void _;
-    await db.update(travelPasses).set({...fields,updatedAt:new Date().toISOString()}).where(eq(travelPasses.bookingId,id));
+    const now=new Date().toISOString();
+    await db.update(travelPasses).set({...fields,updatedAt:now}).where(eq(travelPasses.bookingId,id));
+    if(fields.stage&&fields.stage!==(existing?.stage??"booking"))await db.insert(adminBookingEvents).values({id:crypto.randomUUID(),bookingId:id,type:"stage",value:fields.stage,createdAt:now});
     return Response.json({ok:true,credentials},{headers:passHeaders});
   }catch(error){console.error("Admin travel pass failed",error);return Response.json({error:"Unavailable"},{status:503,headers:passHeaders});}
 }
