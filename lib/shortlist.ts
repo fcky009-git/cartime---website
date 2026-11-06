@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useSyncExternalStore } from "react";
+import { copyText } from "@/lib/device-actions";
 import fleet from "@/lib/fleet.json";
 
 const storageKey = "cartime-shortlist";
@@ -52,14 +53,14 @@ export function useShortlist() {
 
 /** Uses the phone's share sheet when there is one, otherwise copies the link. */
 export async function shareLink(url: string, title: string): Promise<"shared" | "copied" | "failed"> {
-  try {
-    if (navigator.share && window.matchMedia("(pointer: coarse)").matches) {
+  if (typeof navigator.share === "function" && window.matchMedia("(pointer: coarse)").matches) {
+    try {
       await navigator.share({ url, title });
       return "shared";
+    } catch (error) {
+      if (error instanceof DOMException && error.name === "AbortError") return "shared";
+      // Share refused, as some in-app browsers do: copy the link instead.
     }
-    await navigator.clipboard.writeText(url);
-    return "copied";
-  } catch (error) {
-    return error instanceof DOMException && error.name === "AbortError" ? "shared" : "failed";
   }
+  return await copyText(url) ? "copied" : "failed";
 }

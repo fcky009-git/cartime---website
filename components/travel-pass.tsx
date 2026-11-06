@@ -1,5 +1,6 @@
 "use client";
 import { useCallback, useEffect, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 import Image from "next/image";
 import QRCode from "qrcode";
 import { ArrowRight, CalendarDays, Check, CheckCircle2, Clock3, Copy, Download, LockKeyhole, MapPin, MessageCircle, RefreshCw, ShieldCheck, Sparkles, Ticket, Wallet, X } from "lucide-react";
@@ -7,22 +8,21 @@ import type { Locale } from "@/lib/locales";
 import { localeInfo } from "@/lib/locales";
 import { travelUi } from "@/lib/travel-ui";
 import type { PublicTravelPass } from "@/lib/travel-pass";
-import { formattedCode, normalizeAccessCode, travelLink, tripCalendar } from "@/lib/travel-access";
+import { formattedCode, googleCalendarLink, normalizeAccessCode, travelLink, tripCalendar } from "@/lib/travel-access";
+import { copyText, downloadFile, saveFile } from "@/lib/device-actions";
+import { renderTravelPass } from "@/lib/travel-pdf";
 import { dayCountLabel } from "@/lib/count-labels";
 import fleetImages from "@/lib/fleet-images.json";
 import { contact, contactLocation } from "@/lib/service-info";
 
 const REFRESH_MS = 90_000;
+/** The window for saving or copying, with a visible way out when a phone blocks the direct route. */
+type Sheet =
+  | { kind: "pdf"; status: "loading" | "failed" }
+  | { kind: "pdf"; status: "ready"; preview: string; file: string; blob: Blob }
+  | { kind: "calendar"; blob: Blob; google: string }
+  | { kind: "link"; link: string };
 const stages = ["new", "contacted", "confirmed", "active", "completed"] as const;
-
-function download(blob: Blob, name: string) {
-  const url = URL.createObjectURL(blob);
-  const link = document.createElement("a");
-  link.href = url;
-  link.download = name;
-  link.click();
-  setTimeout(() => URL.revokeObjectURL(url), 1000);
-}
 
 export default function TravelPass({ locale }: { locale: Locale }) {
   const t = travelUi[locale];
@@ -33,9 +33,11 @@ export default function TravelPass({ locale }: { locale: Locale }) {
   const [error, setError] = useState("");
   const [notice, setNotice] = useState("");
   const [qr, setQr] = useState("");
+  const [sheet, setSheet] = useState<Sheet | null>(null);
   const pending = useRef(false);
   const lastChecked = useRef(0);
   const loadController = useRef<AbortController | null>(null);
+  const pdfAttempt = useRef(0);
 
   const load = useCallback(async (ref: string, key: string, quiet = false) => {
     if (pending.current) return;
@@ -109,15 +111,43 @@ export default function TravelPass({ locale }: { locale: Locale }) {
     return () => { active = false; };
   }, [passReference, code, locale]);
 
+  const sheetUrls = useRef<string[]>([]);
+  const closeSheet = useCallback(() => {
+    sheetUrls.current.forEach((url) => URL.revokeObjectURL(url));
+    sheetUrls.current = [];
+    pdfAttempt.current++;
+    setSheet(null);
+  }, []);
+  useEffect(() => closeSheet, [closeSheet]);
+  const tempUrl = (blob: Blob) => {
+    const url = URL.createObjectURL(blob);
+    sheetUrls.current.push(url);
+    return url;
+  };
+
+  useEffect(() => {
+    if (!sheet) return;
+    const onKey = (event: KeyboardEvent) => { if (event.key === "Escape") closeSheet(); };
+    document.addEventListener("keydown", onKey);
+    return () => document.removeEventListener("keydown", onKey);
+  }, [sheet, closeSheet]);
+
   useEffect(() => {
     if (!notice) return;
     const timer = window.setTimeout(() => setNotice(""), 2500);
     return () => clearTimeout(timer);
   }, [notice]);
 
+  useEffect(() => {
+    if (!error || !hasPass) return;
+    const timer = window.setTimeout(() => setError(""), 6000);
+    return () => clearTimeout(timer);
+  }, [error, hasPass]);
+
   const date = (value: string) => new Intl.DateTimeFormat(localeInfo[locale].hreflang, { day: "2-digit", month: "short", year: "numeric", timeZone: "Asia/Baku" }).format(new Date(`${value}T12:00:00+04:00`));
   const stamp = (value: string) => new Intl.DateTimeFormat(localeInfo[locale].hreflang, { day: "2-digit", month: "short", hour: "2-digit", minute: "2-digit", timeZone: "Asia/Baku" }).format(new Date(value));
   const placeName = (value: string) => value === "airport" ? t.airport : value === "delivery" ? t.delivery : t.office;
+  const placeText = (value: string, address: string | null) => (value === "delivery" && address ? `${placeName(value)} · ${address}` : placeName(value));
   const place = (value: string, address: string | null) => <>{placeName(value)}{value === "delivery" && address ? <> · <bdi>{address}</bdi></> : null}</>;
 
   const close = () => {
@@ -129,19 +159,70 @@ export default function TravelPass({ locale }: { locale: Locale }) {
     setCode("");
     setError("");
     setNotice("");
+    closeSheet();
     window.history.replaceState(null, "", `/${locale}/travel-pass`);
   };
+  const stage = pass ? (pass.status === "cancelled" ? "cancelled" : pass.status === "confirmed" && pass.stage !== "booking" ? pass.stage : pass.status) : "new";
+  const next = stage === "cancelled" ? t.nextCancelled : stage === "completed" ? t.nextCompleted : stage === "active" ? t.nextActive : stage === "confirmed" ? t.nextConfirmed : stage === "contacted" ? t.nextReview : t.nextNew;
+  const stageIndex = stages.indexOf(stage as typeof stages[number]);
+  const beforePickup = stage === "new" || stage === "contacted" || stage === "confirmed";
+  const showInstructions = stage !== "cancelled" && stage !== "completed";
   const copy = async () => {
     if (!pass) return;
-    try {
-      await navigator.clipboard.writeText(window.location.origin + travelLink(locale, { reference: pass.reference, accessCode: code }));
-      setNotice(t.copied);
-    } catch { setError(t.unavailable); }
+    const link = window.location.origin + travelLink(locale, { reference: pass.reference, accessCode: code });
+    if (await copyText(link)) setNotice(t.copied);
+    else setSheet({ kind: "link", link });
   };
   const calendar = () => {
     if (!pass) return;
+    closeSheet();
     const location = pass.pickup === "delivery" && pass.pickupAddress ? `${t.delivery}: ${pass.pickupAddress}` : placeName(pass.pickup);
-    download(new Blob([tripCalendar({ ...pass, summary: `CarTime · ${pass.carName} · ${t[pass.status as "new"] || pass.status}`, location, description: `${pass.reference}. ${t.estimateHint}` })], { type: "text/calendar;charset=utf-8" }), `${pass.reference}.ics`);
+    const summary = `CarTime · ${pass.carName} · ${t[pass.status as "new"] || pass.status}`;
+    const description = `${pass.reference}. ${t.estimateHint}`;
+    const blob = new Blob([tripCalendar({ ...pass, summary, location, description })], { type: "text/calendar;charset=utf-8" });
+    setSheet({ kind: "calendar", blob, google: googleCalendarLink({ ...pass, summary, location, description }) });
+  };
+  const pdf = async () => {
+    if (!pass) return;
+    closeSheet();
+    const attempt = ++pdfAttempt.current;
+    setSheet({ kind: "pdf", status: "loading" });
+    try {
+      const heading = document.querySelector(".travel-ticket h2") ?? document.body;
+      const { preview, pdf: blob } = await renderTravelPass({
+        rtl: localeInfo[locale].dir === "rtl",
+        displayFont: getComputedStyle(heading).fontFamily,
+        bodyFont: getComputedStyle(document.body).fontFamily,
+        logo: "/assets/logo-dark.webp",
+        carImage: fleetImages[pass.carId as keyof typeof fleetImages],
+        qr: qr || undefined,
+        reference: pass.reference,
+        status: String(t[stage as "new"] || stage),
+        carName: pass.carName,
+        year: pass.carYear,
+        guest: `${t.guest}: ${pass.customerName}`,
+        pickup: { label: t.pickup, date: date(pass.fromDate), time: pass.fromTime, place: placeText(pass.pickup, pass.pickupAddress) },
+        dropoff: { label: t.return, date: date(pass.toDate), time: pass.toTime, place: placeText(pass.dropoff, pass.returnAddress) },
+        zone: t.timezone,
+        amountLabel: pass.confirmedTotalUsd === null ? t.estimate : t.agreed,
+        amount: `$${pass.confirmedTotalUsd ?? pass.estimateUsd} USD`,
+        days: dayCountLabel(locale, pass.days),
+        deposit: `${t.deposit}: ${pass.depositUsd === null ? t.pending : `$${pass.depositUsd} USD`}`,
+        codeLabel: t.code,
+        code: formattedCode(code),
+        privacy: t.privacy,
+        notes: [
+          ...(pass.message ? [{ title: t.message, text: pass.message }] : []),
+          ...(showInstructions && pass.pickupInstructions ? [{ title: t.instructions, text: pass.pickupInstructions }] : []),
+        ],
+        contact: `CarTime · ${contact.phoneDisplay} · ${contact.email}`,
+        hint: t.estimateHint,
+      });
+      if (attempt !== pdfAttempt.current) return;
+      setSheet({ kind: "pdf", status: "ready", preview: tempUrl(preview), file: tempUrl(blob), blob });
+    } catch {
+      if (attempt === pdfAttempt.current) setSheet({ kind: "pdf", status: "failed" });
+    }
   };
   const wallet = async () => {
     if (!pass) return;
@@ -149,16 +230,11 @@ export default function TravelPass({ locale }: { locale: Locale }) {
     try {
       const response = await fetch("/api/travel-pass", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ reference: pass.reference, accessCode: code, wallet: true }) });
       if (!response.ok) throw new Error("wallet failed");
-      download(await response.blob(), `${pass.reference}.pkpass`);
+      downloadFile(await response.blob(), `${pass.reference}.pkpass`);
     } catch { setError(t.unavailable); }
     finally { setBusy(false); }
   };
 
-  const stage = pass ? (pass.status === "cancelled" ? "cancelled" : pass.status === "confirmed" && pass.stage !== "booking" ? pass.stage : pass.status) : "new";
-  const next = stage === "cancelled" ? t.nextCancelled : stage === "completed" ? t.nextCompleted : stage === "active" ? t.nextActive : stage === "confirmed" ? t.nextConfirmed : stage === "contacted" ? t.nextReview : t.nextNew;
-  const stageIndex = stages.indexOf(stage as typeof stages[number]);
-  const beforePickup = stage === "new" || stage === "contacted" || stage === "confirmed";
-  const showInstructions = stage !== "cancelled" && stage !== "completed";
   const whatsapp = `https://wa.me/${contact.phone.replace(/\D/g, "")}`;
 
   return <main className={`travel-page${pass ? " has-pass" : ""}`}>
@@ -190,8 +266,11 @@ export default function TravelPass({ locale }: { locale: Locale }) {
           <button onClick={() => void load(reference, code)} disabled={busy}><RefreshCw size={15} className={busy ? "travel-spin" : ""} />{t.refresh}</button>
           <button onClick={close}><X size={16} />{t.forget}</button>
         </div>
-        {error && <p className="travel-error" role="alert">{error}</p>}
-        {notice && <p className="travel-notice" role="status"><Check size={16} />{notice}</p>}
+        {/* Shown over the page: on a phone the buttons are far below the top of the pass, so anything placed up there is never seen. */}
+        {createPortal(<>
+          {error && <p className="travel-toast travel-toast-error" role="alert">{error}</p>}
+          {notice && <p className="travel-toast" role="status"><Check size={18} />{notice}</p>}
+        </>, document.body)}
         <div className="travel-dashboard">
           <article className={`travel-ticket travel-state-${stage}`}>
             <div className="travel-ticket-top"><Image unoptimized src="/assets/logo-dark.webp" alt="CarTime" width={160} height={45} /><span><LockKeyhole size={12} /> TRAVEL PASS</span></div>
@@ -243,7 +322,7 @@ export default function TravelPass({ locale }: { locale: Locale }) {
             <section className="travel-panel travel-actions">
               {pass.walletReady && <button className="travel-wallet-action" onClick={() => void wallet()} disabled={busy}><Wallet size={19} />{t.walletReady}<ArrowRight className="travel-flip" size={16} /></button>}
               <button onClick={calendar}><CalendarDays size={19} />{t.calendar}</button>
-              <button onClick={() => window.print()}><Download size={19} />{t.print}</button>
+              <button onClick={() => void pdf()}><Download size={19} />{t.print}</button>
               <button onClick={() => void copy()}><Copy size={19} />{t.share}</button>
               <a href={`${whatsapp}?text=${encodeURIComponent(`CarTime ${pass.reference}`)}`} target="_blank" rel="noopener noreferrer"><MessageCircle size={19} />{t.support}</a>
             </section>
@@ -255,5 +334,28 @@ export default function TravelPass({ locale }: { locale: Locale }) {
         </div>
       </>}
     </div>
+    {sheet && pass && createPortal(<div className="travel-sheet-backdrop" onClick={closeSheet}>
+      <div className="travel-sheet" role="dialog" aria-modal="true" aria-label={sheet.kind === "pdf" ? t.print : sheet.kind === "calendar" ? t.calendar : t.share} onClick={(event) => event.stopPropagation()}>
+        <div className="travel-sheet-head"><h3>{sheet.kind === "pdf" ? t.print : sheet.kind === "calendar" ? t.calendar : t.share}</h3><button type="button" aria-label={t.closeSheet} onClick={closeSheet}><X size={20} /></button></div>
+        {sheet.kind === "pdf" && sheet.status === "loading" && <p className="travel-sheet-state" role="status"><RefreshCw size={18} className="travel-spin" />{t.loading}</p>}
+        {sheet.kind === "pdf" && sheet.status === "failed" && <><p className="travel-error" role="alert">{t.fileFailed}</p><button type="button" className="travel-sheet-primary" onClick={() => void pdf()}><RefreshCw size={18} />{t.refresh}</button></>}
+        {sheet.kind === "pdf" && sheet.status === "ready" && <>
+          {/* eslint-disable-next-line @next/next/no-img-element -- a local blob preview; holding it saves the image on any phone */}
+          <img className="travel-sheet-preview" src={sheet.preview} alt={`Travel Pass ${pass.reference}`} />
+          <button type="button" className="travel-sheet-primary" onClick={() => void saveFile(sheet.blob, `CarTime-${pass.reference}.pdf`)}><Download size={18} />{t.saveFile}</button>
+          <a className="travel-sheet-secondary" href={sheet.file} target="_blank" rel="noopener">{t.openFile}</a>
+          <p className="travel-sheet-hint">{t.holdToSave}</p>
+        </>}
+        {sheet.kind === "calendar" && <>
+          <button type="button" className="travel-sheet-primary" onClick={() => void saveFile(sheet.blob, `CarTime-${pass.reference}.ics`)}><Download size={18} />{t.saveFile}</button>
+          <a className="travel-sheet-secondary" href={sheet.google} target="_blank" rel="noopener noreferrer">Google Calendar ↗</a>
+        </>}
+        {sheet.kind === "link" && <>
+          <label className="travel-sheet-hint" htmlFor="travel-link">{t.copyManual}</label>
+          <input id="travel-link" className="travel-sheet-link" readOnly value={sheet.link} dir="ltr" onFocus={(event) => event.currentTarget.select()} />
+          <a className="travel-sheet-secondary" href={`https://wa.me/?text=${encodeURIComponent(sheet.link)}`} target="_blank" rel="noopener noreferrer"><MessageCircle size={18} />WhatsApp</a>
+        </>}
+      </div>
+    </div>, document.body)}
   </main>;
 }
