@@ -39,6 +39,7 @@ export default function GlassHeader({ locale, logoHref, links, cta, suffix = "",
     const header = headerRef.current;
     if (!header) return;
     let scheduled = false;
+    const areas = [...document.querySelectorAll(darkAreas)];
     const update = () => {
       scheduled = false;
       const y = window.scrollY;
@@ -47,7 +48,7 @@ export default function GlassHeader({ locale, logoHref, links, cta, suffix = "",
       header.style.setProperty("--page-progress", String(Math.min(1, y / extent)));
       const mode = document.documentElement.dataset.theme;
       const probe = header.getBoundingClientRect().top + 30;
-      const overDark = mode === "dark" || [...document.querySelectorAll(darkAreas)].some((area) => {
+      const overDark = mode === "dark" || areas.some((area) => {
         if (mode === "light" && area.matches(".hero")) return false;
         const { top, bottom } = area.getBoundingClientRect();
         return top <= probe && bottom > probe;
@@ -124,7 +125,7 @@ export default function GlassHeader({ locale, logoHref, links, cta, suffix = "",
     {menuOpen && <div className="glass-sheet glass-panel">
       {cta && <a className="glass-sheet-cta" href={cta.href} onClick={() => setMenuOpen(false)}>{cta.label}<ArrowRight size={20} className="travel-flip" /></a>}
       <nav aria-label={navLabel}>{links.map((link) => <a key={link.href} className="glass-sheet-link" href={link.href} onClick={() => setMenuOpen(false)}>{link.label}<ArrowRight size={18} className="travel-flip" /></a>)}</nav>
-      <SiteDirectory locale={locale} inline />
+      <SiteDirectory locale={locale} inline onNavigate={() => setMenuOpen(false)} />
       <div className="glass-themes glass-themes-wide" role="group" aria-label={styleLabel}>
         {themeNames.map((name, index) => { const Icon = themeIcons[name]; return <button key={name} type="button" aria-pressed={theme === name} onClick={() => saveTheme(name)}><Icon size={16} aria-hidden="true" />{themeLabels[index]}</button>; })}
       </div>

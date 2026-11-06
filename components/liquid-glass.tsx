@@ -28,10 +28,9 @@ export default function LiquidGlass() {
     if (!chromium || calm || !defs.current) return;
     const container = defs.current;
     const ns = "http://www.w3.org/2000/svg" as const;
-    root.classList.add("liquid-refract");
 
     let count = 0;
-    const known = new WeakMap<Element, SVGFilterElement>();
+    const known = new Map<Element, SVGFilterElement>();
     const timers = new WeakMap<Element, number>();
 
     const draw = (element: HTMLElement) => {
@@ -73,15 +72,33 @@ export default function LiquidGlass() {
         timers.set(target, window.setTimeout(() => draw(target as HTMLElement), 160));
       }
     });
-    const track = () => document.querySelectorAll<HTMLElement>(SELECTOR).forEach((element) => {
-      if (known.has(element)) return;
-      draw(element);
-      sizes.observe(element);
-    });
+    const header = container.closest("header");
+    if (!header) return;
+    root.classList.add("liquid-refract");
+    const track = () => {
+      scheduled = false;
+      // A closed sheet leaves the page, so its filter goes too.
+      known.forEach((filter, element) => {
+        if (element.isConnected) return;
+        filter.remove();
+        known.delete(element);
+        sizes.unobserve(element);
+      });
+      header.querySelectorAll<HTMLElement>(SELECTOR).forEach((element) => {
+        if (known.has(element)) return;
+        draw(element);
+        sizes.observe(element);
+      });
+    };
+    let scheduled = false;
     track();
-    // Panels and sheets appear later.
-    const added = new MutationObserver(track);
-    added.observe(document.body, { subtree: true, childList: true, attributes: true, attributeFilter: ["open"] });
+    // Panels and sheets appear later, always inside the header.
+    const added = new MutationObserver(() => {
+      if (scheduled) return;
+      scheduled = true;
+      requestAnimationFrame(track);
+    });
+    added.observe(header, { subtree: true, childList: true, attributes: true, attributeFilter: ["open"] });
 
     return () => {
       sizes.disconnect();

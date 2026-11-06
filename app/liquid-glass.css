@@ -70,7 +70,7 @@ html[data-theme="light"] {
   position: absolute; inset: 0; z-index: -2; border-radius: inherit; background: var(--glass-tint); box-shadow: var(--glass-shade), var(--glass-inner);
   -webkit-backdrop-filter: var(--glass-blur); backdrop-filter: var(--glass-blur); content: ""; transition: background .35s ease, box-shadow .35s ease; pointer-events: none;
 }
-.liquid-refract .glass-capsule::before, .liquid-refract .glass-panel::before { backdrop-filter: var(--glass-bend, none) var(--glass-blur); }
+.liquid-refract .glass-capsule::before, .liquid-refract .glass-panel::before { backdrop-filter: var(--glass-bend,) var(--glass-blur); }
 .glass-capsule::after, .glass-panel::after {
   position: absolute; inset: 0; z-index: -1; padding: 1px; border-radius: inherit; content: ""; pointer-events: none;
   background:
@@ -83,7 +83,9 @@ html[data-theme="light"] {
 .liquid-glass-defs { position: absolute; width: 0; height: 0; overflow: hidden; }
 
 /* ---------- Header frame ---------- */
+/* The global offset clears the header, so anchors need no margin of their own. */
 html { scroll-padding-top: 104px; }
+html .home-site .search-container, html .search-container, html .booking-wizard, html .booking-review, html .info-booking-shell .booking-wizard, html .info-booking-shell .booking-review, html .section, html .info-article section, html .fleet-page-group, html .about-intro-grid, html .rental-models { scroll-margin-top: 0; }
 .glass-header { position: fixed; z-index: 90; inset: 14px 0 auto; pointer-events: none; transition: transform .5s var(--ease-out); }
 .glass-bar { display: grid; grid-template-columns: minmax(0,1fr) auto minmax(0,1fr); align-items: center; gap: 12px; width: min(100% - 32px, 1480px); margin-inline: auto; }
 .glass-side { display: flex; align-items: center; gap: 10px; min-width: 0; }
@@ -199,7 +201,7 @@ html .glass-sheet .site-directory-panel .directory-group a svg { opacity: .5; }
 
 @media (max-width: 1320px) { .glass-nav > a, .glass-nav > .site-directory > summary { padding: 0 12px; } .glass-cta { padding: 0 18px; } }
 @media (max-width: 1200px) { .glass-cta { display: none; } }
-@media (max-width: 1080px) {
+@media (max-width: 1200px) {
   .glass-menu-button { display: grid; }
   .glass-nav, .glass-themes:not(.glass-themes-wide) { display: none; }
   .glass-logo, .glass-header[data-scrolled] .glass-logo { width: 158px; height: 52px; padding: 7px 18px; border-radius: 26px; }
@@ -320,7 +322,7 @@ html .travel-actions :is(a,button) { border-radius: 999px; }
 @keyframes glass-sheet-plain { from { opacity: 0; transform: translateY(-12px) scale(.96); } to { opacity: 1; transform: none; } }
 @keyframes glass-pop { from { opacity: 0; transform: scale(.94); } to { opacity: 1; transform: none; } }
 
-@media (max-width: 1080px) { html .glass-header .glass-nav .site-directory-panel { display: none; } }
+@media (max-width: 1200px) { html .glass-header .glass-nav .site-directory-panel { display: none; } }
 @media (max-width: 980px) { html .home-site .home-map-copy, html[dir="rtl"] .home-site .home-map-copy { border-radius: 28px 28px 0 0; } html .home-site .home-map-frame, html[dir="rtl"] .home-site .home-map-frame { border-radius: 0 0 28px 28px; } }
 @media (max-width: 640px) {
   .hero-board { inset-block-end: 54px; inset-inline: 12px; }
@@ -332,6 +334,10 @@ html .travel-actions :is(a,button) { border-radius: 999px; }
 }
 
 /* People who ask for less see solid surfaces and no motion */
+/* Nothing animates while the hero is out of view. */
+.hero[data-offscreen] .hero-trails i, .hero[data-offscreen] .hero-board-track, .hero[data-offscreen] .live-dot::after { animation-play-state: paused; }
+.hero[data-offscreen] .hero-trails { visibility: hidden; }
+
 @media (prefers-reduced-transparency: reduce) {
   .glass-capsule::before, .glass-panel::before { background: var(--glass-tint-strong); -webkit-backdrop-filter: none; backdrop-filter: none; }
   .glass-header[data-tone="dark"] .glass-capsule::before, .glass-header[data-tone="dark"] .glass-panel::before { background: #0a1630; }

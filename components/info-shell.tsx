@@ -24,7 +24,7 @@ export default function InfoShell({ locale, current, children }: { locale: Local
       cta={current === "booking" ? undefined : { href: `/${locale}/booking`, label: bookingUi[locale].nav }}
       suffix={suffix}
       navLabel={ui.nav}
-      languageLabel={ui.nav}
+      languageLabel={dictionary.languageLabel}
       menuLabel={dictionary.mobileMenu}
       closeLabel={dictionary.close}
       styleLabel={dictionary.themes.join(" / ")}

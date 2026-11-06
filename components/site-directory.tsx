@@ -56,7 +56,7 @@ const labels = {
   },
 } satisfies Record<Locale, Record<string, string>>;
 
-export default function SiteDirectory({ locale, inline = false }: { locale: Locale; inline?: boolean }) {
+export default function SiteDirectory({ locale, inline = false, onNavigate }: { locale: Locale; inline?: boolean; onNavigate?: () => void }) {
   const l = labels[locale];
   const menuRef = useRef<HTMLDetailsElement>(null);
 
@@ -69,7 +69,10 @@ export default function SiteDirectory({ locale, inline = false }: { locale: Loca
     return () => document.removeEventListener("pointerdown", closeOutside);
   }, [inline]);
 
-  const close = () => { if (menuRef.current && !inline) menuRef.current.open = false; };
+  const close = () => {
+    if (menuRef.current && !inline) menuRef.current.open = false;
+    onNavigate?.();
+  };
   const group = (Icon: LucideIcon, title: string, links: [string, string][]) => <div className="directory-group">
     <strong><Icon size={15} aria-hidden="true" />{title}</strong>
     {links.map(([path, label]) => <a key={path} href={`/${locale}${path}`} onClick={close}><span>{label}</span><ArrowUpRight size={15} aria-hidden="true" /></a>)}

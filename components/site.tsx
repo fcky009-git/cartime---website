@@ -146,7 +146,9 @@ export default function CarTimeSite({ locale }: { locale: Locale }) {
     };
     update();
     window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
+    const visibility = new IntersectionObserver(([entry]) => hero.toggleAttribute("data-offscreen", !entry.isIntersecting));
+    visibility.observe(hero);
+    return () => { window.removeEventListener("scroll", onScroll); visibility.disconnect(); };
   }, []);
 
   useEffect(() => {

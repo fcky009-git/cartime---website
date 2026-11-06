@@ -77,14 +77,13 @@ html .info-shell h1, html .info-shell .section h2 {
 html .home-site .section h2, html .home-site .home-about h2, html .home-site .home-map-copy h2 { font-size: calc(clamp(52px,6.4vw,104px) * var(--ds)); max-width: 15em; }
 html[lang="zh-CN"] h1, html[lang="zh-CN"] h2, html[lang="ko"] h1, html[lang="ko"] h2, html[lang="ar"] h1, html[lang="ar"] h2 { line-height: 1.2 !important; }
 
-html .home-site .section-kicker, html .home-site .airport-kicker, html .home-site .search-icon { display: none; }
+html .home-site .section-kicker, html .home-site .airport-kicker { display: none; }
 html .home-site .section { padding: clamp(72px,9vw,128px) 0; }
 html .home-site .section-intro { max-width: 40ch; font-size: 16px; line-height: 1.6; color: var(--editorial-muted); }
 html .home-site .section-head { margin-bottom: clamp(32px,4vw,56px); gap: 32px; }
 html .home-site .container { width: min(100% - clamp(30px,6vw,96px), 1480px); }
 
 /* The page opens in one moment; sections no longer fade in one by one. */
-.motion-ready .home-site .home-reveal > .container { opacity: 1; filter: none; transform: none; transition: none; }
 
 /* ---------- Buttons: one solid logo blue, one quiet outline ---------- */
 html .home-site .button-primary, html .home-site .search-button, html .home-site .airport-button,
@@ -100,7 +99,6 @@ html .booking-submit:hover, html .booking-modal-link:hover, html .travel-primary
 }
 html .home-site .button-primary:active, html .home-site .search-button:active, html .home-site .airport-button:active, html .booking-submit:active { transform: translateY(0); }
 html .home-site .button-primary { min-height: 56px; padding: 14px 20px 14px 24px; gap: 28px; font-size: 16px; }
-html .home-site .header-actions { gap: 8px; }
 html .home-site .airport-button { min-height: 54px; padding: 13px 22px; font-size: 16px; }
 html .home-site .load-more, html .home-site .fleet-all-link, html .home-site .rental-hub-cta a, html .home-site .home-about-actions a, html .home-site .home-map-actions a, html .home-site .faq-all-link {
   border: 1px solid color-mix(in srgb, currentColor 32%, transparent); border-radius: 12px; background: none; font-size: 15px; font-weight: 600; transition: background .2s, color .2s, border-color .2s;
@@ -137,7 +135,6 @@ html[data-theme="light"] .home-site .hero-lead { color: var(--ink); }
 html .home-site .hero-text-link { margin: 18px 0 0; padding-bottom: 3px; font-size: 15px; color: #fff; border-bottom-color: #ffffff66; transition: color .2s, border-color .2s; }
 html .home-site .hero-text-link:hover { color: var(--accent-hot); border-color: var(--accent-hot); }
 html[data-theme="light"] .home-site .hero-text-link { color: var(--ink); border-bottom-color: #0a163055; }
-html .home-site .hero-scroll, html .home-site .hero-index { display: none; }
 
 /* Live status: real clock, real phone line. */
 .live-dot { position: relative; display: inline-block; flex: none; width: 9px; height: 9px; border-radius: 50%; background: var(--led); }
@@ -208,7 +205,7 @@ html .home-site .filter-row button:hover { border-color: var(--editorial-ink); }
 html .home-site .filter-row button.active, html[data-theme="dark"] .home-site .filter-row button.active { border-color: var(--accent); background: var(--accent); color: var(--on-accent); }
 html .home-site .fleet-count { font-size: 14px; }
 
-html .home-site .car-card, html .fleet-page .car-card { position: relative; display: flex; flex-direction: column; overflow: hidden; border: 1px solid var(--editorial-line); border-radius: 18px; background: var(--editorial-paper); transition: transform .45s var(--ease-out), box-shadow .45s var(--ease-out), border-color .25s; }
+html .home-site .car-card { position: relative; display: flex; flex-direction: column; overflow: hidden; border: 1px solid var(--editorial-line); border-radius: 18px; background: var(--editorial-paper); transition: transform .45s var(--ease-out), box-shadow .45s var(--ease-out), border-color .25s; }
 html .home-site .car-card:hover { transform: translateY(-6px); border-color: color-mix(in srgb, var(--accent) 60%, var(--editorial-line)); box-shadow: 0 30px 50px -28px #0a163059; }
 html .home-site .car-card-open { display: flex; flex-direction: column; flex: 1; width: 100%; text-align: start; }
 html .home-site .car-image, html[data-theme="dark"] .home-site .car-image {
@@ -224,7 +221,6 @@ html .home-site .car-card:hover .car-image img { transform: scale(1.05); }
 .car-plate i { display: grid; place-items: center; padding: 0 5px; background: var(--plate-blue); color: #fff; font: 700 10px/1 var(--font-body); }
 .car-plate b { padding: 4px 8px 3px; font: 800 18px/1 var(--font-display); letter-spacing: .08em; font-variant-numeric: tabular-nums; }
 .car-saving { position: absolute; z-index: 2; inset-block-end: 12px; inset-inline-start: 14px; display: inline-flex; align-items: center; gap: 6px; padding: 5px 9px; border-radius: 7px; background: var(--accent); color: var(--on-accent); font-size: 13px; font-weight: 700; line-height: 1.2; }
-html .home-site .car-tag { display: none; }
 html .home-site .car-save { z-index: 3; border-radius: 10px; }
 html .home-site .car-info { display: flex; flex-direction: column; flex: 1; padding: 18px 18px 18px; }
 html .home-site .car-year { margin: 0 0 4px; font-size: 14px; color: var(--editorial-muted); }
@@ -550,9 +546,9 @@ html .booking-travel-issued > button { border-color: #ffffff4d; }
 /* Search, comparison and small windows */
 html .site-search mark { background: color-mix(in srgb, var(--accent) 30%, transparent); color: inherit; }
 html .compare-tray { border-color: var(--accent); }
-html .compare-tray a, html .compare-open { background: var(--accent); color: var(--on-accent); }
+html .compare-tray a { background: var(--accent); color: var(--on-accent); }
 
-html .info-shell .info-footer, html .info-shell footer { background: var(--night); color: #e4edf8; }
+html .info-shell footer { background: var(--night); color: #e4edf8; }
 html .info-shell footer a { font-size: 14px; transition: color .2s; }
 html .info-shell footer a:hover { color: var(--accent-hot); }
 html .info-shell footer p { font-size: 14px; }
@@ -600,7 +596,8 @@ html .admin-login-submit, html .admin-login button[type="submit"] { background: 
   html .home-site .rental-topic, html .home-site .rental-topic + .rental-topic { padding-inline: 0; border-inline-end: 0; }
 }
 @media (max-width: 640px) {
-  h1, h2, h3 { overflow-wrap: break-word; hyphens: auto; }
+  h1, h2, h3 { overflow-wrap: break-word; }
+  html[lang="de"] :is(h1, h2, h3) { hyphens: auto; }
   html .home-site .hero h1 { font-size: calc(clamp(64px,19.5vw,110px) * var(--ds)); line-height: .88; }
   html .home-site .hero h1 span, html .home-site .hero h1 em { margin: 0; white-space: normal; }
   .hero-trails { display: none; }
