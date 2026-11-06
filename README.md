@@ -24,6 +24,8 @@ Glass surfaces are built from a blur, a tint that follows the tone behind them, 
 
 ## Development
 
+The booking form has four steps (route, car, details, payment and review) in `components/booking-form.tsx`, with its own styles in `app/booking-flow.css`. It stays dark in all themes, like the Travel Pass, keeps a draft in `sessionStorage` for the current tab, and offers card or cash; older requests may still show bank transfer in the admin panel. Migration `0004` adds the customer's preferred contact channel, licence country, number of people, child seat details, second driver's name and trip plan.
+
 Travel Pass adds a private client trip page, booking lookup with an access code, status updates, QR, calendar and print/PDF. Managers control public instructions and agreed amounts separately from internal notes. Apple Wallet signing is prepared but not enabled without the owner's Apple signing identity. See `docs/travel-pass.md` for access security, migration and Wallet setup.
 
 Use Node.js 22.13+ and run `npm run install:ci`, `npm run lint`, `npx tsc --noEmit` and `npm run build`. The Sites deployment has its own source repository; the GitHub repository is used for collaboration and must be synchronized deliberately.

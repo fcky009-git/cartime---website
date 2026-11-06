@@ -29,6 +29,12 @@ export const bookingRequests = sqliteTable("booking_requests", {
   secondDriver: integer("second_driver", { mode: "boolean" }).notNull(),
   payment: text("payment").notNull(),
   notes: text("notes"),
+  contactChannel: text("contact_channel"),
+  licenceCountry: text("licence_country"),
+  passengers: integer("passengers"),
+  childSeat: text("child_seat"),
+  secondDriverName: text("second_driver_name"),
+  tripPlan: text("trip_plan"),
 }, (table) => [index("booking_requests_status_created_idx").on(table.status, table.createdAt)]);
 
 export const adminBookingEvents = sqliteTable("admin_booking_events", {

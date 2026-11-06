@@ -23,8 +23,14 @@ export const bookingInput = z.object({
   experience: z.number().int().min(2).max(70),
   flight: z.string().trim().max(80),
   secondDriver: z.boolean(),
-  payment: z.enum(["card", "cash", "transfer"]),
+  payment: z.enum(["card", "cash"]),
   notes: z.string().trim().max(2000),
+  contactChannel: z.enum(["whatsapp", "telegram", "call", "email"]).default("whatsapp"),
+  licenceCountry: z.string().trim().max(80).default(""),
+  passengers: z.number().int().min(1).max(6).default(1),
+  childSeat: z.string().trim().max(120).default(""),
+  secondDriverName: z.string().trim().max(120).default(""),
+  tripPlan: z.string().trim().max(250).default(""),
   website: z.string().max(100).optional(),
 });
 
