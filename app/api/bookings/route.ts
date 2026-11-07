@@ -4,6 +4,7 @@ import { bookingRequests, travelPasses } from "@/db/schema";
 import { getDb } from "@/db";
 import { notifyNewBooking } from "@/lib/booking-notify";
 import { issueTravelPass, newAccessCode, newTravelPassRow } from "@/lib/travel-pass";
+import { withinIpLimit } from "@/lib/rate-limit";
 
 export const dynamic = "force-dynamic";
 
@@ -12,14 +13,11 @@ const MAX_PER_CONTACT_PER_HOUR = 5;
 const MAX_PER_IP_PER_HOUR = 20;
 const tooMany = () => Response.json({ error: "Too many requests" }, { status: 429, headers: { "Retry-After": "3600" } });
 
-// Best effort: each Worker instance keeps its own counts. The contact limit below is the durable one.
-const recentByIp = new Map<string, number[]>();
-function ipOverLimit(ip: string, now: number) {
-  const recent = (recentByIp.get(ip) ?? []).filter((time) => now - time < HOUR_MS);
-  if (recent.length >= MAX_PER_IP_PER_HOUR) return true;
-  if (recentByIp.size > 5000) recentByIp.clear();
-  recentByIp.set(ip, [...recent, now]);
-  return false;
+// Counted in D1, so the limit holds across every Worker instance. If the counter itself
+// fails, the request is still accepted: the per-contact limit below stays in force.
+async function ipOverLimit(ip: string) {
+  try { return !await withinIpLimit(ip, "booking", HOUR_MS, MAX_PER_IP_PER_HOUR); }
+  catch (error) { console.error("Booking IP limit unavailable", error); return false; }
 }
 
 export async function POST(request: Request) {
@@ -44,7 +42,7 @@ export async function POST(request: Request) {
   const data = parsed.data;
   const nowMs = Date.now();
   const ip = request.headers.get("cf-connecting-ip");
-  if (ip && ipOverLimit(ip, nowMs)) return tooMany();
+  if (ip && await ipOverLimit(ip)) return tooMany();
 
   const now = new Date(nowMs).toISOString();
   const id = data.requestId;

@@ -3,6 +3,7 @@ import { eq } from "drizzle-orm";
 import { getDb } from "@/db";
 import { bookingRequests, travelPasses } from "@/db/schema";
 import { normalizeAccessCode, travelReference } from "@/lib/travel-access";
+import { withinIpLimit } from "@/lib/rate-limit";
 
 export const passHeaders = { "Cache-Control": "no-store, private", "X-Robots-Tag": "noindex, nofollow", "Referrer-Policy": "no-referrer" };
 export async function hashAccess(value: string) {
@@ -31,14 +32,7 @@ export async function travelAccessAllowed(request: Request) {
   const ip = request.headers.get("cf-connecting-ip");
   // Never use one shared "unknown" bucket for all visitors.
   if (!ip) return false;
-  const fingerprint = await hashAccess(`${env.CARTIME_ADMIN_SESSION_SECRET}:${ip}`);
-  const now = Date.now();
-  // Old rows only need removing now and then; this runs on every automatic refresh.
-  if (Math.random() < 0.02) await env.DB!.prepare("DELETE FROM travel_access_attempts WHERE window_start < ?1").bind(now-86400000).run();
-  const row = await env.DB!.prepare(`INSERT INTO travel_access_attempts (fingerprint, attempts, window_start) VALUES (?1,1,?2)
-    ON CONFLICT(fingerprint) DO UPDATE SET attempts = CASE WHEN ?2-window_start >= 900000 THEN 1 ELSE attempts+1 END,
-    window_start = CASE WHEN ?2-window_start >= 900000 THEN ?2 ELSE window_start END RETURNING attempts`).bind(fingerprint,now).first<{attempts:number}>();
-  return (row?.attempts ?? 61) <= 60;
+  return withinIpLimit(ip, "travel", 900_000, 60);
 }
 export async function findTravelPass(reference: string, accessCode: string) {
   const [row] = await getDb().select({ pass: travelPasses, booking: bookingRequests }).from(travelPasses).innerJoin(bookingRequests, eq(bookingRequests.id, travelPasses.bookingId)).where(eq(travelPasses.reference, reference.toUpperCase().trim()));
