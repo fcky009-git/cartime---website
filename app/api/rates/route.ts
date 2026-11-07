@@ -23,7 +23,14 @@ function readRates(xml: string) {
   return { date, aznPerUnit };
 }
 
+// Worker responses are not cached by Cloudflare on their own, so each instance keeps the last
+// published rates. Without it every booking form would call cbar.az again.
+const CACHE_MS = 6 * 3_600_000;
+const sharedCache = { "Cache-Control": "public, s-maxage=21600, stale-while-revalidate=86400" };
+let cached: { at: number; body: Record<string, unknown> } | null = null;
+
 export async function GET() {
+  if (cached && Date.now() - cached.at < CACHE_MS) return Response.json(cached.body, { headers: sharedCache });
   const now = new Date();
   const deadline = Date.now() + 7000;
   for (let offset = 0; offset < 8; offset++) {
@@ -35,7 +42,10 @@ export async function GET() {
       const response = await fetch(`https://cbar.az/currencies/${display}.xml`, { signal: AbortSignal.timeout(Math.min(2000, remaining)) });
       if (!response.ok) continue;
       const rates = readRates(await response.text());
-      if (rates) return Response.json({ ...rates, source: "https://www.cbar.az/currency/rates", fallback: false }, { headers: { "Cache-Control": "public, s-maxage=21600, stale-while-revalidate=86400" } });
+      if (rates) {
+        cached = { at: Date.now(), body: { ...rates, source: "https://www.cbar.az/currency/rates", fallback: false } };
+        return Response.json(cached.body, { headers: sharedCache });
+      }
     } catch { /* Try the previous published day. */ }
   }
   const snapshotDay = Date.parse("2026-11-04T00:00:00Z");
