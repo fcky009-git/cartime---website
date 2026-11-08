@@ -307,7 +307,7 @@ export const guides: Record<Locale, Record<GuideSlug, Guide>> = {
       checklist: ["Bir günə bir əsas istiqamət seçin və geri dönüş üçün vaxt saxlayın.", "Yalnız yaşayış məntəqəsini deyil, konkret görməli yerə gedən yolu yoxlayın.", "İş saatlarına, havaya və əlaqə imkanlarına baxın.", "İcarə avtomobilinin Bakıdan kənarda istifadəsi şərtlərini təsdiqləyin."],
     },
     airport: {
-      title: "Bakı GYD hava limanında avtomobil götürməyi necə planlaşdırmalı",
+      title: "GYD hava limanında avtomobil götürməyi planlaşdırmaq",
       description: "GYD hava limanına gəliş üçün yaddaş siyahısı: şəhərə məsafə, terminal, görüş yeri və icarə avtomobilinin qaytarılması.",
       eyebrow: "GƏLİŞ / GYD",
       teaser: "Uçuşdan avtomobillə yola düşənədək vacib detalları əvvəlcədən yoxlayın.",
@@ -397,7 +397,7 @@ export const guides: Record<Locale, Record<GuideSlug, Guide>> = {
   de: {
     ...extraGuides.de,
     baku: {
-      title: "Was es in Baku zu sehen gibt: Altstadt, Strandpromenade und Architektur",
+      title: "Sehenswertes in Baku: Altstadt, Boulevard, Architektur",
       description: "Ein praktischer Baku-Führer zu Icherisheher, der Kaspischen Promenade, moderner Architektur und einem ein- oder zweitägigen Stadtplan.",
       eyebrow: "BAKU / CITY GUIDE",
       teaser: "Die Gassen der Altstadt, die Uferpromenade am Kaspischen Meer und das moderne Baku in einem überschaubaren Plan.",
@@ -412,7 +412,7 @@ export const guides: Record<Locale, Record<GuideSlug, Guide>> = {
     },
     routes: {
       title: "Roadtrips von Baku: Absheron, Gobustan und darüber hinaus",
-      description: "Planen Sie eine Fahrt von Baku nach Absheron, Gobustan oder in den Nordwesten Aserbaidschans. Vergleichen Sie Tagesausflüge mit einer längeren Route durch Gabala und Shaki.",
+      description: "Fahrten ab Baku nach Absheron, Gobustan oder in den Nordwesten Aserbaidschans: Tagesausflüge im Vergleich mit einer längeren Route über Gabala und Shaki.",
       eyebrow: "ASERBAIDSCHAN / ROADTRIPS",
       teaser: "Absheron, Gobustan und die Straße nach Gabala und Shaki für verschiedene Reiselängen.",
       intro: "Mit einem Auto können Sie Orte außerhalb von Baku in Ihrem eigenen Tempo verbinden. Wählen Sie eine Route entsprechend Ihrer Zeit, Ihrem Wetter und Ihren Interessen, anstatt zu versuchen, die meisten Kartenmarkierungen zu sammeln. Planen Sie bei längeren Fahrten einen Zwischenstopp über Nacht ein.",
@@ -589,7 +589,7 @@ export const guides: Record<Locale, Record<GuideSlug, Guide>> = {
     },
     routes: {
       title: "Road trips depuis Bakou : Absheron, Gobustan et au-delà",
-      description: "Planifiez un trajet de Bakou à Absheron, Gobustan ou le nord-ouest de l'Azerbaïdjan. Comparez les excursions d’une journée avec un itinéraire plus long passant par Gabala et Shaki.",
+      description: "De Bakou à Absheron, Gobustan ou le nord-ouest de l'Azerbaïdjan : excursions d’une journée ou itinéraire plus long par Gabala et Shaki.",
       eyebrow: "AZERBAÏDJAN / ROAD TRIPS",
       teaser: "Absheron, Gobustan et la route de Gabala et Shaki pour différentes durées de voyage.",
       intro: "Une voiture vous permet de relier des lieux au-delà de Bakou à votre rythme. Choisissez un itinéraire en fonction de l'heure, de la météo et de vos centres d'intérêt, plutôt que d'essayer de collecter le plus grand nombre d'épingles de carte. Prévoyez un arrêt de nuit pour les trajets plus longs.",
@@ -602,7 +602,7 @@ export const guides: Record<Locale, Record<GuideSlug, Guide>> = {
       checklist: ["Choisissez une direction principale pour une journée et prévoyez du temps pour le retour.", "Vérifiez la route menant à l'attraction spécifique, pas seulement la ville la plus proche.", "Vérifiez les heures d'ouverture, la météo et la couverture mobile.", "Confirmez que vos conditions de location autorisent l'itinéraire prévu."],
     },
     airport: {
-      title: "Aéroport de Bakou GYD : planifier la prise en charge d'une voiture de location",
+      title: "Aéroport GYD de Bakou : prendre une voiture de location",
       description: "Un guide pratique d'arrivée GYD : distance jusqu'au centre de Bakou, terminaux, points de rendez-vous, retards de vol et restitution d'une voiture de location.",
       eyebrow: "ARRIVÉE / GYD",
       teaser: "Les détails à confirmer entre l'atterrissage et le départ.",

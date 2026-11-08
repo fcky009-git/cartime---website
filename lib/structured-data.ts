@@ -31,6 +31,9 @@ export function organizationJsonLd() {
     geo: { "@type": "GeoCoordinates", latitude: contactLocation.latitude, longitude: contactLocation.longitude },
     hasMap: contactLocation.mapsUrl,
     areaServed: [{ "@type": "City", name: "Baku" }, { "@type": "Country", name: "Azerbaijan" }],
+    // Card and cash are the payment methods the booking form offers; bank transfer was removed.
+    paymentAccepted: "Cash, Credit Card",
+    knowsLanguage: supportLanguages,
     contactPoint: phones.map((item) => ({
       "@type": "ContactPoint",
       contactType: "customer support",

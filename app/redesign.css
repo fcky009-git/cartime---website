@@ -50,7 +50,7 @@ html[data-theme="light"] {
 ::selection { background: var(--accent); color: var(--on-accent); }
 html { accent-color: var(--accent); scrollbar-color: color-mix(in srgb, var(--muted) 55%, transparent) transparent; }
 body { font-family: var(--font-body); font-size: 16px; line-height: 1.55; -webkit-font-smoothing: antialiased; font-synthesis: none; }
-button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible, summary:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible, summary:focus-visible, [role="region"][tabindex]:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
 input, select, textarea { caret-color: var(--accent); }
 a { text-underline-offset: .22em; }
 
