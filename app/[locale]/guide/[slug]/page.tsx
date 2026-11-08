@@ -19,7 +19,7 @@ export async function generateMetadata({ params }: RouteParams): Promise<Metadat
   const { locale, slug } = await params;
   if (!(locale in dictionaries) || !guideSlugs.includes(slug as GuideSlug)) return {};
   const guide = guides[locale as Locale][slug as GuideSlug];
-  return pageMetadata(locale as Locale, `guide/${slug}`, guide.title, guide.description);
+  return pageMetadata(locale as Locale, `guide/${slug}`, guide.title, guide.description, { url: `/assets/og/guide-${slug}.jpg`, width: 1200, height: 630, alt: guide.title });
 }
 
 export default async function GuidePage({ params }: RouteParams) {

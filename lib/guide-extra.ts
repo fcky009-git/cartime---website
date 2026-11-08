@@ -36,7 +36,7 @@ export const extraGuides: Record<Locale, Record<ExtraGuideSlug, Guide>> = {
       checklist: ["Проверьте часы и правила посещения заповедника.", "Разделите заповедник и грязевые вулканы как две разные точки.", "Уточните состояние подъезда и допустимость грунтовой дороги для автомобиля.", "Возьмите воду, удобную обувь и заряд для телефона."],
     },
     sheki: {
-      title: "Шеки и северо-запад Азербайджана: путешествие на несколько дней",
+      title: "Шеки и северо-запад Азербайджана за несколько дней",
       description: "Маршрут по северо-западу Азербайджана: Шемаха, Исмаиллы, Лагич, Габала и Шеки, наследие ЮНЕСКО, ремёсла и советы водителю.",
       eyebrow: "СЕВЕРО-ЗАПАД / НЕСКОЛЬКО ДНЕЙ",
       teaser: "Горные пейзажи, ремёсла, Шёлковый путь и исторический Шеки.",
@@ -284,7 +284,7 @@ export const extraGuides: Record<Locale, Record<ExtraGuideSlug, Guide>> = {
       checklistTitle: "Avant de visiter Gobustan", checklist: ["Vérifiez les heures et les règles de réserve.", "Enregistrez la réserve et les volcans comme des arrêts séparés.", "Confirmez si une route non pavée convient à votre véhicule.", "Apportez de l'eau, des chaussures adaptées et un téléphone chargé."],
     },
     sheki: {
-      title: "Sheki et le nord-ouest de l'Azerbaïdjan : un road trip de plusieurs jours",
+      title: "Sheki et le nord-ouest de l'Azerbaïdjan en quelques jours",
       description: "Traversez Shamakhi, Ismayilli, Lahij, Gabala et Sheki pour découvrir le patrimoine de l'UNESCO, l'artisanat et les paysages de montagne.",
       eyebrow: "NORD-OUEST / MULTIJOUR", teaser: "Paysages de montagne, traditions artisanales et patrimoine de la Route de la Soie.",
       intro: "Le nord-ouest est plus valorisant sans course entre villes. La route touristique officielle de l'Azerbaïdjan relie Bakou, Shamakhi, Ismayilli, Gabala et Sheki, et peut continuer vers Gakh et Zagatala si vous avez plus de temps.",

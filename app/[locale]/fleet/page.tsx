@@ -54,9 +54,9 @@ export default async function FleetPage({ params }: { params: Promise<{ locale: 
           if (!cars.length) return null;
           return <section className="fleet-page-group" id={`category-${key}`} key={key}>
             <div className="fleet-page-group-head"><h2>{name}</h2><span>{cars.length}</span></div>
-            <div className="fleet-table-scroll"><table className="fleet-table">
+            <div className="fleet-table-scroll" role="region" aria-label={name} tabIndex={0}><table className="fleet-table">
               <thead><tr><th scope="col">{modelYearLabel[language]}</th>{ui.fleetDuration.map((duration) => <th scope="col" key={duration}>{duration}<small>{ui.perDay}</small></th>)}<th scope="col">{bookingUi[language].nav}</th></tr></thead>
-              <tbody>{cars.map((car) => <tr key={car.id}><th scope="row">{car.name}<small>{car.year}</small></th>{car.ratesUsd.map((rate, index) => <td key={index}>${rate}</td>)}</tr>)}</tbody>
+              <tbody>{cars.map((car) => <tr key={car.id}><th scope="row">{car.name}<small>{car.year}</small></th>{car.ratesUsd.map((rate, index) => <td key={index}>${rate}</td>)}<td><a href={`/${language}/booking?car=${encodeURIComponent(car.id)}`} aria-label={`${bookingUi[language].nav}: ${car.name} ${car.year}`}>{bookingUi[language].nav}</a></td></tr>)}</tbody>
             </table></div>
           </section>;
         })}

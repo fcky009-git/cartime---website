@@ -22,7 +22,8 @@ export function languageAlternates(path: string, origin = ""): Record<string, st
   };
 }
 
-export function pageMetadata(locale: Locale, path: string, title: string, description: string): Metadata {
+/** `image` replaces the default share image, e.g. a guide's own photo (1200x630). */
+export function pageMetadata(locale: Locale, path: string, title: string, description: string, image: { url: string; width: number; height: number; alt: string } = ogImage): Metadata {
   const localPath = path ? `/${locale}/${path}` : `/${locale}`;
   const withBrand = `${title} | CarTime`;
   return {
@@ -41,13 +42,13 @@ export function pageMetadata(locale: Locale, path: string, title: string, descri
       url: `${siteOrigin}${localPath}`,
       locale: localeInfo[locale].ogLocale,
       alternateLocale: locales.filter((code) => code !== locale).map((code) => localeInfo[code].ogLocale),
-      images: [ogImage],
+      images: [image],
     },
     twitter: {
       card: "summary_large_image",
       title,
       description,
-      images: [ogImage.url],
+      images: [image.url],
     },
   };
 }
