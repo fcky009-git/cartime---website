@@ -26,6 +26,17 @@ import { dayCountLabel } from "@/lib/count-labels";
 import { carCountLabel } from "@/lib/count-labels";
 import { contactLocation, phones } from "@/lib/service-info";
 
+const airportPhoto = "/assets/cartime-airport-bmw7-v3.webp";
+const guidePhotos: Record<(typeof guideSlugs)[number], string> = {
+  baku: "/assets/guide-baku-bmw7.webp",
+  routes: "/assets/guide-routes-bmw3.webp",
+  absheron: "/assets/cartime-aero-v2.webp",
+  gobustan: "/assets/guide-gobustan-ix3.webp",
+  sheki: "/assets/guide-sheki-m5.webp",
+  airport: airportPhoto,
+  rental: "/assets/cartime-cinematic-bmw-m5-v3.webp",
+};
+
 // Real numbers only: the saving is the gap between the shortest and the longest published rate.
 const longTermSaving = (rates: readonly number[]) => Math.round((1 - rates[rates.length - 1] / rates[0]) * 100);
 // One car per class, then the cheapest of the rest, for the departure board.
@@ -255,10 +266,28 @@ export default function CarTimeSite({ locale }: { locale: Locale }) {
         </section>
 
         <section className="airport-section home-reveal" id="airport">
+          {/* eslint-disable-next-line @next/next/no-img-element -- Local WebP already optimized. */}
+          <img className="home-scene-photo" src={airportPhoto} alt="" loading="lazy" decoding="async" fetchPriority="low" />
           <div className="container airport-inner"><div><p className="airport-kicker">{t.airportEyebrow}</p><h2>{t.airportTitle}</h2><p>{t.airportLead}</p><button className="airport-button" onClick={chooseAirport} type="button">{t.airportCta}<ArrowRight size={18} /></button><a className="airport-guide-link" href={`/${locale}/guide/airport`}>{guides[locale].airport.title} ↗</a></div></div>
         </section>
 
-        <section className="section home-guides home-reveal" id="guides"><div className="container"><div className="section-head"><div><h2>{g.homeTitle}</h2></div><p className="section-intro">{g.homeLead}</p></div><div className="guide-card-grid">{guideSlugs.map((slug) => <a className={`guide-card guide-card--${slug}`} key={slug} href={`/${locale}/guide/${slug}`}><span>{guides[locale][slug].eyebrow}</span><h3>{guides[locale][slug].title}</h3><p>{guides[locale][slug].teaser}</p><b>{g.read} ↗</b></a>)}</div></div></section>
+        <section className="section home-guides home-reveal" id="guides">
+          <div className="container">
+            <div className="section-head"><div><h2>{g.homeTitle}</h2></div><p className="section-intro">{g.homeLead}</p></div>
+            <div className="guide-card-grid">
+              {guideSlugs.map((slug) => (
+                <a className={`guide-card guide-card--${slug}`} key={slug} href={`/${locale}/guide/${slug}`}>
+                  {/* eslint-disable-next-line @next/next/no-img-element -- Local WebP already optimized. */}
+                  <img className="home-scene-photo" src={guidePhotos[slug]} alt="" loading="lazy" decoding="async" fetchPriority="low" />
+                  <span>{guides[locale][slug].eyebrow}</span>
+                  <h3>{guides[locale][slug].title}</h3>
+                  <p>{guides[locale][slug].teaser}</p>
+                  <b>{g.read} ↗</b>
+                </a>
+              ))}
+            </div>
+          </div>
+        </section>
 
         <section className="section home-rental home-reveal" id="rental"><div className="container"><div className="section-head"><div><h2>{rental.hubTitle}</h2></div><p className="section-intro">{rental.hubLead}</p></div><div className="rental-hub-grid">{rentalSlugs.slice(0, 3).map((slug) => <a className="rental-topic" key={slug} href={`/${locale}/rental/${slug}`}><h3>{rentalPages[locale][slug].title}</h3><p>{rentalPages[locale][slug].teaser}</p><b>{rental.read} →</b></a>)}</div><div className="rental-hub-cta"><a href={`/${locale}/rental`}>{rental.nav} →</a><a href={`/${locale}/booking`}>{bookingUi[locale].nav} →</a><a href={`/${locale}/contact`}>{rental.contact} →</a></div></div></section>
 
