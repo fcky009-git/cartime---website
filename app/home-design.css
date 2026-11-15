@@ -117,7 +117,7 @@
 .home-site .fleet-all-link:hover,.home-site .load-more:hover { border-color: #233c50; background: #233c50; color: #fff; }
 
 /* Airport scene: a second full-width cinematic pause. */
-.home-site .airport-section { position: relative; min-height: 640px; margin: 0; overflow: hidden; border: 0; border-radius: 0; background: linear-gradient(90deg,#0b141fd9 0%,#0b141f8c 55%,#0b141f30),url('/assets/cartime-airport-bmw7-v3.webp') center / cover no-repeat; color: #fff; }
+.home-site .airport-section { position: relative; min-height: 640px; margin: 0; overflow: hidden; border: 0; border-radius: 0; background: #0b141f; color: #fff; }
 .home-site .airport-inner { min-height: 640px; }
 .home-site .airport-inner > div:first-child { max-width: 730px; padding: 110px 0; }
 .home-site .airport-kicker { margin-bottom: 22px; color: #d9e8f2; font-size: 10px; letter-spacing: .15em; }
@@ -233,7 +233,7 @@ html[data-theme='light'] .info-shell .info-footer-inner .brand-caption { color: 
   .home-site .brand img { max-height: 38px; }
   .home-site .brand .brand-caption { font-size: 5px; }
   .home-site .hero,html[data-theme='light'] .home-site .hero { min-height: 790px; }
-  .home-site .hero-photo { background-position: 64% center; }
+  .home-site .hero-photo { background-image: url('/assets/cartime-cinematic-bmw-m5-mobile.webp'); background-position: 64% center; }
   .home-site .hero-sheen { background: linear-gradient(0deg,#080d15f8 0%,#080d15d4 39%,#080d1560 75%,#080d1550); }
   .home-site .hero-inner,html[data-theme='light'] .home-site .hero-inner { min-height: 790px; align-content: end; gap: 15px; padding-top: 120px; padding-bottom: 82px; }
   .home-site .hero-overline { margin-bottom: 18px; font-size: 8px; letter-spacing: .08em; }
