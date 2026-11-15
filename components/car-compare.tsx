@@ -40,7 +40,7 @@ export default function CarCompare({ locale }: { locale: Locale }) {
 
   return <>
     {cars.length > 0 && <div className="compare-tray" role="region" aria-label={t.title}>
-      <div className="compare-tray-photos" aria-hidden="true">{cars.map((car) => <img key={car.id} {...fleetPhoto(car.id, thumbSizes)} alt="" />)}</div>
+      <div className="compare-tray-photos" aria-hidden="true">{cars.map((car) => <img key={car.id} {...fleetPhoto(car.id, thumbSizes)} alt="" loading="lazy" decoding="async" />)}</div>
       <button type="button" className="compare-tray-open" onClick={() => dialogRef.current?.showModal()}>{t.compare} ({cars.length})</button>
       <button type="button" className="compare-tray-clear" aria-label={t.clear} title={t.clear} onClick={() => saveShortlist([])}><X size={16} /></button>
     </div>}
