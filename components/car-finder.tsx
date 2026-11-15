@@ -3,7 +3,7 @@
 import { useMemo, useState } from "react";
 import { ArrowRight } from "lucide-react";
 import fleet from "@/lib/fleet.json";
-import fleetImages from "@/lib/fleet-images.json";
+import { fleetPhoto, thumbSizes } from "@/lib/fleet-photo";
 import { dayCountLabel } from "@/lib/count-labels";
 import { fleetUi } from "@/lib/fleet-ui";
 import type { Locale } from "@/lib/locales";
@@ -18,7 +18,6 @@ const tripClasses: Record<TripType, string[]> = {
 };
 const trips: TripType[] = ["city", "road", "business", "group"];
 const budgets = [0, 50, 100, 200];
-const images = fleetImages as Record<string, string>;
 
 export default function CarFinder({ locale, today, onOpenCar }: { locale: Locale; today: string; onOpenCar: (id: string) => void }) {
   const t = upgradeUi[locale].finder;
@@ -54,7 +53,7 @@ export default function CarFinder({ locale, today, onOpenCar }: { locale: Locale
       </div>
       <div className="car-finder-results" aria-live="polite">
         {matches.length ? matches.map((car) => <article key={car.id}>
-          <button type="button" className="car-finder-photo" onClick={() => onOpenCar(car.id)} aria-label={`${t.details}: ${car.name} ${car.year}`}><img src={images[car.id]} alt="" /></button>
+          <button type="button" className="car-finder-photo" onClick={() => onOpenCar(car.id)} aria-label={`${t.details}: ${car.name} ${car.year}`}><img {...fleetPhoto(car.id, thumbSizes)} alt="" /></button>
           <div className="car-finder-name"><h3>{car.name}</h3><p>{car.year}, {f.categories[car.category]}</p><span>${car.ratesUsd[tier]} {f.perDay}</span></div>
           <div className="car-finder-total"><small>{t.total}</small><strong>${car.ratesUsd[tier] * days}</strong><a href={`/${locale}/booking?car=${car.id}${dates}`}>{t.book}<ArrowRight size={15} aria-hidden="true" /></a></div>
         </article>) : <p className="car-finder-empty">{t.empty}</p>}

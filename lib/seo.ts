@@ -12,6 +12,21 @@ export const siteOrigin = (process.env.NEXT_PUBLIC_SITE_URL || "https://cartime-
  */
 export const indexingEnabled = Boolean(process.env.NEXT_PUBLIC_SITE_URL);
 
+/**
+ * Ownership tokens for Google Search Console, Yandex Webmaster and Bing Webmaster Tools, set as
+ * NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION, NEXT_PUBLIC_YANDEX_VERIFICATION and NEXT_PUBLIC_BING_VERIFICATION
+ * in the build environment (the content value of each service's meta tag, not the whole tag).
+ * Unset or malformed values are ignored. A DNS TXT record verifies a domain without any of these.
+ */
+export function searchConsoleVerification(): Metadata["verification"] {
+  const token = (value: string | undefined) => (value && /^[A-Za-z0-9_-]{8,100}$/.test(value.trim()) ? value.trim() : undefined);
+  const google = token(process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION);
+  const yandex = token(process.env.NEXT_PUBLIC_YANDEX_VERIFICATION);
+  const bing = token(process.env.NEXT_PUBLIC_BING_VERIFICATION);
+  if (!google && !yandex && !bing) return undefined;
+  return { google, yandex, ...(bing ? { other: { "msvalidate.01": bing } } : {}) };
+}
+
 export const ogImage = { url: "/assets/og-cartime.jpg", width: 1200, height: 630, alt: "CarTime — car rental in Baku" } as const;
 
 export function languageAlternates(path: string, origin = ""): Record<string, string> {

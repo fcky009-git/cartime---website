@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { ArrowLeft, ArrowRight, Banknote, Building2, CalendarDays, CarFront, Check, ChevronDown, Clipboard, CreditCard, Mail, MapPin, MessageCircle, Phone, Plane, Plus, Send, ShieldCheck, Sparkles, Ticket, Users } from "lucide-react";
 import fleet from "@/lib/fleet.json";
 import fleetImages from "@/lib/fleet-images.json";
+import { cardSizes, fleetPhoto } from "@/lib/fleet-photo";
 import { fleetUi } from "@/lib/fleet-ui";
 import { bookingUi } from "@/lib/booking";
 import { bookingFlowUi } from "@/lib/booking-flow-ui";
@@ -437,7 +438,7 @@ export default function BookingForm({ locale }: { locale: Locale }) {
               const carRate = listRate(car);
               const chosen = car.id === carId;
               return <button className={`bf-car${chosen ? " is-on" : ""}`} type="button" aria-pressed={chosen} aria-label={`${ui.chooseCard}: ${car.name} ${car.year}`} onClick={() => { setCarId(car.id); setError(""); }} key={car.id}>
-                <span className="bf-car-stage"><img src={(fleetImages as Record<string, string>)[car.id]} alt={`${car.name} ${car.year} — ${ui.vehicleImage}`} loading={index < 4 ? "eager" : "lazy"} decoding="async" /><i>{chosen ? <Check size={16} strokeWidth={3} /> : null}</i></span>
+                <span className="bf-car-stage"><img {...fleetPhoto(car.id, cardSizes)} alt={`${car.name} ${car.year} — ${ui.vehicleImage}`} loading={index < 4 ? "eager" : "lazy"} decoding="async" /><i>{chosen ? <Check size={16} strokeWidth={3} /> : null}</i></span>
                 <span className="bf-car-text">
                   <small>{categories[car.category]} · {car.year}</small>
                   <strong>{car.name}</strong>
