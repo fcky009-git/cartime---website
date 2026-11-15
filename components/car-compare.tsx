@@ -3,13 +3,12 @@
 import { useEffect, useRef, useState } from "react";
 import { Check, Link2, X } from "lucide-react";
 import fleet from "@/lib/fleet.json";
-import fleetImages from "@/lib/fleet-images.json";
+import { cardSizes, fleetPhoto, thumbSizes } from "@/lib/fleet-photo";
 import { fleetUi } from "@/lib/fleet-ui";
 import type { Locale } from "@/lib/locales";
 import { saveShortlist, shareLink, useShortlist } from "@/lib/shortlist";
 import { upgradeUi } from "@/lib/upgrade-ui";
 
-const images = fleetImages as Record<string, string>;
 
 export default function CarCompare({ locale }: { locale: Locale }) {
   const t = upgradeUi[locale].shortlist;
@@ -41,7 +40,7 @@ export default function CarCompare({ locale }: { locale: Locale }) {
 
   return <>
     {cars.length > 0 && <div className="compare-tray" role="region" aria-label={t.title}>
-      <div className="compare-tray-photos" aria-hidden="true">{cars.map((car) => <img key={car.id} src={images[car.id]} alt="" />)}</div>
+      <div className="compare-tray-photos" aria-hidden="true">{cars.map((car) => <img key={car.id} {...fleetPhoto(car.id, thumbSizes)} alt="" />)}</div>
       <button type="button" className="compare-tray-open" onClick={() => dialogRef.current?.showModal()}>{t.compare} ({cars.length})</button>
       <button type="button" className="compare-tray-clear" aria-label={t.clear} title={t.clear} onClick={() => saveShortlist([])}><X size={16} /></button>
     </div>}
@@ -55,7 +54,7 @@ export default function CarCompare({ locale }: { locale: Locale }) {
         <div className="compare-scroll">
           <table>
             <thead><tr><td />{cars.map((car) => <th scope="col" key={car.id}>
-              <img src={images[car.id]} alt="" />
+              <img {...fleetPhoto(car.id, cardSizes)} alt="" />
               <strong>{car.name}</strong>
               <small>{car.year}, {f.categories[car.category]}</small>
               <button type="button" onClick={() => toggle(car.id)}>{t.remove}</button>
