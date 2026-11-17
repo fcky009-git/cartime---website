@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { localeInfo, locales } from "@/lib/locales";
+import { contact } from "@/lib/service-info";
 
 export const metadata: Metadata = { title: "404 | CarTime", robots: { index: false, follow: false } };
 
@@ -13,6 +14,7 @@ export default function NotFound() {
         <nav aria-label="Choose a language">
           {locales.map((code) => <a key={code} href={`/${code}`} lang={localeInfo[code].hreflang}>{localeInfo[code].name}</a>)}
         </nav>
+        <p><a href={`mailto:${contact.email}`}><bdi dir="ltr">{contact.email}</bdi></a></p>
       </div>
     </main>
   );

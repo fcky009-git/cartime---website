@@ -3,6 +3,7 @@
 import { useEffect, useRef } from "react";
 import { ArrowRight, ArrowUpRight, Building2, CarFront, ChevronDown, Compass, ConciergeBell, FileText, Layers, type LucideIcon } from "lucide-react";
 import type { Locale } from "@/lib/i18n";
+import { contact } from "@/lib/service-info";
 import { travelUi } from "@/lib/travel-ui";
 
 const labels = {
@@ -75,13 +76,13 @@ export default function SiteDirectory({ locale, inline = false, onNavigate }: { 
   };
   const group = (Icon: LucideIcon, title: string, links: [string, string][]) => <div className="directory-group">
     <strong><Icon size={15} aria-hidden="true" />{title}</strong>
-    {links.map(([path, label]) => <a key={path} href={`/${locale}${path}`} onClick={close}><span>{label}</span><ArrowUpRight size={15} aria-hidden="true" /></a>)}
+    {links.map(([path, label]) => <a key={path} href={path.startsWith("mailto:") ? path : `/${locale}${path}`} onClick={close}><bdi>{label}</bdi><ArrowUpRight size={15} aria-hidden="true" /></a>)}
   </div>;
 
   const panel = <div className={`site-directory-panel${inline ? "" : " glass-panel"}`}>
     <div className="directory-column">
       {group(CarFront, l.cars, [["/fleet", l.fleet], ["/travel-pass", travelUi[locale].lookup], ["#map", l.map]])}
-      {group(Building2, l.company, [["/about", l.about], ["/faq", l.faq], ["/contact", l.contact]])}
+      {group(Building2, l.company, [["/about", l.about], ["/faq", l.faq], ["/contact", l.contact], [`mailto:${contact.email}`, contact.email]])}
     </div>
     <div className="directory-column">
       {group(ConciergeBell, l.services, [["/rental/airport", l.airport], ["/rental/delivery", l.delivery], ["/rental/long-term", l.longTerm]])}

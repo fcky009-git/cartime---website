@@ -1,4 +1,5 @@
 import { and, count, eq, gte, ne, or } from "drizzle-orm";
+import { waitUntil } from "cloudflare:workers";
 import { bookingInput, validateBooking } from "@/lib/booking-request";
 import { bookingRequests, travelPasses } from "@/db/schema";
 import { getDb } from "@/db";
@@ -63,7 +64,7 @@ export async function POST(request: Request) {
       trip = await issueTravelPass(id, accessCode, false);
       return Response.json({ id, status: "new", trip }, { status: 201, headers: { "Cache-Control": "no-store" } });
     }
-    // One batch: a request is never saved without its pass, and a retry never loses the manager's notification.
+    // Save the request and its pass together. Only the insert winner sends notifications.
     const [inserted] = await db.batch([db.insert(bookingRequests).values({
       id, createdAt: now, updatedAt: now, status: "new", locale: data.locale,
       carId: data.carId, carName: validated.car.name, carYear: validated.car.year,
@@ -78,14 +79,14 @@ export async function POST(request: Request) {
       childSeat: data.childSeat || null, secondDriverName: data.secondDriver ? data.secondDriverName || null : null, tripPlan: data.tripPlan || null,
     }).onConflictDoNothing({ target: bookingRequests.id }).returning({ id: bookingRequests.id }),
     db.insert(travelPasses).values(await newTravelPassRow(id, accessCode)).onConflictDoNothing({ target: travelPasses.bookingId })]);
-    trip = await issueTravelPass(id, accessCode, false);
     if (inserted.length) {
-      await notifyNewBooking({
+      waitUntil(notifyNewBooking({
         id, locale: data.locale, carName: validated.car.name, carYear: validated.car.year, fromDate: data.fromDate, fromTime: data.fromTime, toDate: data.toDate, toTime: data.toTime,
         days: validated.days, estimateUsd: validated.estimateUsd, customerName: data.customerName, phone: data.phone, email, pickup: data.pickup === "delivery" ? `delivery: ${data.pickupAddress}` : data.pickup, flight: data.flight,
         contactChannel: data.contactChannel, payment: data.payment, childSeat: data.childSeat,
-      }, new URL(request.url).origin);
+      }, new URL(request.url).origin));
     }
+    trip = await issueTravelPass(id, accessCode, false);
   } catch (error) {
     console.error("Booking persistence failed", error);
     return Response.json({ error: "Could not save the request. Please try again." }, { status: 503 });

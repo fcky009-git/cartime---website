@@ -164,6 +164,7 @@ html .glass-header .site-directory-panel .directory-group strong svg { flex: non
 .glass-header[data-tone="light"] .site-directory-panel .directory-group strong svg { color: #125cf4; }
 html .glass-header .site-directory-panel .directory-group a { display: flex; align-items: center; justify-content: space-between; gap: 10px; min-height: 40px; padding: 8px 10px; border-radius: 13px; color: inherit; font: 500 14px/1.3 var(--font-body); white-space: normal; opacity: 1; transition: background .18s ease, transform .4s var(--spring); }
 html .glass-header .site-directory-panel .directory-group a svg { flex: none; opacity: 0; transform: translate(-4px, 4px); transition: opacity .18s ease, transform .4s var(--spring); }
+html .glass-header .site-directory-panel .directory-group a[href^="mailto:"] bdi { min-width: 0; overflow-wrap: anywhere; }
 html .glass-header .site-directory-panel .directory-group a:hover { background: var(--glass-hover); transform: none; }
 html .glass-header .site-directory-panel .directory-group a:hover svg { opacity: 1; transform: none; }
 html[dir="rtl"] .glass-header .site-directory-panel .directory-group a svg { scale: -1 1; }

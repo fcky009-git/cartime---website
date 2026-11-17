@@ -10,7 +10,7 @@ export default function ContactLinks({ locale, className = "" }: { locale: Local
       <a href={`tel:${item.phone}`} dir="ltr"><Phone size={16} aria-hidden="true" />{item.display}</a>
       <a className="contact-whatsapp" href={whatsappLink(item.phone)} target="_blank" rel="noopener noreferrer" aria-label={`${whatsappUi[locale].open}: ${item.display}`}><WhatsAppIcon size={18} /></a>
     </span>)}
-    <a href={`mailto:${contact.email}`}><Mail size={16} aria-hidden="true" />{contact.email}</a>
+    <a href={`mailto:${contact.email}`}><Mail size={16} aria-hidden="true" /><bdi dir="ltr">{contact.email}</bdi></a>
     <a href={contactLocation.mapsUrl} target="_blank" rel="noopener noreferrer"><MapPin size={16} aria-hidden="true" />{contactLocation.address}</a>
   </div>;
 }
