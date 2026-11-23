@@ -2,6 +2,8 @@
 
 import { useEffect, useRef, useState } from "react";
 import { ArrowLeft, ArrowRight, Banknote, Building2, CalendarDays, CarFront, Check, ChevronDown, Clipboard, CreditCard, Mail, MapPin, MessageCircle, Phone, Plane, Plus, Send, ShieldCheck, Sparkles, Ticket, Users } from "lucide-react";
+import { recordBookingLead } from "@/lib/analytics";
+import { readPageState } from "@/lib/page-state";
 import fleet from "@/lib/fleet.json";
 import fleetImages from "@/lib/fleet-images.json";
 import { cardSizes, fleetPhoto } from "@/lib/fleet-photo";
@@ -113,7 +115,7 @@ export default function BookingForm({ locale }: { locale: Locale }) {
     if (!active) return;
     const current = localToday();
     setToday(current);
-    const search = new URLSearchParams(window.location.search);
+    const search = readPageState(window.location, ["pickup", "dropoff", "from", "to", "fromTime", "toTime", "car"]);
     const firstPlace = parsePlace(search.get("pickup"));
     const lastPlace = parsePlace(search.get("dropoff"));
     setPickup(firstPlace);
@@ -318,6 +320,7 @@ export default function BookingForm({ locale }: { locale: Locale }) {
       if (!result.id) throw new Error("booking reference missing");
       setSavedId(result.id);
       setTravelCredentials(result.trip);
+      recordBookingLead();
       window.requestAnimationFrame(() => topRef.current?.scrollIntoView({ behavior: "smooth", block: "start" }));
     } catch { setError(submitText.failed); }
     finally { setSaving(false); }

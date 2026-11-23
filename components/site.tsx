@@ -15,6 +15,7 @@ import { rentalPages, rentalSlugs, rentalUi } from "@/lib/rental-pages";
 import fleet from "@/lib/fleet.json";
 import fleetImages from "@/lib/fleet-images.json";
 import { cardSizes, fleetPhoto } from "@/lib/fleet-photo";
+import { pageStateHref, readPageState } from "@/lib/page-state";
 import { bookingUi } from "@/lib/booking";
 import { carDetailUi } from "@/lib/car-detail-ui";
 import { addDaysIso, rateTierIndex, rentalDuration } from "@/lib/rental-duration";
@@ -122,26 +123,50 @@ export default function CarTimeSite({ locale }: { locale: Locale }) {
 
   useEffect(() => {
     let active = true;
-    const linkedCar = new URLSearchParams(window.location.search).get("car");
+    const syncCar = () => {
+      const linkedCar = readPageState(window.location, ["car"]).get("car");
+      setDetailCar(fleet.some((car) => car.id === linkedCar) ? linkedCar : null);
+    };
+    window.addEventListener("hashchange", syncCar);
     queueMicrotask(() => {
       if (!active) return;
-      if (fleet.some((car) => car.id === linkedCar)) setDetailCar(linkedCar);
+      syncCar();
       const current = bakuToday();
       const start = addDaysIso(current, 1);
       setToday(current);
       setFromDate(start);
       setToDate(addDaysIso(start, 3));
     });
-    return () => { active = false; };
+    return () => {
+      active = false;
+      window.removeEventListener("hashchange", syncCar);
+    };
   }, []);
 
-  // The address follows the open car, so it can be shared or reopened.
-  useEffect(() => {
+  function openCar(id: string) {
     const url = new URL(window.location.href);
-    if ((url.searchParams.get("car") ?? null) === detailCar) return;
-    if (detailCar) url.searchParams.set("car", detailCar); else url.searchParams.delete("car");
+    const fragment = new URLSearchParams(url.hash.includes("=") ? url.hash.slice(1) : "");
+    if (url.hash && !url.hash.includes("=")) fragment.set("section", url.hash.slice(1));
+    fragment.set("car", id);
+    url.searchParams.delete("car");
+    url.hash = fragment.toString();
     window.history.replaceState(window.history.state, "", url);
-  }, [detailCar]);
+    setDetailCar(id);
+  }
+
+  function closeCar() {
+    setDetailCar(null);
+    const url = new URL(window.location.href);
+    url.searchParams.delete("car");
+    const fragment = new URLSearchParams(url.hash.slice(1));
+    if (fragment.has("car")) {
+      fragment.delete("car");
+      const section = fragment.get("section");
+      fragment.delete("section");
+      url.hash = fragment.toString() || section || "";
+    }
+    window.history.replaceState(window.history.state, "", url);
+  }
 
   useEffect(() => {
     const hero = document.querySelector<HTMLElement>(".home-site .hero");
@@ -168,7 +193,7 @@ export default function CarTimeSite({ locale }: { locale: Locale }) {
     const previousFocus = document.activeElement instanceof HTMLElement ? document.activeElement : null;
     modalRef.current?.querySelector<HTMLElement>(".modal-close")?.focus();
     const onKeyDown = (event: KeyboardEvent) => {
-      if (event.key === "Escape") setDetailCar(null);
+      if (event.key === "Escape") closeCar();
       if (event.key !== "Tab" || !modalRef.current) return;
       const focusable = [...modalRef.current.querySelectorAll<HTMLElement>('a[href], button:not([disabled]), [tabindex]:not([tabindex="-1"])')];
       if (!focusable.length) return;
@@ -188,11 +213,13 @@ export default function CarTimeSite({ locale }: { locale: Locale }) {
       from: String(formData.get("from") || fromDate), to: String(formData.get("to") || toDate),
       fromTime: String(formData.get("fromTime") || fromTime), toTime: String(formData.get("toTime") || toTime),
     });
-    router.push(`/${locale}/booking?${params.toString()}`);
+    router.push(pageStateHref(`/${locale}/booking`, params));
   }
 
   async function shareCar() {
-    const result = await shareLink(window.location.href, selectedCar ? `${selectedCar.name} ${selectedCar.year}` : "CarTime");
+    if (!selectedCar) return;
+    const url = pageStateHref(`${window.location.origin}/${locale}`, { car: selectedCar.id });
+    const result = await shareLink(url, `${selectedCar.name} ${selectedCar.year}`);
     if (result === "copied") { setLinkCopied(true); window.setTimeout(() => setLinkCopied(false), 2500); }
   }
 
@@ -245,7 +272,7 @@ export default function CarTimeSite({ locale }: { locale: Locale }) {
           </form>
         </div>
 
-        <CarFinder locale={locale} today={today} onOpenCar={setDetailCar} />
+        <CarFinder locale={locale} today={today} onOpenCar={openCar} />
 
         <section className="section benefits-section home-reveal" id="benefits">
           <div className="container">
@@ -260,7 +287,7 @@ export default function CarTimeSite({ locale }: { locale: Locale }) {
             <div className="fleet-toolbar"><label className="fleet-query"><Search size={17} /><span className="sr-only">{f.searchLabel}</span><input type="search" value={modelQuery} placeholder={f.searchPlaceholder} onChange={(event) => { setModelQuery(event.target.value); setVisibleCount(8); }} /></label><label className="fleet-sort"><span>{f.sortLabel}</span><select value={sort} onChange={(event) => setSort(event.target.value)}><option value="priceAsc">{f.sortOptions[0]}</option><option value="priceDesc">{f.sortOptions[1]}</option><option value="yearDesc">{f.sortOptions[2]}</option></select></label></div>
             <div className="filter-row" role="group" aria-label={f.title}>{categories.map((item) => <button type="button" key={item} className={category === item ? "active" : ""} aria-pressed={category === item} onClick={() => { setCategory(item); setVisibleCount(8); }}>{f.categories[item]}</button>)}</div>
             <p className="fleet-count">{carCountLabel(locale, filteredCars.length)}</p>
-            <div className="fleet-showcase">{filteredCars.length ? <div className="car-grid">{filteredCars.slice(0, visibleCount).map((car, index) => <article className="car-card" key={car.id}><button type="button" className="car-save" aria-pressed={shortlist.ids.includes(car.id)} aria-label={`${shortlist.ids.includes(car.id) ? up.shortlist.unsave : up.shortlist.save}: ${car.name} ${car.year}`} title={shortlist.ids.includes(car.id) ? up.shortlist.unsave : up.shortlist.save} onClick={() => shortlist.toggle(car.id)}><Scale size={18} aria-hidden="true" /></button><button className="car-card-open" type="button" onClick={() => setDetailCar(car.id)} aria-label={`${carInfo.details}: ${car.name} ${car.year}`}><div className="car-image"><span className="car-plate" aria-hidden="true"><i>AZ</i><b>{car.year}</b></span><span className="car-saving">−{longTermSaving(car.ratesUsd)}% · {f.durations[5]}</span><img {...fleetPhoto(car.id, cardSizes)} alt={`${car.name} ${car.year}`} width={600} height={400} loading={index < 4 ? "eager" : "lazy"} decoding="async" onError={(event) => { event.currentTarget.srcset = ""; event.currentTarget.src = car.category === "SUV" ? "/assets/suv.svg" : "/assets/sedan.svg"; }} /></div><div className="car-info"><div className="car-heading"><div><p className="car-year">{car.year} · {f.categories[car.category]}</p><h3>{car.name}</h3></div><span className="car-card-arrow"><ArrowRight size={18} /></span></div><p className="car-fit">{carInfo.fit[car.category]}</p><div className="car-features"><span>{carInfo.included[0]}</span><span>{carInfo.included[1]}</span></div><div className="car-bottom"><div className="car-price"><strong>${car.ratesUsd[0]}</strong><small>{f.durations[0]} · {f.perDay}</small></div><div className="car-price car-price-long"><strong>${car.ratesUsd[5]}</strong><small>{f.durations[5]} · {f.perDay}</small></div></div></div></button></article>)}</div> : <p className="fleet-empty">{f.empty}</p>}</div>
+            <div className="fleet-showcase">{filteredCars.length ? <div className="car-grid">{filteredCars.slice(0, visibleCount).map((car) => <article className="car-card" key={car.id}><button type="button" className="car-save" aria-pressed={shortlist.ids.includes(car.id)} aria-label={`${shortlist.ids.includes(car.id) ? up.shortlist.unsave : up.shortlist.save}: ${car.name} ${car.year}`} title={shortlist.ids.includes(car.id) ? up.shortlist.unsave : up.shortlist.save} onClick={() => shortlist.toggle(car.id)}><Scale size={18} aria-hidden="true" /></button><button className="car-card-open" type="button" onClick={() => openCar(car.id)} aria-label={`${carInfo.details}: ${car.name} ${car.year}`}><div className="car-image"><span className="car-plate" aria-hidden="true"><i>AZ</i><b>{car.year}</b></span><span className="car-saving">−{longTermSaving(car.ratesUsd)}% · {f.durations[5]}</span><img {...fleetPhoto(car.id, cardSizes)} alt={`${car.name} ${car.year}`} width={600} height={400} loading="lazy" decoding="async" onError={(event) => { event.currentTarget.srcset = ""; event.currentTarget.src = car.category === "SUV" ? "/assets/suv.svg" : "/assets/sedan.svg"; }} /></div><div className="car-info"><div className="car-heading"><div><p className="car-year">{car.year} · {f.categories[car.category]}</p><h3>{car.name}</h3></div><span className="car-card-arrow"><ArrowRight size={18} /></span></div><p className="car-fit">{carInfo.fit[car.category]}</p><div className="car-features"><span>{carInfo.included[0]}</span><span>{carInfo.included[1]}</span></div><div className="car-bottom"><div className="car-price"><strong>${car.ratesUsd[0]}</strong><small>{f.durations[0]} · {f.perDay}</small></div><div className="car-price car-price-long"><strong>${car.ratesUsd[5]}</strong><small>{f.durations[5]} · {f.perDay}</small></div></div></div></button></article>)}</div> : <p className="fleet-empty">{f.empty}</p>}</div>
             {filteredCars.length > visibleCount && <button className="load-more" type="button" onClick={() => setVisibleCount((count) => count + 12)}>{f.more}<ArrowDownRight size={17} /></button>}
             <a className="fleet-all-link" href={`/${locale}/fleet`}>{g.allCars}<ArrowRight size={18} /></a>
           </div>
@@ -305,12 +332,12 @@ export default function CarTimeSite({ locale }: { locale: Locale }) {
 
       <QuickHelp locale={locale} />
 
-      {selectedCar && <div className="modal-backdrop" onMouseDown={() => setDetailCar(null)}><div className="detail-modal" ref={modalRef} role="dialog" aria-modal="true" aria-labelledby="car-modal-title" onMouseDown={(e) => e.stopPropagation()}>
-        <button type="button" className="modal-close" aria-label={carInfo.close} onClick={() => setDetailCar(null)}><X size={20} /></button>
+      {selectedCar && <div className="modal-backdrop" onMouseDown={closeCar}><div className="detail-modal" ref={modalRef} role="dialog" aria-modal="true" aria-labelledby="car-modal-title" onMouseDown={(e) => e.stopPropagation()}>
+        <button type="button" className="modal-close" aria-label={carInfo.close} onClick={closeCar}><X size={20} /></button>
         <div className="modal-image"><img src={(fleetImages as Record<string, string>)[selectedCar.id]} alt={`${selectedCar.name} ${selectedCar.year}`} /><span>{selectedCar.year} · {f.categories[selectedCar.category]}</span></div>
         <div className="modal-content"><p className="car-year">{selectedCar.year} · {f.categories[selectedCar.category]}</p><h2 id="car-modal-title">{selectedCar.name}</h2><p className="modal-fit">{carInfo.fit[selectedCar.category]}</p>
           <div className="modal-fact-groups"><section><h3>{carInfo.highlights}</h3><ul>{carInfo.included.map((line) => <li key={line}><Check size={15} aria-hidden="true" />{line}</li>)}</ul></section><section><h3>{carInfo.before}</h3><ul>{carInfo.terms.map((line) => <li key={line}><Check size={15} aria-hidden="true" />{line}</li>)}</ul></section></div>
-          <div className="car-calc"><div className="car-calc-head"><label htmlFor="car-calc-range">{up.calc.title}</label><output htmlFor="car-calc-range">{dayCountLabel(locale, calcDays)}</output></div><input id="car-calc-range" type="range" min={2} max={45} value={calcDays} aria-valuetext={dayCountLabel(locale, calcDays)} onChange={(event) => setCalcDays(Number(event.target.value))} /><div className="car-calc-total"><span>${selectedCar.ratesUsd[rateTierIndex(calcDays)]} {f.perDay} · {up.calc.total}</span><strong>${selectedCar.ratesUsd[rateTierIndex(calcDays)] * calcDays}</strong></div></div><h3>{carInfo.rates}</h3><div className="tariff-list">{selectedCar.ratesUsd.map((rate, index) => <div key={f.durations[index]} className={index === rateTierIndex(calcDays) ? "active" : ""}><span>{f.durations[index]}</span><strong>${rate} <small>{f.perDay}</small></strong></div>)}</div><p className="tariff-note">{carInfo.rateNote}</p><div className="modal-actions"><a className="booking-modal-link" href={`/${locale}/booking?car=${selectedCar.id}${today ? `&from=${addDaysIso(today, 1)}&to=${addDaysIso(addDaysIso(today, 1), calcDays)}` : ""}`}>{bookingUi[locale].nav}<ArrowRight size={18} /></a><button type="button" className="modal-share" onClick={() => void shareCar()}>{linkCopied ? <Check size={16} /> : <Share2 size={16} />}<span role="status">{linkCopied ? up.calc.copied : up.calc.share}</span></button><a href={`/${locale}/fleet`}>{carInfo.compare} ↗</a></div>
+          <div className="car-calc"><div className="car-calc-head"><label htmlFor="car-calc-range">{up.calc.title}</label><output htmlFor="car-calc-range">{dayCountLabel(locale, calcDays)}</output></div><input id="car-calc-range" type="range" min={2} max={45} value={calcDays} aria-valuetext={dayCountLabel(locale, calcDays)} onChange={(event) => setCalcDays(Number(event.target.value))} /><div className="car-calc-total"><span>${selectedCar.ratesUsd[rateTierIndex(calcDays)]} {f.perDay} · {up.calc.total}</span><strong>${selectedCar.ratesUsd[rateTierIndex(calcDays)] * calcDays}</strong></div></div><h3>{carInfo.rates}</h3><div className="tariff-list">{selectedCar.ratesUsd.map((rate, index) => <div key={f.durations[index]} className={index === rateTierIndex(calcDays) ? "active" : ""}><span>{f.durations[index]}</span><strong>${rate} <small>{f.perDay}</small></strong></div>)}</div><p className="tariff-note">{carInfo.rateNote}</p><div className="modal-actions"><a className="booking-modal-link" href={pageStateHref(`/${locale}/booking`, { car: selectedCar.id, ...(today ? { from: addDaysIso(today, 1), to: addDaysIso(addDaysIso(today, 1), calcDays) } : {}) })}>{bookingUi[locale].nav}<ArrowRight size={18} /></a><button type="button" className="modal-share" onClick={() => void shareCar()}>{linkCopied ? <Check size={16} /> : <Share2 size={16} />}<span role="status">{linkCopied ? up.calc.copied : up.calc.share}</span></button><a href={`/${locale}/fleet`}>{carInfo.compare} ↗</a></div>
         </div></div></div>}
     </div>
   );

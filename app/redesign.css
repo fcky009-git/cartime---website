@@ -530,7 +530,7 @@ html .admin-login-submit, html .admin-login button[type="submit"] { background: 
   html .info-hero { background-position: 62% center; }
   html .info-hero--fleet, html .info-hero--faq { background-image: linear-gradient(0deg,#060d1ff5,#060d1fb3 70%,#060d1f66),url('/assets/cartime-baku-night-bmw-xm.webp'); }
   html .home-site .hero-inner, html[data-theme="light"] .home-site .hero-inner { padding-bottom: 76px; }
-  html .home-site .hero-lead { font-size: 16px; margin-bottom: 18px; }
+  html .home-site .hero-lead { max-width: none; font-size: 16px; margin-bottom: 18px; }
   html .home-site .button-primary { width: 100%; }
   html .home-site .hero-overline { margin-bottom: 14px; font-size: 14px; }
   .hero-live { inset-inline: 15px; inset-block-start: 84px; justify-content: space-between; }

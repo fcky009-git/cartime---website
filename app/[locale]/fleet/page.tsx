@@ -11,6 +11,7 @@ import { fleetUi } from "@/lib/fleet-ui";
 import { guideSlugs, guides, guideUi } from "@/lib/guides";
 import { pageMetadata } from "@/lib/seo";
 import { breadcrumbJsonLd } from "@/lib/structured-data";
+import { pageStateHref } from "@/lib/page-state";
 import { bookingUi } from "@/lib/booking";
 
 const modelYearLabel: Record<Locale, string> = { ru: "Модель / год", az: "Model / il", en: "Model / year", de: "Modell / Jahr", zh: "车型 / 年份", ko: "모델 / 연식", fr: "Modèle / année", ar: "الطراز / السنة" };
@@ -56,7 +57,7 @@ export default async function FleetPage({ params }: { params: Promise<{ locale: 
             <div className="fleet-page-group-head"><h2>{name}</h2><span>{cars.length}</span></div>
             <div className="fleet-table-scroll" role="region" aria-label={name} tabIndex={0}><table className="fleet-table">
               <thead><tr><th scope="col">{modelYearLabel[language]}</th>{ui.fleetDuration.map((duration) => <th scope="col" key={duration}>{duration}<small>{ui.perDay}</small></th>)}<th scope="col">{bookingUi[language].nav}</th></tr></thead>
-              <tbody>{cars.map((car) => <tr key={car.id}><th scope="row">{car.name}<small>{car.year}</small></th>{car.ratesUsd.map((rate, index) => <td key={index}>${rate}</td>)}<td><a href={`/${language}/booking?car=${encodeURIComponent(car.id)}`} aria-label={`${bookingUi[language].nav}: ${car.name} ${car.year}`}>{bookingUi[language].nav}</a></td></tr>)}</tbody>
+              <tbody>{cars.map((car) => <tr key={car.id}><th scope="row">{car.name}<small>{car.year}</small></th>{car.ratesUsd.map((rate, index) => <td key={index}>${rate}</td>)}<td><a href={pageStateHref(`/${language}/booking`, { car: car.id })} aria-label={`${bookingUi[language].nav}: ${car.name} ${car.year}`}>{bookingUi[language].nav}</a></td></tr>)}</tbody>
             </table></div>
           </section>;
         })}

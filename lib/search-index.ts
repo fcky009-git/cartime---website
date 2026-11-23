@@ -6,6 +6,7 @@ import type { Locale } from "@/lib/locales";
 import { rentalPages, rentalSlugs, rentalUi } from "@/lib/rental-pages";
 import { faqItems, serviceUi } from "@/lib/service-info";
 import { upgradeUi } from "@/lib/upgrade-ui";
+import { pageStateHref } from "@/lib/page-state";
 import { travelUi } from "@/lib/travel-ui";
 
 export type SearchGroup = "pages" | "cars" | "rental" | "guides" | "faq";
@@ -24,7 +25,7 @@ export function buildSearchIndex(locale: Locale): SearchItem[] {
     { group: "pages", title: serviceUi[locale].faqNav, href: `${base}/faq` },
     { group: "pages", title: serviceUi[locale].aboutNav, href: `${base}/about` },
     { group: "pages", title: rentalUi[locale].contact, href: `${base}/contact` },
-    ...fleet.map((car): SearchItem => ({ group: "cars", title: car.name, hint: `${car.year} · ${categories[car.category]} · $${car.ratesUsd[0]}`, href: `${base}?car=${car.id}` })),
+    ...fleet.map((car): SearchItem => ({ group: "cars", title: car.name, hint: `${car.year} · ${categories[car.category]} · $${car.ratesUsd[0]}`, href: pageStateHref(base, { car: car.id }) })),
     ...rentalSlugs.map((slug): SearchItem => ({ group: "rental", title: rentalPages[locale][slug].title, href: `${base}/rental/${slug}` })),
     ...guideSlugs.map((slug): SearchItem => ({ group: "guides", title: guides[locale][slug].title, href: `${base}/guide/${slug}` })),
     ...faqItems[locale].map((item): SearchItem => ({ group: "faq", title: item.question, href: `${base}/faq#q-${item.id}` })),

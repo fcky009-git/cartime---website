@@ -55,7 +55,11 @@ export default function SiteSearch({ locale, items }: { locale: Locale; items: S
       setActive(next);
       document.getElementById(`site-search-${next}`)?.scrollIntoView({ block: "nearest" });
     }
-    if (event.key === "Enter" && results[active]) { event.preventDefault(); window.location.assign(results[active].href); }
+    if (event.key === "Enter" && results[active]) {
+      event.preventDefault();
+      dialogRef.current?.close();
+      window.location.assign(results[active].href);
+    }
   }
 
   return <dialog ref={dialogRef} className="site-search" aria-label={t.open} onClick={(event) => { if (event.target === dialogRef.current) dialogRef.current.close(); }}>
@@ -68,7 +72,7 @@ export default function SiteSearch({ locale, items }: { locale: Locale; items: S
       <ul id="site-search-results" role="listbox" aria-label={t.open}>
         {results.map((item, index) => <li key={item.href} role="presentation">
           {(index === 0 || results[index - 1].group !== item.group) && <p className="site-search-group">{t[item.group]}</p>}
-          <a id={`site-search-${index}`} role="option" aria-selected={index === active} className={index === active ? "active" : ""} href={item.href} onMouseEnter={() => setActive(index)}><span>{item.title}</span>{item.hint && <small>{item.hint}</small>}</a>
+          <a id={`site-search-${index}`} role="option" aria-selected={index === active} className={index === active ? "active" : ""} href={item.href} onClick={() => dialogRef.current?.close()} onMouseEnter={() => setActive(index)}><span>{item.title}</span>{item.hint && <small>{item.hint}</small>}</a>
         </li>)}
       </ul>
       {!results.length && <p className="site-search-empty" role="status">{t.empty}</p>}

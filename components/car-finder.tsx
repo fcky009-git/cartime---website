@@ -7,6 +7,7 @@ import { fleetPhoto, thumbSizes } from "@/lib/fleet-photo";
 import { dayCountLabel } from "@/lib/count-labels";
 import { fleetUi } from "@/lib/fleet-ui";
 import type { Locale } from "@/lib/locales";
+import { pageStateHref } from "@/lib/page-state";
 import { addDaysIso, rateTierIndex } from "@/lib/rental-duration";
 import { upgradeUi, type TripType } from "@/lib/upgrade-ui";
 
@@ -36,7 +37,7 @@ export default function CarFinder({ locale, today, onOpenCar }: { locale: Locale
   }, [trip, budget, tier]);
 
   const start = today ? addDaysIso(today, 1) : "";
-  const dates = start ? `&from=${start}&to=${addDaysIso(start, days)}` : "";
+  const dates: Record<string, string> = start ? { from: start, to: addDaysIso(start, days) } : {};
 
   return <section className="section car-finder" id="finder" aria-labelledby="car-finder-title">
     <div className="container car-finder-grid">
@@ -53,9 +54,9 @@ export default function CarFinder({ locale, today, onOpenCar }: { locale: Locale
       </div>
       <div className="car-finder-results" aria-live="polite">
         {matches.length ? matches.map((car) => <article key={car.id}>
-          <button type="button" className="car-finder-photo" onClick={() => onOpenCar(car.id)} aria-label={`${t.details}: ${car.name} ${car.year}`}><img {...fleetPhoto(car.id, thumbSizes)} alt="" /></button>
+          <button type="button" className="car-finder-photo" onClick={() => onOpenCar(car.id)} aria-label={`${t.details}: ${car.name} ${car.year}`}><img {...fleetPhoto(car.id, thumbSizes)} alt="" loading="lazy" decoding="async" /></button>
           <div className="car-finder-name"><h3>{car.name}</h3><p>{car.year}, {f.categories[car.category]}</p><span>${car.ratesUsd[tier]} {f.perDay}</span></div>
-          <div className="car-finder-total"><small>{t.total}</small><strong>${car.ratesUsd[tier] * days}</strong><a href={`/${locale}/booking?car=${car.id}${dates}`}>{t.book}<ArrowRight size={15} aria-hidden="true" /></a></div>
+          <div className="car-finder-total"><small>{t.total}</small><strong>${car.ratesUsd[tier] * days}</strong><a href={pageStateHref(`/${locale}/booking`, { car: car.id, ...dates })}>{t.book}<ArrowRight size={15} aria-hidden="true" /></a></div>
         </article>) : <p className="car-finder-empty">{t.empty}</p>}
         <small className="car-finder-note">{t.note}</small>
       </div>

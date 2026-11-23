@@ -1,5 +1,6 @@
 "use client";
 
+import { pageStateHref, readPageState } from "@/lib/page-state";
 import { useEffect, useRef, useState } from "react";
 import { Check, Link2, X } from "lucide-react";
 import fleet from "@/lib/fleet.json";
@@ -21,7 +22,7 @@ export default function CarCompare({ locale }: { locale: Locale }) {
 
   // A shared link opens the same comparison on another device.
   useEffect(() => {
-    const shared = new URLSearchParams(window.location.search).get("compare");
+    const shared = readPageState(window.location, ["compare"]).get("compare");
     if (!shared) return;
     saveShortlist(shared.split(","));
     dialogRef.current?.showModal();
@@ -34,13 +35,13 @@ export default function CarCompare({ locale }: { locale: Locale }) {
   }, [cars.length]);
 
   async function share() {
-    const result = await shareLink(`${window.location.origin}/${locale}?compare=${ids.join(",")}`, t.title);
+    const result = await shareLink(pageStateHref(`${window.location.origin}/${locale}`, { compare: ids.join(",") }), t.title);
     if (result === "copied") { setCopied(true); window.setTimeout(() => setCopied(false), 2500); }
   }
 
   return <>
     {cars.length > 0 && <div className="compare-tray" role="region" aria-label={t.title}>
-      <div className="compare-tray-photos" aria-hidden="true">{cars.map((car) => <img key={car.id} {...fleetPhoto(car.id, thumbSizes)} alt="" />)}</div>
+      <div className="compare-tray-photos" aria-hidden="true">{cars.map((car) => <img key={car.id} {...fleetPhoto(car.id, thumbSizes)} alt="" loading="lazy" decoding="async" />)}</div>
       <button type="button" className="compare-tray-open" onClick={() => dialogRef.current?.showModal()}>{t.compare} ({cars.length})</button>
       <button type="button" className="compare-tray-clear" aria-label={t.clear} title={t.clear} onClick={() => saveShortlist([])}><X size={16} /></button>
     </div>}
@@ -67,7 +68,7 @@ export default function CarCompare({ locale }: { locale: Locale }) {
                   return <td key={car.id} className={isLowest ? "lowest" : ""}>${car.ratesUsd[index]}{isLowest && <span className="sr-only"> ({t.lowest})</span>}</td>;
                 })}</tr>;
               })}
-              <tr className="compare-actions"><td />{cars.map((car) => <td key={car.id}><a href={`/${locale}/booking?car=${car.id}`}>{t.book}</a></td>)}</tr>
+              <tr className="compare-actions"><td />{cars.map((car) => <td key={car.id}><a href={pageStateHref(`/${locale}/booking`, { car: car.id })}>{t.book}</a></td>)}</tr>
             </tbody>
           </table>
         </div>
