@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import JsonLd from "@/components/json-ld";
 import SiteSearch from "@/components/site-search";
 import { buildSearchIndex } from "@/lib/search-index";
-import { clickEventsScript, gtmHeadScript, gtmId } from "@/lib/analytics";
+import { gtmHeadScript, gtmId } from "@/lib/analytics";
 import { dictionaries } from "@/lib/i18n";
 import { defaultLocale, isLocale, localeInfo } from "@/lib/locales";
 import { indexingEnabled, searchConsoleVerification, siteOrigin } from "@/lib/seo";
@@ -68,10 +68,9 @@ export default async function LocaleLayout({ children, params }: Readonly<{ chil
           <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
           <link rel="stylesheet" href={localeFonts[code]} />
         </>}
-        {gtmId && <script dangerouslySetInnerHTML={{ __html: gtmHeadScript(gtmId) + clickEventsScript }} />}
+        {gtmId && <script dangerouslySetInnerHTML={{ __html: gtmHeadScript(gtmId) }} />}
       </head>
       <body>
-        {gtmId && <noscript><iframe src={`https://www.googletagmanager.com/ns.html?id=${gtmId}`} height="0" width="0" style={{ display: "none", visibility: "hidden" }} /></noscript>}
         <JsonLd data={organizationJsonLd()} />
         {children}
         <SiteSearch locale={code} items={buildSearchIndex(code)} />

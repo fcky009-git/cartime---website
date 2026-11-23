@@ -1,4 +1,6 @@
 import type { NextConfig } from "next";
+import { defaultLocale } from "./lib/locales";
+import { publicPaths } from "./lib/public-paths";
 
 /**
  * Security headers for every page and API response. Scripts are not restricted by CSP,
@@ -21,6 +23,14 @@ const noFraming = [
 const privatePage = [...noFraming, { key: "Cache-Control", value: "no-store, private" }, { key: "X-Robots-Tag", value: "noindex, nofollow" }];
 
 const nextConfig: NextConfig = {
+  async redirects() {
+    return publicPaths.map((path) => ({
+      source: `/${path}`,
+      destination: `/${defaultLocale}${path ? `/${path}` : ""}`,
+      permanent: true,
+    }));
+  },
+
   async headers() {
     // vinext keeps the first value it finds for a header, so the specific rules come first.
     return [

@@ -344,7 +344,8 @@ html .travel-actions :is(a,button) { border-radius: 999px; }
   html .home-site .search-container { margin-top: -34px; }
   html .home-site .search-panel { border-radius: 30px; }
   html .home-site .search-field, html .home-site .search-field:first-child { border-radius: 16px; }
-  html .hero-live { inset-inline: 10px; padding: 6px 14px; }
+  html .hero-live { inset-inline: 10px; display: grid; grid-template-columns: 4.75rem minmax(0, 1fr); padding: 6px 14px; }
+  .hero-live-phones { font-family: system-ui, sans-serif; }
 }
 
 /* People who ask for less see solid surfaces and no motion */
