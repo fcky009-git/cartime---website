@@ -1,3 +1,4 @@
+import { measurementCopy } from "@/lib/measurement-copy";
 import { travelUi } from "@/lib/travel-ui";
 import GlassHeader from "@/components/glass-header";
 import { dictionaries } from "@/lib/i18n";
@@ -44,6 +45,7 @@ export default function InfoShell({ locale, current, children }: { locale: Local
           <a href={`/${locale}/faq`}>{service.faqNav}</a>
           <a href={`/${locale}/rental`}>{rentalUi[locale].nav}</a>
           <a href={`/${locale}/contact`}>{rentalUi[locale].contact}</a>
+          <a href={`/${locale}/privacy`}>{measurementCopy[locale].privacy}</a>
           {rentalSlugs.map((slug) => <a key={slug} href={`/${locale}/rental/${slug}`}>{rentalPages[locale][slug].title}</a>)}
           {guideSlugs.map((slug) => <a key={slug} href={`/${locale}/guide/${slug}`}>{guides[locale][slug].title}</a>)}
         </nav>

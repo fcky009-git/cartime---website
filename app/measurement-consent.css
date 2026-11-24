@@ -1,0 +1,52 @@
+.measurement-banner, .measurement-dialog, .measurement-settings {
+  font-family: system-ui, sans-serif;
+  color: #f4f7ff;
+  background: #101a31;
+  border: 1px solid #677997;
+  border-radius: 1rem;
+  box-shadow: 0 10px 28px #0005;
+}
+
+.measurement-banner {
+  position: fixed;
+  z-index: 90;
+  inset-inline: 1rem;
+  inset-block-end: max(4.75rem, calc(env(safe-area-inset-bottom) + 3.5rem));
+  width: min(32rem, calc(100vw - 2rem));
+  margin-inline: auto;
+  padding: 1rem;
+}
+
+.measurement-dialog {
+  width: min(32rem, calc(100vw - 2rem));
+  padding: 1rem;
+}
+
+.measurement-dialog::backdrop { background: #0009; }
+.measurement-banner h2, .measurement-dialog h2 { margin: 0; font-size: 1.125rem; }
+.measurement-banner p, .measurement-dialog p { margin: .5rem 0 .8rem; font-size: .9rem; line-height: 1.45; }
+.measurement-banner a, .measurement-dialog a { color: #c0d9ff; text-decoration: underline; }
+.measurement-actions { display: flex; flex-wrap: wrap; gap: .5rem; }
+.measurement-actions button {
+  flex: 1 1 8rem;
+  min-height: 44px;
+  padding: .4rem .6rem;
+  border: 1px solid #8da6ce;
+  border-radius: .6rem;
+  font: inherit;
+  color: inherit;
+  background: #263a60;
+  cursor: pointer;
+}
+
+.measurement-settings {
+  display: grid;
+  place-items: center;
+  position: fixed;
+  z-index: 70;
+  inset-inline-start: .75rem;
+  inset-block-end: max(.75rem, env(safe-area-inset-bottom));
+  width: 44px;
+  height: 44px;
+  cursor: pointer;
+}

@@ -1,5 +1,6 @@
 "use client";
 
+import { measurementCopy } from "@/lib/measurement-copy";
 import { useEffect, useRef, useState } from "react";
 import { ArrowLeft, ArrowRight, Banknote, Building2, CalendarDays, CarFront, Check, ChevronDown, Clipboard, CreditCard, Mail, MapPin, MessageCircle, Phone, Plane, Plus, Send, ShieldCheck, Sparkles, Ticket, Users } from "lucide-react";
 import { recordBookingLead } from "@/lib/analytics";
@@ -320,7 +321,7 @@ export default function BookingForm({ locale }: { locale: Locale }) {
       if (!result.id) throw new Error("booking reference missing");
       setSavedId(result.id);
       setTravelCredentials(result.trip);
-      recordBookingLead();
+      recordBookingLead(requestIdRef.current);
       window.requestAnimationFrame(() => topRef.current?.scrollIntoView({ behavior: "smooth", block: "start" }));
     } catch { setError(submitText.failed); }
     finally { setSaving(false); }
@@ -493,7 +494,7 @@ export default function BookingForm({ locale }: { locale: Locale }) {
               <label className="bf-field">{optional(flow.tripPlan)}<input name="tripPlan" value={tripPlan} onChange={(e) => setTripPlan(e.target.value)} placeholder={flow.tripPlanHint} maxLength={250} /></label>
               <label className="bf-field">{optional(ui.notes)}<textarea name="notes" rows={3} value={notes} onChange={(e) => setNotes(e.target.value)} placeholder={ui.notesHint} maxLength={2000} /></label>
             </section>
-            <p className="bf-fine">{ui.privacy} <a href={`/${locale}/rental/conditions`}>{ui.conditions} ↗</a></p>
+            <p className="bf-fine">{ui.privacy} <a href={`/${locale}/rental/conditions`}>{ui.conditions} ↗</a> · <a href={`/${locale}/privacy`}>{measurementCopy[locale].privacy}</a></p>
           </>}
 
           {step === 4 && !savedId && <div aria-live="polite">
