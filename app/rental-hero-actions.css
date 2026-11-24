@@ -29,3 +29,11 @@
 @media (max-width: 440px) {
   .rental-hero-actions a.rental-hero-book { flex-basis: 100%; }
 }
+
+.rental-hero-price {
+  margin-block: 1rem 0;
+  color: #f4f7ff;
+  font-family: system-ui, sans-serif;
+  font-size: 1.05rem;
+  font-weight: 700;
+}
