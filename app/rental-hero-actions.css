@@ -1,0 +1,31 @@
+.rental-hero-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .5rem;
+  margin-block-start: 1rem;
+}
+
+.rental-hero-actions a {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: .4rem;
+  min-height: 44px;
+  padding: .5rem .85rem;
+  border: 1px solid #8093b3;
+  border-radius: .65rem;
+  color: #f4f7ff;
+  background: #182742;
+  font-family: system-ui, sans-serif;
+  font-size: .88rem;
+  font-weight: 700;
+}
+
+.rental-hero-actions a.rental-hero-book {
+  border-color: #3366c6;
+  background: #124bb4;
+}
+
+@media (max-width: 440px) {
+  .rental-hero-actions a.rental-hero-book { flex-basis: 100%; }
+}

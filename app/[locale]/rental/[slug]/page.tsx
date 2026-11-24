@@ -2,6 +2,7 @@ import { locales } from "@/lib/locales";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import InfoShell from "@/components/info-shell";
+import RentalHeroActions from "@/components/rental-hero-actions";
 import JsonLd from "@/components/json-ld";
 import ContactLinks from "@/components/contact-links";
 import fleet from "@/lib/fleet.json";
@@ -30,7 +31,7 @@ export default async function RentalTopic({ params }: Props) {
   const selectedCars = page.fleetCategory ? fleet.filter((car) => car.category === page.fleetCategory).slice(0, 6) : [];
   return <InfoShell locale={language} current={`rental/${key}`}>
     <main>
-      <header className={`info-hero info-hero--rental info-hero--rental-${key}`}><div className="container info-hero-inner"><a className="info-back" href={`/${language}/rental`}>← {ui.nav}</a><p className="section-kicker">CARTIME / {ui.nav.toUpperCase()}</p><h1>{page.title}</h1><p>{page.lead}</p></div></header>
+      <header className={`info-hero info-hero--rental info-hero--rental-${key}`}><div className="container info-hero-inner"><a className="info-back" href={`/${language}/rental`}>← {ui.nav}</a><p className="section-kicker">CARTIME / {ui.nav.toUpperCase()}</p><h1>{page.title}</h1><p>{page.lead}</p><RentalHeroActions locale={language} topic={key} /></div></header>
       <div className="container info-body"><nav className="info-toc" aria-label={page.title}><strong>{ui.nav}</strong>{page.sections.map((section, index) => <a href={`#section-${index + 1}`} key={section.heading}><span>0{index + 1}</span>{section.heading}</a>)}{selectedCars.length > 0 && <a href="#models"><span>↗</span>{ui.rates}</a>}</nav><article className="info-article">{page.sections.map((section, index) => <section id={`section-${index + 1}`} key={section.heading}><p className="info-section-number">0{index + 1} / CARTIME</p><h2>{section.heading}</h2><p>{section.text}</p>{section.bullets && <ul>{section.bullets.map((bullet) => <li key={bullet}>{bullet}</li>)}</ul>}</section>)}{selectedCars.length > 0 && <section id="models" className="rental-models"><h2>{ui.rates}</h2><p>{ui.rateNote}</p><div>{selectedCars.map((car) => <a href={`/${language}/fleet#category-${page.fleetCategory}`} key={car.id}><span>{car.name} · {car.year}</span><strong>{car.ratesUsd[0]} {guideUi[language].perDay}</strong></a>)}</div></section>}<div className="rental-action"><ContactLinks locale={language} /><a href={`/${language}/fleet`}>{ui.compare} →</a><a href={`/${language}/faq`}>{ui.faq} →</a></div></article></div>
       <section className="info-related"><div className="container"><div className="info-related-head"><div><p className="section-kicker">CARTIME / RENTAL</p><h2>{ui.related}</h2></div><a href={`/${language}/rental`}>{ui.nav} →</a></div><div className="rental-hub-grid rental-hub-grid--related">{related.map((item) => { const relatedPage = rentalPages[language][item]; return <a className="rental-topic" key={item} href={`/${language}/rental/${item}`}><h3>{relatedPage.title}</h3><p>{relatedPage.teaser}</p><b>{ui.read} →</b></a>; })}</div></div></section>
     </main>
