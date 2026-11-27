@@ -1,15 +1,13 @@
 import { Phone } from "lucide-react";
 import { WhatsAppIcon } from "@/components/whatsapp-choice";
 import { bookingUi } from "@/lib/booking";
+import { fleetUi } from "@/lib/fleet-ui";
 import type { Locale } from "@/lib/locales";
-import type { RentalSlug } from "@/lib/rental-pages";
+import { rateTierIndex } from "@/lib/rental-duration";
+import { rentalPages, type RentalSlug } from "@/lib/rental-pages";
 import { contact, whatsappLink, whatsappUi } from "@/lib/service-info";
 import fleet from "@/lib/fleet.json";
 import "@/app/rental-hero-actions.css";
-
-// Same numbers as the catalogue: the shortest-term rate and the longest-term rate, USD per day.
-const fromShort = Math.min(...fleet.map((car) => car.ratesUsd[0]));
-const fromLong = Math.min(...fleet.map((car) => car.ratesUsd[car.ratesUsd.length - 1]));
 
 const priceLabel: Record<Locale, (usd: number) => string> = {
   en: (usd) => `From $${usd} per day`, ru: (usd) => `От $${usd} в сутки`, az: (usd) => `Gündə $${usd}-dən`,
@@ -25,15 +23,25 @@ const callLabel: Record<Locale, string> = {
 export default function RentalHeroActions({ locale, topic }: { locale: Locale; topic: RentalSlug }) {
   const pickup = topic === "airport" || topic === "delivery" ? `?pickup=${topic}` : "";
   const dropoff = topic === "airport" ? "&dropoff=airport" : "";
-  const price = priceLabel[locale](topic === "long-term" ? fromLong : fromShort);
-  return <>
-  <p className="rental-hero-price"><bdi>{price}</bdi></p>
-  <div className="rental-hero-actions">
-    <a className="rental-hero-book" href={`/${locale}/booking${pickup}${dropoff}`}>{bookingUi[locale].nav}</a>
-    <a href={whatsappLink(contact.phone)} target="_blank" rel="noopener noreferrer" aria-label={whatsappUi[locale].open}>
-      <WhatsAppIcon size={18} />WhatsApp
-    </a>
-    <a href={`tel:${contact.phone}`}><Phone size={17} aria-hidden="true" />{callLabel[locale]}</a>
-  </div>
-  </>;
+  const category = rentalPages[locale][topic].fleetCategory;
+  const cars = category ? fleet.filter((car) => car.category === category) : fleet;
+  const tier = rateTierIndex(topic === "long-term" ? 32 : 2);
+  const price = Math.min(...cars.map((car) => car.ratesUsd[tier]));
+
+  return (
+    <>
+      {Number.isFinite(price) && (
+        <p className="rental-hero-price">
+          <bdi>{priceLabel[locale](price)}</bdi> · <bdi>{fleetUi[locale].durations[tier]}</bdi>
+        </p>
+      )}
+      <div className="rental-hero-actions">
+        <a className="rental-hero-book" href={`/${locale}/booking${pickup}${dropoff}`}>{bookingUi[locale].nav}</a>
+        <a href={whatsappLink(contact.phone)} target="_blank" rel="noopener noreferrer" aria-label={whatsappUi[locale].open}>
+          <WhatsAppIcon size={18} />WhatsApp
+        </a>
+        <a href={`tel:${contact.phone}`}><Phone size={17} aria-hidden="true" />{callLabel[locale]}</a>
+      </div>
+    </>
+  );
 }
